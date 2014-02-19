@@ -20,7 +20,7 @@ public class IntentPlayer extends Service {
    public int onStartCommand(Intent intent, int flags, int startId) {
       Context context = getApplicationContext();
       String action = intent.getStringExtra("action");
-      Toast.makeText(context, action, Toast.LENGTH_SHORT).show();
+      Toast.makeText(context, "ABC " + action, Toast.LENGTH_SHORT).show();
 
       // String dataString = workIntent.getDataString();
       return Service.START_STICKY;
@@ -28,13 +28,6 @@ public class IntentPlayer extends Service {
 
    @Override
    public IBinder onBind(Intent intent) {
-      Context context = getApplicationContext();
-      String url = intent.getStringExtra("url");
-      url = ( url != null ) ? url : r4;
-      String msg = "Intent Radio Play:\n" + url;
-      Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
-
-      // String dataString = workIntent.getDataString();
       return null;
    }
 }

@@ -13,12 +13,9 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".IntentPlayer"/>
+       <service android:name=".IntentPlayer"/>
 
-       <receiver
-          android:name=".Intents"
-          android:enabled="true"
-          android:exported="true" >
+       <receiver android:name=".Intents" android:enabled="true" android:exported="true" >
          <intent-filter>
             <action android:name="org.zapto.smblott.intentradio.PLAY"/>
             <action android:name="org.zapto.smblott.intentradio.STOP"/>

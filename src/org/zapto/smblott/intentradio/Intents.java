@@ -6,7 +6,7 @@ import android.content.BroadcastReceiver;
 import android.util.Log;
 import android.widget.Toast;
 
-import org.zapto.smblott.intentradio.IntentPlayer;
+// import org.zapto.smblott.intentradio.IntentPlayer;
 
 public class Intents extends BroadcastReceiver {
 
@@ -15,14 +15,20 @@ public class Intents extends BroadcastReceiver {
 
    @Override
    public void onReceive(Context context, Intent intent) {
-      String url = intent.hasExtra("url") ? intent.getStringExtra("url") : r4;
-      Toast.makeText(context, url, Toast.LENGTH_SHORT).show();
 
-      // Intent msg = new Intent(context, IntentPlayer.class);
-      // msg.putExtra("action", intent.getAction());
-      // if ( intent.hasExtra("url") )
-      //    msg.putExtra("url", intent.getStringExtra("url"));
-      // context.startService(msg);
+      // String url = intent.getStringExtra("url");
+      // url = ( url != null ) ? url : r4;
+      // String msg = "Intent Radio Play:\n" + url;
+      // Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
+
+      // String url = intent.hasExtra("url") ? intent.getStringExtra("url") : r4;
+      // Toast.makeText(context, url, Toast.LENGTH_SHORT).show();
+
+      Intent msg = new Intent(context, IntentPlayer.class);
+      msg.putExtra("action", intent.getAction());
+      if ( intent.hasExtra("url") )
+         msg.putExtra("url", intent.getStringExtra("url"));
+      context.startService(msg);
    }
 
 }
