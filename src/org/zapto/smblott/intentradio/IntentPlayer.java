@@ -13,13 +13,24 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.util.Log;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpEntity;
+import org.apache.http.util.EntityUtils;
+
+import java.util.ArrayList;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
 public class IntentPlayer extends Service {
 
    private MediaPlayer player = null;
 
    private static final String TAG = "IntentRadio";
-   private static final String r4 = "http://bbcmedia.ic.llnwd.net/stream/bbcmedia_intl_he_radio4_p";
-   // private static final String r4 = "http://www.bbc.co.uk/radio/listen/live/r4_heaacv2.pls";
+   private static final String r4 = "http://www.bbc.co.uk/radio/listen/live/r4_heaacv2.pls";
+   // private static final String r4 = "http://bbcmedia.ic.llnwd.net/stream/bbcmedia_intl_he_radio4_p";
 
    @Override
    public int onStartCommand(Intent intent, int flags, int startId) {
@@ -52,9 +63,20 @@ public class IntentPlayer extends Service {
 
    void play(Context context, String url)
    {
+      if ( url.endsWith(".pls") )
+         url = playlist(url);
+
+      if ( url == null )
+      {
+         toast("No URL.");
+         return;
+      }
+
       stop();
+
       player = new MediaPlayer();
       player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
       try
       {
          toast(url);
@@ -74,7 +96,31 @@ public class IntentPlayer extends Service {
       catch (Exception e)
       {
          toast("Error.");
+         stop();
       }
+   }
+
+   String playlist(String url)
+   {
+      try {
+         HttpClient client = new DefaultHttpClient();  
+         HttpGet get = new HttpGet(url);
+         HttpResponse response = client.execute(get);  
+         HttpEntity entity = response.getEntity();  
+         if (entity != null) {  
+            String text = EntityUtils.toString(entity);
+            Log.d(TAG, text);
+            ArrayList urls = links(text);
+
+            if ( 0 < urls.size() )
+               return (String) urls.get(0);
+            else
+               toast("Could not extract URLs from playlist.");
+         }
+      } catch (Exception e) {
+         toast("Error fetching playlist.");
+      }
+      return null;
    }
 
    void stop()
@@ -90,4 +136,27 @@ public class IntentPlayer extends Service {
       else
          toast("Stopped.");
    }
+
+   // http://blog.houen.net/java-get-url-from-string/
+   private ArrayList links(String text)
+   {
+      ArrayList links = new ArrayList();
+    
+      String regex = "\\(?\\b(http://|www[.])[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|]";
+      Pattern p = Pattern.compile(regex);
+      Matcher m = p.matcher(text);
+
+      while( m.find() )
+      {
+         String urlStr = m.group();
+         if (urlStr.startsWith("(") && urlStr.endsWith(")"))
+            urlStr = urlStr.substring(1, urlStr.length() - 1);
+         links.add(urlStr);
+      }
+
+      return links;
+   }
+
+
+
 }
