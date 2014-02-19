@@ -28,21 +28,34 @@ public class IntentPlayer extends Service {
 
    private MediaPlayer player = null;
 
-   private static final String TAG = "IntentRadio";
-   private static final String r4 = "http://www.bbc.co.uk/radio/listen/live/r4_heaacv2.pls";
+   String TAG = null;
+   String intent_play = null;
+   String intent_stop = null;
 
    @Override
    public int onStartCommand(Intent intent, int flags, int startId) {
+
+      if ( TAG == null )
+         TAG = getString(R.string.app_name);
+      if ( intent_play == null )
+         intent_play = getString(R.string.intent_play);
+      if ( intent_stop == null )
+         intent_stop = getString(R.string.intent_stop);
+
       Context context = getApplicationContext();
+
       String action = intent.getStringExtra("action");
       if ( action == null )
          return Service.START_NOT_STICKY;
-      String url = intent.hasExtra("url") ? intent.getStringExtra("url") : r4;
 
-      if ( "org.zapto.smblott.intentradio.PLAY".equals(action) )
+      String url = intent.hasExtra("url") ? intent.getStringExtra("url") : getString(R.string.default_url);
+      log(action);
+      log(url);
+
+      if ( intent_play.equals(action) )
          play(context, url);
 
-      if ( "org.zapto.smblott.intentradio.STOP".equals(action) )
+      if ( intent_stop.equals(action) )
          stop();
 
       return Service.START_STICKY;
@@ -67,6 +80,8 @@ public class IntentPlayer extends Service {
 
    void play(Context context, String url)
    {
+      stop();
+
       if ( url.endsWith(".pls") )
          url = playlist(url);
 
@@ -75,8 +90,6 @@ public class IntentPlayer extends Service {
          toast("No URL.");
          return;
       }
-
-      stop();
 
       player = new MediaPlayer();
       player.setAudioStreamType(AudioManager.STREAM_MUSIC);
