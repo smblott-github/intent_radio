@@ -1,4 +1,7 @@
 
+build:
+	$(MAKE) debug
+
 debug:
 	ant debug
 

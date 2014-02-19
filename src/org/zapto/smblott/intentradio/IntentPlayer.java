@@ -4,14 +4,10 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.Context;
 import android.os.IBinder;
-import android.media.MediaPlayer;
-import android.util.Log;
-import android.widget.Toast;
+
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.media.AudioManager;
-import android.net.Uri;
-import android.util.Log;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -23,6 +19,10 @@ import org.apache.http.util.EntityUtils;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+
+import android.widget.Toast;
+import android.net.Uri;
+import android.util.Log;
 
 public class IntentPlayer extends Service {
 
