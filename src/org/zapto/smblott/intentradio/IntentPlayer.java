@@ -51,17 +51,16 @@ public class IntentPlayer extends Service {
       String action = intent.getStringExtra("action");
       if ( action == null )
          return Service.START_NOT_STICKY;
+      log(action);
+
+      if ( intent_stop.equals(action) )
+         return stop();
 
       String url = intent.hasExtra("url") ? intent.getStringExtra("url") : getString(R.string.default_url);
-
-      log(action);
       log(url);
 
       if ( intent_play.equals(action) )
          return play(url);
-
-      if ( intent_stop.equals(action) )
-         return stop();
 
       return Service.START_NOT_STICKY;
    }
@@ -79,22 +78,23 @@ public class IntentPlayer extends Service {
          return Service.START_NOT_STICKY;
       }
 
+      toast(url);
       player = new MediaPlayer();
       player.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
+      player.setOnPreparedListener(
+         new OnPreparedListener()
+         {
+            public void onPrepared(MediaPlayer player) {
+               player.start();
+               log("Ok.");
+            }
+         }
+      );
+
       try
       {
-         toast(url);
          player.setDataSource(context, Uri.parse(url));
-         player.setOnPreparedListener(
-            new OnPreparedListener()
-            {
-               public void onPrepared(MediaPlayer player) {
-                  player.start();
-                  log("Ok.");
-               }
-            }
-         );
          player.prepareAsync();
          log("Async.");
       }
