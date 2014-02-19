@@ -26,6 +26,8 @@ import android.util.Log;
 
 public class IntentPlayer extends Service {
 
+   private static boolean debug = true;
+
    private static MediaPlayer player = null;
    private static Context context = null;
 
@@ -96,7 +98,7 @@ public class IntentPlayer extends Service {
       {
          player.setDataSource(context, Uri.parse(url));
          player.prepareAsync();
-         log("Async.");
+         log("PrepareAsync.");
       }
       catch (Exception e)
       {
@@ -132,7 +134,7 @@ public class IntentPlayer extends Service {
          HttpEntity entity = response.getEntity();  
          if (entity != null) {  
             String text = EntityUtils.toString(entity);
-            Log.d(app_name, text);
+            log(text);
             ArrayList urls = links(text);
 
             if ( 0 < urls.size() )
@@ -168,7 +170,8 @@ public class IntentPlayer extends Service {
 
    private void log(String msg)
    {
-      Log.d(app_name, msg);
+      if ( debug )
+         Log.d(app_name, msg);
    }
 
    private void toast(String msg)
