@@ -54,9 +54,14 @@ public class IntentPlayer extends Service {
       return null;
    }
 
-   void toast(String msg)
+   void log(String msg)
    {
       Log.d(TAG, msg);
+   }
+
+   void toast(String msg)
+   {
+      log(msg);
       Context context = getApplicationContext();
       Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
    }
@@ -86,12 +91,12 @@ public class IntentPlayer extends Service {
             {
                public void onPrepared(MediaPlayer player) {
                   player.start();
-                  toast("Ok.");
+                  log("Ok.");
                }
             }
          );
          player.prepareAsync();
-         toast("Async.");
+         log("Async.");
       }
       catch (Exception e)
       {
@@ -102,6 +107,7 @@ public class IntentPlayer extends Service {
 
    String playlist(String url)
    {
+      log("Extract playlist:\n" + url);
       try {
          HttpClient client = new DefaultHttpClient();  
          HttpGet get = new HttpGet(url);
@@ -134,7 +140,7 @@ public class IntentPlayer extends Service {
          player = null;
       }
       else
-         toast("Stopped.");
+         log("Stopped.");
    }
 
    // http://blog.houen.net/java-get-url-from-string/
