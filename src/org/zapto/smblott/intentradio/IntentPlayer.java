@@ -121,7 +121,7 @@ public class IntentPlayer extends Service {
          player = null;
       }
       else
-         log("Stopped.");
+         toast("Stopped.");
       return Service.START_NOT_STICKY;
    }
 
