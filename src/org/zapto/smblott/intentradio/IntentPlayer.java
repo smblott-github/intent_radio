@@ -26,23 +26,24 @@ import android.util.Log;
 
 public class IntentPlayer extends Service {
 
-   private MediaPlayer player = null;
+   private static MediaPlayer player = null;
+   private static Context context = null;
 
-   String TAG = null;
-   String intent_play = null;
-   String intent_stop = null;
+   private static String app_name = null;
+   private static String intent_play = null;
+   private static String intent_stop = null;
 
    @Override
    public int onStartCommand(Intent intent, int flags, int startId) {
 
-      if ( TAG == null )
-         TAG = getString(R.string.app_name);
+      if ( app_name == null )
+         app_name = getString(R.string.app_name);
       if ( intent_play == null )
          intent_play = getString(R.string.intent_play);
       if ( intent_stop == null )
          intent_stop = getString(R.string.intent_stop);
-
-      Context context = getApplicationContext();
+      if ( context == null )
+         context = getApplicationContext();
 
       String action = intent.getStringExtra("action");
       if ( action == null )
@@ -53,32 +54,15 @@ public class IntentPlayer extends Service {
       log(url);
 
       if ( intent_play.equals(action) )
-         play(context, url);
+         return play(url);
 
       if ( intent_stop.equals(action) )
-         stop();
+         return stop();
 
       return Service.START_STICKY;
    }
 
-   @Override
-   public IBinder onBind(Intent intent) {
-      return null;
-   }
-
-   void log(String msg)
-   {
-      Log.d(TAG, msg);
-   }
-
-   void toast(String msg)
-   {
-      log(msg);
-      Context context = getApplicationContext();
-      Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
-   }
-
-   void play(Context context, String url)
+   private int play(String url)
    {
       stop();
 
@@ -88,7 +72,7 @@ public class IntentPlayer extends Service {
       if ( url == null )
       {
          toast("No URL.");
-         return;
+         return Service.START_NOT_STICKY;
       }
 
       player = new MediaPlayer();
@@ -113,35 +97,13 @@ public class IntentPlayer extends Service {
       catch (Exception e)
       {
          toast("Error.");
-         stop();
+         return stop();
       }
+
+      return Service.START_STICKY;
    }
 
-   String playlist(String url)
-   {
-      log("Extract playlist:\n" + url);
-      try {
-         HttpClient client = new DefaultHttpClient();  
-         HttpGet get = new HttpGet(url);
-         HttpResponse response = client.execute(get);  
-         HttpEntity entity = response.getEntity();  
-         if (entity != null) {  
-            String text = EntityUtils.toString(entity);
-            Log.d(TAG, text);
-            ArrayList urls = links(text);
-
-            if ( 0 < urls.size() )
-               return (String) urls.get(0);
-            else
-               toast("Could not extract URLs from playlist.");
-         }
-      } catch (Exception e) {
-         toast("Error fetching playlist.");
-      }
-      return null;
-   }
-
-   void stop()
+   private int stop()
    {
       if ( player != null )
       {
@@ -153,6 +115,31 @@ public class IntentPlayer extends Service {
       }
       else
          log("Stopped.");
+      return Service.START_NOT_STICKY;
+   }
+
+   private String playlist(String url)
+   {
+      log("Extract playlist:\n" + url);
+      try {
+         HttpClient client = new DefaultHttpClient();  
+         HttpGet get = new HttpGet(url);
+         HttpResponse response = client.execute(get);  
+         HttpEntity entity = response.getEntity();  
+         if (entity != null) {  
+            String text = EntityUtils.toString(entity);
+            Log.d(app_name, text);
+            ArrayList urls = links(text);
+
+            if ( 0 < urls.size() )
+               return (String) urls.get(0);
+            else
+               toast("Could not extract URLs from playlist.");
+         }
+      } catch (Exception e) {
+         toast("Error fetching playlist.");
+      }
+      return null;
    }
 
    // http://blog.houen.net/java-get-url-from-string/
@@ -175,6 +162,20 @@ public class IntentPlayer extends Service {
       return links;
    }
 
+   private void log(String msg)
+   {
+      Log.d(app_name, msg);
+   }
 
+   private void toast(String msg)
+   {
+      log(msg);
+      Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+   }
+
+   @Override
+   public IBinder onBind(Intent intent) {
+      return null;
+   }
 
 }
