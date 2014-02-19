@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
+import android.preference.PreferenceManager;
+import android.content.SharedPreferences;
+
 import android.widget.Toast;
 import android.net.Uri;
 import android.util.Log;
@@ -30,6 +33,7 @@ public class IntentPlayer extends Service {
 
    private static MediaPlayer player = null;
    private static Context context = null;
+   private static SharedPreferences prefs = null;
 
    private static String app_name = null;
    private static String intent_play = null;
@@ -40,6 +44,9 @@ public class IntentPlayer extends Service {
 
       if ( intent == null )
          return Service.START_NOT_STICKY;
+
+      if ( prefs == null )
+         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
       if ( app_name == null )
          app_name = getString(R.string.app_name);
