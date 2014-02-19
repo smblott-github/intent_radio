@@ -98,11 +98,12 @@ public class IntentPlayer extends Service {
       {
          player.setDataSource(context, Uri.parse(url));
          player.prepareAsync();
-         log("PrepareAsync.");
+         log("Buffering...");
       }
       catch (Exception e)
       {
          toast("Error.");
+         toast(e.getMessage());
          return stop();
       }
 
@@ -135,8 +136,8 @@ public class IntentPlayer extends Service {
          if (entity != null) {  
             String text = EntityUtils.toString(entity);
             log(text);
-            ArrayList urls = links(text);
 
+            ArrayList urls = links(text);
             if ( 0 < urls.size() )
                return (String) urls.get(0);
             else
@@ -170,14 +171,17 @@ public class IntentPlayer extends Service {
 
    private void log(String msg)
    {
-      if ( debug )
+      if ( debug && msg != null )
          Log.d(app_name, msg);
    }
 
    private void toast(String msg)
    {
-      log(msg);
-      Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+      if ( msg != null )
+      {
+         log(msg);
+         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+      }
    }
 
    @Override
