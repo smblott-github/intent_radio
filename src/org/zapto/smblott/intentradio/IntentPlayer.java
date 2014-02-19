@@ -30,7 +30,6 @@ public class IntentPlayer extends Service {
 
    private static final String TAG = "IntentRadio";
    private static final String r4 = "http://www.bbc.co.uk/radio/listen/live/r4_heaacv2.pls";
-   // private static final String r4 = "http://bbcmedia.ic.llnwd.net/stream/bbcmedia_intl_he_radio4_p";
 
    @Override
    public int onStartCommand(Intent intent, int flags, int startId) {
