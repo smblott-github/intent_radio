@@ -36,6 +36,9 @@ public class IntentPlayer extends Service {
    @Override
    public int onStartCommand(Intent intent, int flags, int startId) {
 
+      if ( intent == null )
+         return Service.START_NOT_STICKY;
+
       if ( app_name == null )
          app_name = getString(R.string.app_name);
       if ( intent_play == null )
@@ -50,6 +53,7 @@ public class IntentPlayer extends Service {
          return Service.START_NOT_STICKY;
 
       String url = intent.hasExtra("url") ? intent.getStringExtra("url") : getString(R.string.default_url);
+
       log(action);
       log(url);
 
@@ -59,7 +63,7 @@ public class IntentPlayer extends Service {
       if ( intent_stop.equals(action) )
          return stop();
 
-      return Service.START_STICKY;
+      return Service.START_NOT_STICKY;
    }
 
    private int play(String url)
@@ -100,7 +104,7 @@ public class IntentPlayer extends Service {
          return stop();
       }
 
-      return Service.START_STICKY;
+      return Service.START_NOT_STICKY;
    }
 
    private int stop()
