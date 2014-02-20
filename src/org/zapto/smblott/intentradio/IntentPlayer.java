@@ -4,6 +4,8 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.Context;
 import android.os.IBinder;
+
+import android.app.PendingIntent;
 import android.app.Notification;
 import android.app.Notification.Builder;
 
@@ -32,12 +34,14 @@ import android.util.Log;
 public class IntentPlayer extends Service {
 
    private static final boolean debug = true;
-   private static final int nid = 1;
+   private static final int notification_id = 100;
 
    private static MediaPlayer player = null;
    private static Context context = null;
    private static SharedPreferences prefs = null;
+   private static PendingIntent stop_intent = null;
    private static Builder builder = null;
+   private static Notification note = null;
 
    private static String app_name = null;
    private static String intent_play = null;
@@ -51,11 +55,19 @@ public class IntentPlayer extends Service {
       intent_play = getString(R.string.intent_play);
       intent_stop = getString(R.string.intent_stop);
 
+      stop_intent = PendingIntent.getBroadcast(context, 0, new Intent(intent_stop), 0);
+
       builder =
          new Notification.Builder(context)
+            .setSmallIcon(R.drawable.ic_launcher)
             .setContentTitle("Intent Radio")
-            .setContentText("Playing...");
-      //  PRIORITY_HIGH
+            .setContentText("Playing...")
+            .setOngoing(true)
+            .setPriority(Notification.PRIORITY_HIGH)
+            .setShowWhen(false)
+            // .setProgress(100,0,false)
+            .setContentIntent(stop_intent)
+            ;
    }
 
    @Override
@@ -108,11 +120,15 @@ public class IntentPlayer extends Service {
          }
       );
 
+      builder.setContentTitle("Intent Radio");
+      builder.setContentText("Buffering...");
+      note = builder.build();
+
       try
       {
          player.setDataSource(context, Uri.parse(url));
          player.prepareAsync();
-         startForeground(nid, builder.build());
+         startForeground(notification_id, note);
          log("Buffering...");
       }
       catch (Exception e)
@@ -138,6 +154,7 @@ public class IntentPlayer extends Service {
       }
       else
          toast("Stopped.");
+      note = null;
       return Service.START_NOT_STICKY;
    }
 
