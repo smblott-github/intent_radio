@@ -31,12 +31,13 @@ import android.util.Log;
 
 public class IntentPlayer extends Service {
 
-   private static boolean debug = true;
-   private static int nid = 1;
+   private static final boolean debug = true;
+   private static final int nid = 1;
 
    private static MediaPlayer player = null;
    private static Context context = null;
    private static SharedPreferences prefs = null;
+   private static Builder notification = null;
 
    private static String app_name = null;
    private static String intent_play = null;
@@ -49,6 +50,12 @@ public class IntentPlayer extends Service {
       app_name = getString(R.string.app_name);
       intent_play = getString(R.string.intent_play);
       intent_stop = getString(R.string.intent_stop);
+
+      notification =
+         new Notification.Builder(context)
+            .setContentTitle("Intent Radio")
+            .setContentText("Playing...");
+      //  PRIORITY_HIGH
    }
 
    @Override
@@ -105,11 +112,7 @@ public class IntentPlayer extends Service {
       {
          player.setDataSource(context, Uri.parse(url));
          player.prepareAsync();
-         startForeground(nid,
-               new Notification.Builder(context)
-                  .setContentTitle("Intent Radio")
-                  .setContentText("Playing...")
-                  .build() );
+         startForeground(nid, notification.build());
          log("Buffering...");
       }
       catch (Exception e)
