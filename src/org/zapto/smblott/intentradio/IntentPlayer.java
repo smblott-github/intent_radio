@@ -157,30 +157,6 @@ public class IntentPlayer extends Service
       return Service.START_NOT_STICKY;
    }
 
-   private String playlist(String url)
-   {
-      log("Extract playlist:\n" + url);
-      try {
-         HttpClient client = new DefaultHttpClient();  
-         HttpGet get = new HttpGet(url);
-         HttpResponse response = client.execute(get);  
-         HttpEntity entity = response.getEntity();  
-         if (entity != null) {  
-            String text = EntityUtils.toString(entity);
-            log(text);
-
-            ArrayList urls = links(text);
-            if ( 0 < urls.size() )
-               return (String) urls.get(0);
-            else
-               toast("Could not extract URLs from playlist.");
-         }
-      } catch (Exception e) {
-         toast("Error fetching playlist.");
-      }
-      return null;
-   }
-
    public void onBufferingUpdate(MediaPlayer mp, int percent)
    {
       Log.d("XXX", "buffering");
@@ -204,6 +180,30 @@ public class IntentPlayer extends Service
    public void onPrepared(MediaPlayer player) {
       player.start();
       log("Ok.");
+   }
+
+   private String playlist(String url)
+   {
+      log("Extract playlist:\n" + url);
+      try {
+         HttpClient client = new DefaultHttpClient();  
+         HttpGet get = new HttpGet(url);
+         HttpResponse response = client.execute(get);  
+         HttpEntity entity = response.getEntity();  
+         if (entity != null) {  
+            String text = EntityUtils.toString(entity);
+            log(text);
+
+            ArrayList urls = links(text);
+            if ( 0 < urls.size() )
+               return (String) urls.get(0);
+            else
+               toast("Could not extract URLs from playlist.");
+         }
+      } catch (Exception e) {
+         toast("Error fetching playlist.");
+      }
+      return null;
    }
 
    // http://blog.houen.net/java-get-url-from-string/
