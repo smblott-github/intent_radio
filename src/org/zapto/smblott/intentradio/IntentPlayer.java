@@ -35,7 +35,7 @@ import android.net.Uri;
 import android.util.Log;
 
 public class IntentPlayer extends Service
-   implements OnBufferingUpdateListener, OnInfoListener, OnErrorListener
+   implements OnBufferingUpdateListener, OnInfoListener, OnErrorListener, OnPreparedListener
 {
 
    private static final boolean debug = true;
@@ -70,7 +70,6 @@ public class IntentPlayer extends Service
             .setOngoing(true)
             .setPriority(Notification.PRIORITY_HIGH)
             .setShowWhen(false)
-            // .setProgress(100,0,false)
             .setContentIntent(stop_intent)
             ;
    }
@@ -115,15 +114,10 @@ public class IntentPlayer extends Service
       player = new MediaPlayer();
       player.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
-      player.setOnPreparedListener(
-         new OnPreparedListener()
-         {
-            public void onPrepared(MediaPlayer player) {
-               player.start();
-               log("Ok.");
-            }
-         }
-      );
+      player.setOnPreparedListener(this);
+      player.setOnBufferingUpdateListener(this);
+      player.setOnInfoListener(this);
+      player.setOnErrorListener(this);
 
       builder.setContentTitle("Intent Radio");
       builder.setContentText("Buffering...");
@@ -142,10 +136,6 @@ public class IntentPlayer extends Service
          toast(e.getMessage());
          return stop();
       }
-
-      player.setOnBufferingUpdateListener(this);
-      player.setOnInfoListener(this);
-      player.setOnErrorListener(this);
 
       return Service.START_NOT_STICKY;
    }
@@ -209,6 +199,11 @@ public class IntentPlayer extends Service
       Log.d("XXX", "error");
       log("Error!");
       return true;
+   }
+
+   public void onPrepared(MediaPlayer player) {
+      player.start();
+      log("Ok.");
    }
 
    // http://blog.houen.net/java-get-url-from-string/
