@@ -4,6 +4,8 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.Context;
 import android.os.IBinder;
+import android.app.Notification;
+import android.app.Notification.Builder;
 
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
@@ -40,22 +42,19 @@ public class IntentPlayer extends Service {
    private static String intent_stop = null;
 
    @Override
-   public int onStartCommand(Intent intent, int flags, int startId) {
+   public void onCreate() {
+      context = getApplicationContext();
+      prefs = PreferenceManager.getDefaultSharedPreferences(this);
+      app_name = getString(R.string.app_name);
+      intent_play = getString(R.string.intent_play);
+      intent_stop = getString(R.string.intent_stop);
+   }
 
+   @Override
+   public int onStartCommand(Intent intent, int flags, int startId)
+   {
       if ( intent == null )
          return Service.START_NOT_STICKY;
-
-      if ( prefs == null )
-         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-      if ( app_name == null )
-         app_name = getString(R.string.app_name);
-      if ( intent_play == null )
-         intent_play = getString(R.string.intent_play);
-      if ( intent_stop == null )
-         intent_stop = getString(R.string.intent_stop);
-      if ( context == null )
-         context = getApplicationContext();
 
       String action = intent.getStringExtra("action");
       if ( action == null )
@@ -69,12 +68,12 @@ public class IntentPlayer extends Service {
       log(url);
 
       if ( intent_play.equals(action) )
-         return play(url);
+         return play(url, startId);
 
       return Service.START_NOT_STICKY;
    }
 
-   private int play(String url)
+   private int play(String url, int startId)
    {
       stop();
 
@@ -105,6 +104,11 @@ public class IntentPlayer extends Service {
       {
          player.setDataSource(context, Uri.parse(url));
          player.prepareAsync();
+         startForeground(startId,
+               new Notification.Builder(context)
+                  .setContentTitle("Intent Radio")
+                  .setContentText("Playing...")
+                  .build() );
          log("Buffering...");
       }
       catch (Exception e)
@@ -122,6 +126,7 @@ public class IntentPlayer extends Service {
       if ( player != null )
       {
          toast("Stopping...");
+         stopForeground(true);
          player.stop();
          player.reset();
          player.release();
