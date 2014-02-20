@@ -32,6 +32,7 @@ import android.util.Log;
 public class IntentPlayer extends Service {
 
    private static boolean debug = true;
+   private static int nid = 1;
 
    private static MediaPlayer player = null;
    private static Context context = null;
@@ -104,7 +105,7 @@ public class IntentPlayer extends Service {
       {
          player.setDataSource(context, Uri.parse(url));
          player.prepareAsync();
-         startForeground(startId,
+         startForeground(nid,
                new Notification.Builder(context)
                   .setContentTitle("Intent Radio")
                   .setContentText("Playing...")
