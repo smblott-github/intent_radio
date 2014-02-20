@@ -10,8 +10,11 @@ import android.app.Notification;
 import android.app.Notification.Builder;
 
 import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnPreparedListener;
 import android.media.AudioManager;
+import android.media.MediaPlayer.OnPreparedListener;
+import android.media.MediaPlayer.OnBufferingUpdateListener;
+import android.media.MediaPlayer.OnInfoListener;
+import android.media.MediaPlayer.OnErrorListener;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -31,7 +34,9 @@ import android.widget.Toast;
 import android.net.Uri;
 import android.util.Log;
 
-public class IntentPlayer extends Service {
+public class IntentPlayer extends Service
+   implements OnBufferingUpdateListener, OnInfoListener, OnErrorListener
+{
 
    private static final boolean debug = true;
    private static final int notification_id = 100;
@@ -138,6 +143,10 @@ public class IntentPlayer extends Service {
          return stop();
       }
 
+      player.setOnBufferingUpdateListener(this);
+      player.setOnInfoListener(this);
+      player.setOnErrorListener(this);
+
       return Service.START_NOT_STICKY;
    }
 
@@ -180,6 +189,26 @@ public class IntentPlayer extends Service {
          toast("Error fetching playlist.");
       }
       return null;
+   }
+
+   public void onBufferingUpdate(MediaPlayer mp, int percent)
+   {
+      Log.d("XXX", "buffering");
+      log("Buffering: " + percent + "%"); 
+   }
+
+   public boolean onInfo(MediaPlayer mp, int what, int extra)
+   {
+      Log.d("XXX", "info");
+      log("---Got some info!---");
+      return true;
+   }
+
+   public boolean onError(MediaPlayer mp, int what, int extra)
+   {
+      Log.d("XXX", "error");
+      log("Error!");
+      return true;
    }
 
    // http://blog.houen.net/java-get-url-from-string/
