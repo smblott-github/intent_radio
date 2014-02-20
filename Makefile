@@ -15,5 +15,11 @@ play:
 stop:
 	adb shell am broadcast -a org.zapto.smblott.intentradio.STOP
 
+ufm:
+	adb shell am broadcast -a org.zapto.smblott.intentradio.PLAY -e url http://192.168.3.3/cgi-bin/sc/wav
+
 logcat:
 	adb logcat -s IntentRadio
+
+log:
+	$(MAKE) logcat
