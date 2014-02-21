@@ -142,7 +142,7 @@ public class IntentPlayer extends Service
          return Service.START_NOT_STICKY;
       }
 
-      toast(name);
+      toast("Intent Radio: \n" + name);
       player = new MediaPlayer();
       player.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
       player.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -162,7 +162,7 @@ public class IntentPlayer extends Service
       }
       catch (Exception e)
       {
-         toast("Error.");
+         toast("Intent Radio: error.");
          toast(e.getMessage());
          return stop();
       }
@@ -176,7 +176,7 @@ public class IntentPlayer extends Service
       ticker_stop();
       if ( player != null )
       {
-         toast("Stopping...");
+         toast("Intent Radio: Stopping...");
          stopForeground(true);
          player.stop();
          player.reset();
@@ -220,7 +220,7 @@ public class IntentPlayer extends Service
 
    public boolean onError(MediaPlayer player, int what, int extra)
    {
-      toast("Error!");
+      toast("Intent Radio: error!");
       return true;
    }
 
@@ -278,9 +278,9 @@ public class IntentPlayer extends Service
       if ( debug && msg != null )
       {
          Log.d(app_name, msg);
-         Intent intent = new Intent(intent_log);
-         intent.putExtra("msg", msg);
-         sendBroadcast(intent);
+         // Intent intent = new Intent(intent_log);
+         // intent.putExtra("msg", msg);
+         // sendBroadcast(intent);
       }
    }
 
