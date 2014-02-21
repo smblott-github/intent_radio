@@ -23,6 +23,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpEntity;
 import org.apache.http.util.EntityUtils;
 
+import java.lang.Runnable;
+import java.lang.Thread;
+
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -35,12 +38,15 @@ import android.net.Uri;
 import android.util.Log;
 
 public class IntentPlayer extends Service
-   implements OnBufferingUpdateListener, OnInfoListener, OnErrorListener, OnPreparedListener
+   implements OnBufferingUpdateListener, OnInfoListener, OnErrorListener, OnPreparedListener, Runnable
 {
 
    private static final boolean debug = true;
    private static final int notification_id = 100;
+   private static volatile boolean running = false;
+   private static int counter = 0;
    private static IntentPlayer self = null;
+   private static Thread thread = null;
 
    private static MediaPlayer player = null;
    private static Context context = null;
@@ -74,6 +80,13 @@ public class IntentPlayer extends Service
             .setShowWhen(false)
             .setContentIntent(stop_intent)
             ;
+
+   }
+
+   public void onDestroy()
+   {
+      stop();
+      ticker_stop();
    }
 
    @Override
@@ -139,11 +152,13 @@ public class IntentPlayer extends Service
          return stop();
       }
 
+      ticker();
       return Service.START_NOT_STICKY;
    }
 
    private int stop()
    {
+      ticker_stop();
       if ( player != null )
       {
          toast("Stopping...");
@@ -286,5 +301,51 @@ public class IntentPlayer extends Service
 
    }
    */
+
+   private void tick()
+   {
+      counter += 1;
+      log("tick " + counter);
+   }
+
+   public void run()
+   {
+      while ( running )
+      {
+         try {
+            Thread.sleep(1000);
+            tick();
+         }
+         catch (Exception e) {
+            log("Thread.sleep() error; interrupted?.");
+            running = false;
+         }
+      }
+      log("Thread.run() done.");
+   }
+
+   private void ticker()
+   {
+      if ( thread == null )
+      {
+         running = true;
+         thread = new Thread(this);
+         thread.start();
+      }
+   }
+
+   private void ticker_stop()
+   {
+      log("ticker_stop");
+      if ( thread != null )
+      {
+         log("ticker_stop!");
+         thread.interrupt();
+         // try { thread.join(); }
+         // catch (Exception e) { log("Thread.join() error"); }
+      }
+      running = false;
+      thread = null;
+   }
 
 }
