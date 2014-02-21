@@ -17,7 +17,6 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.media.MediaPlayer.OnInfoListener;
 import android.media.MediaPlayer.OnErrorListener;
-import android.media.MediaPlayer.TrackInfo;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
