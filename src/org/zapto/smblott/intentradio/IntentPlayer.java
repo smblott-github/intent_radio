@@ -40,11 +40,12 @@ import android.net.Uri;
 import android.util.Log;
 
 public class IntentPlayer extends Service
-   implements OnBufferingUpdateListener, OnInfoListener, OnErrorListener, OnPreparedListener
+   implements OnBufferingUpdateListener, OnInfoListener, OnErrorListener, OnPreparedListener, Handler.Callback
 {
 
    private static final boolean debug = true;
    private static final int notification_id = 100;
+   private static IntentPlayer self = null;
    private static Looper looper = null;
    private static Handler handler = null;
    private static HandlerThread handlerthread = null;
@@ -63,6 +64,7 @@ public class IntentPlayer extends Service
 
    @Override
    public void onCreate() {
+      self = this;
       context = getApplicationContext();
       prefs = PreferenceManager.getDefaultSharedPreferences(this);
       app_name = getString(R.string.app_name);
@@ -261,23 +263,21 @@ public class IntentPlayer extends Service
    private void mk_looper()
    {
       thread = new Thread() {
-         @Override
          public void run()
          {
             Looper.prepare();
             looper = Looper.myLooper();
-            handler = new Handler(looper)
-            {
-               @Override
-               public void handleMessage(Message msg)
-               {
-                  log("handleMessage");
-               }
-            };
+            handler = new Handler(looper,self);
             Looper.loop();
          }
       };
       thread.start();
+   }
+
+   public boolean handleMessage(Message msg)
+   {
+      log("handleMessage");
+      return true;
    }
 
    private void mk_looper2()
