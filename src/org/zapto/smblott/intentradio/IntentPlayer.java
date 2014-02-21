@@ -140,7 +140,7 @@ public class IntentPlayer extends Service
          return Service.START_NOT_STICKY;
       }
 
-      toast(url);
+      toast(name);
       player = new MediaPlayer();
       player.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
       player.setAudioStreamType(AudioManager.STREAM_MUSIC);
