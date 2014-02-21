@@ -5,4 +5,5 @@
     <string name="default_name">BBC Radio 4 (FM)</string>
     <string name="intent_play">org.zapto.smblott.intentradio.PLAY</string>
     <string name="intent_stop">org.zapto.smblott.intentradio.STOP</string>
+    <string name="intent_log">org.zapto.smblott.intentradio.LOG</string>
 </resources>

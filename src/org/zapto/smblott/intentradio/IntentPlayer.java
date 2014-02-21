@@ -62,6 +62,7 @@ public class IntentPlayer extends Service
    private static String app_name = null;
    private static String intent_play = null;
    private static String intent_stop = null;
+   private static String intent_log = null;
 
    @Override
    public void onCreate() {
@@ -71,6 +72,7 @@ public class IntentPlayer extends Service
       app_name = getString(R.string.app_name);
       intent_play = getString(R.string.intent_play);
       intent_stop = getString(R.string.intent_stop);
+      intent_log = getString(R.string.intent_log);
       notification_manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
       stop_intent = PendingIntent.getBroadcast(context, 0, new Intent(intent_stop), 0);
@@ -274,7 +276,12 @@ public class IntentPlayer extends Service
    private void log(String msg)
    {
       if ( debug && msg != null )
+      {
          Log.d(app_name, msg);
+         Intent intent = new Intent(intent_log);
+         intent.putExtra("msg", msg);
+         sendBroadcast(intent);
+      }
    }
 
    private void toast(String msg)
