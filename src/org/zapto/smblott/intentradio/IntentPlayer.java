@@ -8,6 +8,7 @@ import android.os.PowerManager;
 
 import android.app.PendingIntent;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.Notification.Builder;
 
 import android.media.MediaPlayer;
@@ -55,7 +56,8 @@ public class IntentPlayer extends Service
    private static SharedPreferences prefs = null;
    private static PendingIntent stop_intent = null;
    private static Builder builder = null;
-   private static Notification note = null;
+   private static volatile Notification note = null;
+   private static NotificationManager notification_manager = null;
 
    private static String app_name = null;
    private static String intent_play = null;
@@ -69,6 +71,7 @@ public class IntentPlayer extends Service
       app_name = getString(R.string.app_name);
       intent_play = getString(R.string.intent_play);
       intent_stop = getString(R.string.intent_stop);
+      notification_manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
       stop_intent = PendingIntent.getBroadcast(context, 0, new Intent(intent_stop), 0);
 
@@ -179,20 +182,20 @@ public class IntentPlayer extends Service
 
    public void onBufferingUpdate(MediaPlayer player, int percent)
    {
-      Log.d("XXX", "buffering");
-      log("Buffering: " + percent + "%"); 
+      if ( 0 <= percent && percent <= 100 )
+         log("Buffering: " + percent + "%"); 
+      // else
+      //    log("Buffering: garbage value"); 
    }
 
    public boolean onInfo(MediaPlayer player, int what, int extra)
    {
-      Log.d("XXX", "info");
-      log("---Got some info!---");
+      log("Info!");
       return true;
    }
 
    public boolean onError(MediaPlayer player, int what, int extra)
    {
-      Log.d("XXX", "error");
       log("Error!");
       return true;
    }
@@ -305,14 +308,42 @@ public class IntentPlayer extends Service
    }
    */
 
+   private String make_time(int position)
+   {
+      int seconds = position / 1000;
+      int minutes = seconds / 60; seconds = seconds % 60;
+      int hours = minutes / 60; minutes = minutes % 60;
+
+      String sSeconds = "" + seconds;
+      String sMinutes = "" + minutes;
+
+      if ( seconds < 10 )              sSeconds = "0" + sSeconds;
+      if ( minutes < 10 && 0 < hours ) sMinutes = "0" + sMinutes;
+
+      String time = sMinutes + ":" + sSeconds;
+
+      if ( 0 < hours )
+         time = "" + hours + ":" + time;
+
+      // log(time);
+      return time;
+   }
+
    private void tick()
    {
-      counter += 1;
-      log("tick " + counter);
+      // counter += 1;
+      // log("tick " + counter);
       if ( player != null )
       {
          int position = player.getCurrentPosition();
-         log("position " + position);
+         // log("position " + position);
+         if ( note != null )
+         {
+            // Concurrency?
+            builder.setContentText(make_time(position));
+            note = builder.build();
+            notification_manager.notify( notification_id, note);
+         }
       }
    }
 
