@@ -3,12 +3,7 @@ package org.zapto.smblott.intentradio;
 import android.app.Service;
 import android.content.Intent;
 import android.content.Context;
-
 import android.os.IBinder;
-import android.os.Looper;
-import android.os.Handler;
-import android.os.Message;
-import android.os.HandlerThread;
 
 import android.app.PendingIntent;
 import android.app.Notification;
@@ -40,16 +35,12 @@ import android.net.Uri;
 import android.util.Log;
 
 public class IntentPlayer extends Service
-   implements OnBufferingUpdateListener, OnInfoListener, OnErrorListener, OnPreparedListener, Handler.Callback
+   implements OnBufferingUpdateListener, OnInfoListener, OnErrorListener, OnPreparedListener
 {
 
    private static final boolean debug = true;
    private static final int notification_id = 100;
    private static IntentPlayer self = null;
-   private static Looper looper = null;
-   private static Handler handler = null;
-   private static HandlerThread handlerthread = null;
-   private static Thread thread = null;
 
    private static MediaPlayer player = null;
    private static Context context = null;
@@ -83,9 +74,6 @@ public class IntentPlayer extends Service
             .setShowWhen(false)
             .setContentIntent(stop_intent)
             ;
-
-      mk_looper();
-      // mk_looper2();
    }
 
    @Override
@@ -260,6 +248,7 @@ public class IntentPlayer extends Service
       return null;
    }
 
+   /*
    private void mk_looper()
    {
       thread = new Thread() {
@@ -296,5 +285,6 @@ public class IntentPlayer extends Service
       };
 
    }
+   */
 
 }
