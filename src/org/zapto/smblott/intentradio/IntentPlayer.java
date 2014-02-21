@@ -43,7 +43,7 @@ public class IntentPlayer extends Service
    implements OnBufferingUpdateListener, OnInfoListener, OnErrorListener, OnPreparedListener, Runnable
 {
 
-   private static final boolean debug = true;
+   private static final boolean debug = false;
    private static final int notification_id = 100;
    private static volatile boolean running = false;
    private static int counter = 0;
@@ -115,11 +115,12 @@ public class IntentPlayer extends Service
       if ( ! intent.hasExtra("url") && ! intent.hasExtra("name") )
          name = getString(R.string.default_name);
 
-      log(url);
-      log(name);
-
       if ( intent_play.equals(action) )
+      {
+         log(url);
+         log(name);
          return play(url, name, startId);
+      }
 
       return Service.START_NOT_STICKY;
    }
@@ -137,11 +138,11 @@ public class IntentPlayer extends Service
 
       if ( url == null )
       {
-         toast("Intent Radio: URL not found.");
+         toast("No URL.");
          return Service.START_NOT_STICKY;
       }
 
-      toast("Intent Radio: \n" + name);
+      toast(name);
       player = new MediaPlayer();
       player.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
       player.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -161,7 +162,7 @@ public class IntentPlayer extends Service
       }
       catch (Exception e)
       {
-         toast("Intent Radio: error.");
+         toast("MediaPlayer: initialisation error.");
          toast(e.getMessage());
          return stop();
       }
@@ -175,7 +176,7 @@ public class IntentPlayer extends Service
       ticker_stop();
       if ( player != null )
       {
-         toast("Intent Radio: Stopping...");
+         toast("Stopping...");
          stopForeground(true);
          player.stop();
          player.reset();
@@ -202,15 +203,15 @@ public class IntentPlayer extends Service
       switch (what)
       {
          case MediaPlayer.MEDIA_INFO_BUFFERING_START:
-            msg = "Intent Player: Starting buffering..."; break;
+            msg = "Starting buffering..."; break;
          case MediaPlayer.MEDIA_INFO_BUFFERING_END:
-            msg = "Intent Player: Buffering end."; break;
+            msg = "Buffering end."; break;
          case MediaPlayer.MEDIA_INFO_BAD_INTERLEAVING:
-            msg = "Intent Player: Bad interleaving!"; break;
+            msg = "Bad interleaving!"; break;
          case MediaPlayer.MEDIA_INFO_NOT_SEEKABLE:
-            msg = "Intent Player: Media not seekable."; break;
+            msg = "Media not seekable."; break;
          case MediaPlayer.MEDIA_INFO_METADATA_UPDATE:
-            msg = "Intent Player: Media info update."; break;
+            msg = "Media info update."; break;
       }
       if ( msg != null )
          toast(msg);
@@ -219,7 +220,7 @@ public class IntentPlayer extends Service
 
    public boolean onError(MediaPlayer player, int what, int extra)
    {
-      toast("Intent Radio: error!");
+      toast("MediaPlayer: play error!");
       return true;
    }
 
@@ -238,7 +239,6 @@ public class IntentPlayer extends Service
          HttpEntity entity = response.getEntity();  
          if (entity != null) {  
             String text = EntityUtils.toString(entity);
-            log(text);
 
             ArrayList urls = links(text);
             if ( 0 < urls.size() )
@@ -274,12 +274,14 @@ public class IntentPlayer extends Service
 
    private void log(String msg)
    {
-      if ( debug && msg != null )
+      if ( msg != null )
       {
-         Log.d(app_name, msg);
-         // Intent intent = new Intent(intent_log);
-         // intent.putExtra("msg", msg);
-         // sendBroadcast(intent);
+         if ( debug )
+            Log.d(app_name, msg);
+
+         Intent intent = new Intent(intent_log);
+         intent.putExtra("msg", msg);
+         sendBroadcast(intent);
       }
    }
 
@@ -288,7 +290,7 @@ public class IntentPlayer extends Service
       if ( msg != null )
       {
          log(msg);
-         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+         Toast.makeText(context, "Intent Radio: \n" + msg, Toast.LENGTH_SHORT).show();
       }
    }
 
