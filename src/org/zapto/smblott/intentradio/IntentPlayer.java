@@ -3,7 +3,12 @@ package org.zapto.smblott.intentradio;
 import android.app.Service;
 import android.content.Intent;
 import android.content.Context;
+
 import android.os.IBinder;
+import android.os.Looper;
+import android.os.Handler;
+import android.os.Message;
+import android.os.HandlerThread;
 
 import android.app.PendingIntent;
 import android.app.Notification;
@@ -40,6 +45,9 @@ public class IntentPlayer extends Service
 
    private static final boolean debug = true;
    private static final int notification_id = 100;
+   private static Looper looper = null;
+   private static Handler handler = null;
+   private static HandlerThread thread = null;
 
    private static MediaPlayer player = null;
    private static Context context = null;
@@ -72,6 +80,20 @@ public class IntentPlayer extends Service
             .setShowWhen(false)
             .setContentIntent(stop_intent)
             ;
+
+      // mk_looper();
+      HandlerThread thread = new HandlerThread("Looper");
+      thread.start();
+      looper = thread.getLooper();
+
+      handler = new Handler(looper)
+      {
+         @Override
+         public void handleMessage(Message message)
+         {
+            log("handleMessage");
+         }
+      };
    }
 
    @Override
@@ -244,6 +266,27 @@ public class IntentPlayer extends Service
    @Override
    public IBinder onBind(Intent intent) {
       return null;
+   }
+
+   private void mk_looper()
+   {
+      new Thread() {
+         @Override
+         public void run()
+         {
+            Looper.prepare();
+            looper = Looper.myLooper();
+            handler = new Handler()
+            {
+               @Override
+               public void handleMessage(Message msg)
+               {
+                  log("handleMessage");
+               }
+            };
+            Looper.loop();
+         }
+      }.start();
    }
 
 }
