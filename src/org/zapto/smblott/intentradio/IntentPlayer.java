@@ -109,24 +109,34 @@ public class IntentPlayer extends Service
          return stop();
 
       String url = intent.hasExtra("url") ? intent.getStringExtra("url") : getString(R.string.default_url);
+      String name = intent.hasExtra("name") ? intent.getStringExtra("name") : url;
+
+      if ( ! intent.hasExtra("url") && ! intent.hasExtra("name") )
+         name = getString(R.string.default_name);
+
       log(url);
+      log(name);
 
       if ( intent_play.equals(action) )
-         return play(url, startId);
+         return play(url, name, startId);
 
       return Service.START_NOT_STICKY;
    }
 
-   private int play(String url, int startId)
+   private int play(String url, String name, int startId)
    {
       stop();
 
-      if ( url.endsWith(".pls") )
+      builder.setContentTitle("Intent Radio");
+      builder.setContentText(name);
+      note = builder.build();
+
+      if ( url != null && url.endsWith(".pls") )
          url = playlist(url);
 
       if ( url == null )
       {
-         toast("No URL.");
+         toast("Intent Radio: URL not found.");
          return Service.START_NOT_STICKY;
       }
 
@@ -140,12 +150,9 @@ public class IntentPlayer extends Service
       player.setOnInfoListener(this);
       player.setOnErrorListener(this);
 
-      builder.setContentTitle("Intent Radio");
-      builder.setContentText("Buffering...");
-      note = builder.build();
-
       try
       {
+         // What if URL fails to parse?
          player.setDataSource(context, Uri.parse(url));
          player.prepareAsync();
          startForeground(notification_id, note);
@@ -158,7 +165,7 @@ public class IntentPlayer extends Service
          return stop();
       }
 
-      ticker();
+      // ticker();
       return Service.START_NOT_STICKY;
    }
 
@@ -174,8 +181,8 @@ public class IntentPlayer extends Service
          player.release();
          player = null;
       }
-      else
-         toast("Stopped.");
+      // else
+      //    toast("Stopped.");
       note = null;
       return Service.START_NOT_STICKY;
    }
@@ -202,7 +209,7 @@ public class IntentPlayer extends Service
 
    public void onPrepared(MediaPlayer player) {
       player.start();
-      log("Ok.");
+      log("Ok (onPrepared).");
    }
 
    private String playlist(String url)
@@ -375,10 +382,9 @@ public class IntentPlayer extends Service
 
    private void ticker_stop()
    {
-      log("ticker_stop");
       if ( thread != null )
       {
-         log("ticker_stop!");
+         log("ticker_stop");
          thread.interrupt();
          // try { thread.join(); }
          // catch (Exception e) { log("Thread.join() error"); }

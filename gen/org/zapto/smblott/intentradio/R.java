@@ -18,8 +18,9 @@ public final class R {
     }
     public static final class string {
         public static final int app_name=0x7f040000;
+        public static final int default_name=0x7f040002;
         public static final int default_url=0x7f040001;
-        public static final int intent_play=0x7f040002;
-        public static final int intent_stop=0x7f040003;
+        public static final int intent_play=0x7f040003;
+        public static final int intent_stop=0x7f040004;
     }
 }

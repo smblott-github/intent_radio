@@ -16,10 +16,10 @@ stop:
 	adb shell am broadcast -a org.zapto.smblott.intentradio.STOP
 
 ufm:
-	adb shell am broadcast -a org.zapto.smblott.intentradio.PLAY -e url http://192.168.3.3/cgi-bin/sc/wav
+	adb shell am broadcast -a org.zapto.smblott.intentradio.PLAY -e url http://192.168.3.3/cgi-bin/sc/wav -e name "Elsa Sound Card"
 
 lyric:
-	adb shell am broadcast -a org.zapto.smblott.intentradio.PLAY -e url http://icecast2.rte.ie/lyric
+	adb shell am broadcast -a org.zapto.smblott.intentradio.PLAY -e url http://icecast2.rte.ie/lyric -e name "RTE Lyric FM"
 
 logcat:
 	adb logcat -s IntentRadio

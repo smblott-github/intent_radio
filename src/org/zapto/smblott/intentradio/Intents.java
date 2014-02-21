@@ -16,6 +16,8 @@ public class Intents extends BroadcastReceiver {
       msg.putExtra("action", intent.getAction());
       if ( intent.hasExtra("url") )
          msg.putExtra("url", intent.getStringExtra("url"));
+      if ( intent.hasExtra("name") )
+         msg.putExtra("name", intent.getStringExtra("name"));
       context.startService(msg);
    }
 
