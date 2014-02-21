@@ -197,13 +197,28 @@ public class IntentPlayer extends Service
 
    public boolean onInfo(MediaPlayer player, int what, int extra)
    {
-      log("Info!");
+      String msg = null;
+      switch (what)
+      {
+         case MediaPlayer.MEDIA_INFO_BUFFERING_START:
+            msg = "Intent Player: Starting buffering..."; break;
+         case MediaPlayer.MEDIA_INFO_BUFFERING_END:
+            msg = "Intent Player: Buffering end."; break;
+         case MediaPlayer.MEDIA_INFO_BAD_INTERLEAVING:
+            msg = "Intent Player: Bad interleaving!"; break;
+         case MediaPlayer.MEDIA_INFO_NOT_SEEKABLE:
+            msg = "Intent Player: Media not seekable."; break;
+         case MediaPlayer.MEDIA_INFO_METADATA_UPDATE:
+            msg = "Intent Player: Media info update."; break;
+      }
+      if ( msg != null )
+         toast(msg);
       return true;
    }
 
    public boolean onError(MediaPlayer player, int what, int extra)
    {
-      log("Error!");
+      toast("Error!");
       return true;
    }
 
