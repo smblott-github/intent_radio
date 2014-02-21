@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.Context;
 import android.os.IBinder;
+import android.os.PowerManager;
 
 import android.app.PendingIntent;
 import android.app.Notification;
@@ -15,6 +16,7 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.media.MediaPlayer.OnInfoListener;
 import android.media.MediaPlayer.OnErrorListener;
+import android.media.MediaPlayer.TrackInfo;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -127,6 +129,7 @@ public class IntentPlayer extends Service
 
       toast(url);
       player = new MediaPlayer();
+      player.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
       player.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
       player.setOnPreparedListener(this);
@@ -174,20 +177,20 @@ public class IntentPlayer extends Service
       return Service.START_NOT_STICKY;
    }
 
-   public void onBufferingUpdate(MediaPlayer mp, int percent)
+   public void onBufferingUpdate(MediaPlayer player, int percent)
    {
       Log.d("XXX", "buffering");
       log("Buffering: " + percent + "%"); 
    }
 
-   public boolean onInfo(MediaPlayer mp, int what, int extra)
+   public boolean onInfo(MediaPlayer player, int what, int extra)
    {
       Log.d("XXX", "info");
       log("---Got some info!---");
       return true;
    }
 
-   public boolean onError(MediaPlayer mp, int what, int extra)
+   public boolean onError(MediaPlayer player, int what, int extra)
    {
       Log.d("XXX", "error");
       log("Error!");
@@ -306,6 +309,11 @@ public class IntentPlayer extends Service
    {
       counter += 1;
       log("tick " + counter);
+      if ( player != null )
+      {
+         int position = player.getCurrentPosition();
+         log("position " + position);
+      }
    }
 
    public void run()

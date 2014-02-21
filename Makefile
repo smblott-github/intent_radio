@@ -18,6 +18,9 @@ stop:
 ufm:
 	adb shell am broadcast -a org.zapto.smblott.intentradio.PLAY -e url http://192.168.3.3/cgi-bin/sc/wav
 
+lyric:
+	adb shell am broadcast -a org.zapto.smblott.intentradio.PLAY -e url http://icecast2.rte.ie/lyric
+
 logcat:
 	adb logcat -s IntentRadio
 
