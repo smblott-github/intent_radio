@@ -47,7 +47,8 @@ public class IntentPlayer extends Service
    private static final int notification_id = 100;
    private static Looper looper = null;
    private static Handler handler = null;
-   private static HandlerThread thread = null;
+   private static HandlerThread handlerthread = null;
+   private static Thread thread = null;
 
    private static MediaPlayer player = null;
    private static Context context = null;
@@ -81,19 +82,8 @@ public class IntentPlayer extends Service
             .setContentIntent(stop_intent)
             ;
 
-      // mk_looper();
-      HandlerThread thread = new HandlerThread("Looper");
-      thread.start();
-      looper = thread.getLooper();
-
-      handler = new Handler(looper)
-      {
-         @Override
-         public void handleMessage(Message message)
-         {
-            log("handleMessage");
-         }
-      };
+      mk_looper();
+      // mk_looper2();
    }
 
    @Override
@@ -270,13 +260,13 @@ public class IntentPlayer extends Service
 
    private void mk_looper()
    {
-      new Thread() {
+      thread = new Thread() {
          @Override
          public void run()
          {
             Looper.prepare();
             looper = Looper.myLooper();
-            handler = new Handler()
+            handler = new Handler(looper)
             {
                @Override
                public void handleMessage(Message msg)
@@ -286,7 +276,25 @@ public class IntentPlayer extends Service
             };
             Looper.loop();
          }
-      }.start();
+      };
+      thread.start();
+   }
+
+   private void mk_looper2()
+   {
+      handlerthread = new HandlerThread("Looper");
+      looper = handlerthread.getLooper();
+      handlerthread.start();
+
+      handler = new Handler(looper)
+      {
+         @Override
+         public void handleMessage(Message message)
+         {
+            log("handleMessage");
+         }
+      };
+
    }
 
 }
