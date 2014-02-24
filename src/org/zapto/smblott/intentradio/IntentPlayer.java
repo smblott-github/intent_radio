@@ -226,15 +226,15 @@ public class IntentPlayer extends Service
       switch (what)
       {
          case MediaPlayer.MEDIA_INFO_BUFFERING_START:
-            msg = "Starting buffering..."; break;
+            msg += " Starting buffering..."; break;
          case MediaPlayer.MEDIA_INFO_BUFFERING_END:
-            msg = "Buffering end."; break;
+            msg += " Buffering end."; break;
          case MediaPlayer.MEDIA_INFO_BAD_INTERLEAVING:
-            msg = "Bad interleaving!"; break;
+            msg += " Bad interleaving!"; break;
          case MediaPlayer.MEDIA_INFO_NOT_SEEKABLE:
-            msg = "Media not seekable."; break;
+            msg += " Media not seekable."; break;
          case MediaPlayer.MEDIA_INFO_METADATA_UPDATE:
-            msg = "Media info update."; break;
+            msg += " Media info update."; break;
       }
       toast(msg, true);
       return true;
