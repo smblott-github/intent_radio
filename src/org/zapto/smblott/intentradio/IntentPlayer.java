@@ -71,6 +71,7 @@ public class IntentPlayer extends Service
 
    private static File log_file = null;
    private static FileOutputStream log_file_stream = null;
+   private static DateFormat format = null;
 
    @Override
    public void onCreate() {
@@ -82,6 +83,7 @@ public class IntentPlayer extends Service
       intent_stop = getString(R.string.intent_stop);
       intent_log = getString(R.string.intent_log);
       notification_manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+      format = new SimpleDateFormat("HH:mm:ss ");
 
       stop_intent = PendingIntent.getBroadcast(context, 0, new Intent(intent_stop), 0);
 
@@ -220,7 +222,7 @@ public class IntentPlayer extends Service
 
    public boolean onInfo(MediaPlayer player, int what, int extra)
    {
-      String msg = null;
+      String msg = "onInfo...(" + what + ")";
       switch (what)
       {
          case MediaPlayer.MEDIA_INFO_BUFFERING_START:
@@ -234,14 +236,14 @@ public class IntentPlayer extends Service
          case MediaPlayer.MEDIA_INFO_METADATA_UPDATE:
             msg = "Media info update."; break;
       }
-      if ( msg != null )
-         toast(msg, true);
+      toast(msg, true);
       return true;
    }
 
    public boolean onError(MediaPlayer player, int what, int extra)
    {
-      toast("MediaPlayer: play error!", true);
+      String msg = "onError...(" + what + ")";
+      toast(msg, true);
       return true;
    }
 
@@ -298,7 +300,6 @@ public class IntentPlayer extends Service
       if ( log_file_stream != null )
          try
          {
-            DateFormat format = new SimpleDateFormat("dd/HH:mm:ss ");
             String stamp = format.format(new Date());
             log_file_stream.write((stamp+msg+"\n").getBytes());
             log_file_stream.flush();
