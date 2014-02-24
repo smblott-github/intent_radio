@@ -26,3 +26,6 @@ logcat:
 
 log:
 	$(MAKE) logcat
+
+log_file:
+	adb shell cat /mnt/shell/emulated/0/Android/data/org.zapto.smblott.intentradio/files/intent-radio.log

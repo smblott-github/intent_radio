@@ -3,7 +3,7 @@ This app must be run once before broadcast intents will be delivered to its back
 
 Thereafter, including after reboots, it should not be necessary the run this app at all.
 
-Broadcast intents received:
+Broadcast intents:
 
    org.zapto.smblott.intentradio.PLAY
    extras:
@@ -13,10 +13,8 @@ Broadcast intents received:
    org.zapto.smblott.intentradio.STOP
    (no extras)
 
-Broadcast intents emitted:
+Some logging/debugging information is written to:
 
-   org.zapto.smblott.intentradio.LOG
-   extras:
-      msg:MESSAGE
+   /sdcard/Android/data/org.zapto.smblott.intentradio/files/intent-radio.log
 
 All extras are strings.

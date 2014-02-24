@@ -31,6 +31,12 @@ import java.lang.Thread;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.io.File;
+import java.io.FileOutputStream;
+
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import android.preference.PreferenceManager;
 import android.content.SharedPreferences;
@@ -63,6 +69,9 @@ public class IntentPlayer extends Service
    private static String intent_stop = null;
    private static String intent_log = null;
 
+   private static File log_file = null;
+   private static FileOutputStream log_file_stream = null;
+
    @Override
    public void onCreate() {
       self = this;
@@ -75,6 +84,13 @@ public class IntentPlayer extends Service
       notification_manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
       stop_intent = PendingIntent.getBroadcast(context, 0, new Intent(intent_stop), 0);
+
+      try
+      {
+         log_file = new File(getExternalFilesDir(null), getString(R.string.intent_log_file));
+         log_file_stream = new FileOutputStream(log_file);
+      }
+      catch (Exception e) { log_file_stream = null; }
 
       builder =
          new Notification.Builder(context)
@@ -91,6 +107,11 @@ public class IntentPlayer extends Service
 
    public void onDestroy()
    {
+      if ( log_file_stream != null )
+      {
+         try { log_file_stream.close(); }
+         catch (Exception e) { }
+      }
       stop();
       ticker_stop();
    }
@@ -138,7 +159,7 @@ public class IntentPlayer extends Service
 
       if ( url == null )
       {
-         toast("No URL.");
+         toast("No URL.", true);
          return Service.START_NOT_STICKY;
       }
 
@@ -162,8 +183,8 @@ public class IntentPlayer extends Service
       }
       catch (Exception e)
       {
-         toast("MediaPlayer: initialisation error.");
-         toast(e.getMessage());
+         toast("MediaPlayer: initialisation error.", true);
+         toast(e.getMessage(), true);
          return stop();
       }
 
@@ -176,7 +197,7 @@ public class IntentPlayer extends Service
       ticker_stop();
       if ( player != null )
       {
-         toast("Stopping...");
+         toast("Stopping...", true);
          stopForeground(true);
          player.stop();
          player.reset();
@@ -214,13 +235,13 @@ public class IntentPlayer extends Service
             msg = "Media info update."; break;
       }
       if ( msg != null )
-         toast(msg);
+         toast(msg, true);
       return true;
    }
 
    public boolean onError(MediaPlayer player, int what, int extra)
    {
-      toast("MediaPlayer: play error!");
+      toast("MediaPlayer: play error!", true);
       return true;
    }
 
@@ -244,10 +265,10 @@ public class IntentPlayer extends Service
             if ( 0 < urls.size() )
                return (String) urls.get(0);
             else
-               toast("Could not extract URLs from playlist.");
+               toast("Could not extract URLs from playlist.", true);
          }
       } catch (Exception e) {
-         toast("Error fetching playlist.");
+         toast("Error fetching playlist.", true);
       }
       return null;
    }
@@ -272,27 +293,44 @@ public class IntentPlayer extends Service
       return links;
    }
 
+   private void log_to_file(String msg)
+   {
+      if ( log_file_stream != null )
+         try
+         {
+            DateFormat format = new SimpleDateFormat("dd/HH:mm:ss ");
+            String stamp = format.format(new Date());
+            log_file_stream.write((stamp+msg+"\n").getBytes());
+            log_file_stream.flush();
+         } catch (Exception e) {}
+   }
+
    private void log(String msg)
    {
-      counter += 1;
       if ( msg != null )
       {
+         log_to_file(msg);
          if ( debug )
             Log.d(app_name, msg);
+         // Intent intent = new Intent(intent_log);
+         // intent.putExtra("msg", "" + counter + " " + msg);
+         // sendBroadcast(intent);
+      }
+   }
 
-         Intent intent = new Intent(intent_log);
-         intent.putExtra("msg", "" + counter + " " + msg);
-         sendBroadcast(intent);
+   private void toast(String msg, boolean log_too)
+   {
+      if ( msg != null )
+      {
+         Toast.makeText(context, "Intent Radio: \n" + msg, Toast.LENGTH_SHORT).show();
+         if ( log_too )
+            log(msg);
       }
    }
 
    private void toast(String msg)
    {
-      if ( msg != null )
-      {
-         log(msg);
-         Toast.makeText(context, "Intent Radio: \n" + msg, Toast.LENGTH_SHORT).show();
-      }
+      toast(msg,false);
    }
 
    @Override
