@@ -117,8 +117,8 @@ public class IntentPlayer extends Service
 
       if ( intent_play.equals(action) )
       {
-         toast(url);
-         toast(name);
+         log(url);
+         log(name);
          return play(url, name, startId);
       }
 
