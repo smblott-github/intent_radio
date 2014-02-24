@@ -1,0 +1,22 @@
+
+This app must be run once before broadcast intents will be delivered to its background service. This is an Android security feature.
+
+Thereafter, including after reboots, it should not be necessary the run this app at all.
+
+Broadcast intents received:
+
+   org.zapto.smblott.intentradio.PLAY
+   extras:
+      url:URL (optional, default is BBC Radio 4)
+      name:NAME (optional, default is URL)
+
+   org.zapto.smblott.intentradio.STOP
+   (no extras)
+
+Broadcast intents emitted:
+
+   org.zapto.smblott.intentradio.LOG
+   extras:
+      msg:MESSAGE
+
+All extras are strings.

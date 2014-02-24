@@ -5,11 +5,32 @@
    android:layout_height="fill_parent"
    >
    <TextView
-      android:id="@+id/log"
+      android:id="@+id/text"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
-      android:text="Intent Radio...\n\nThis app must be run once before broadcast intents will be delivered to its background service by the OS. This is an Android security feature.\n\nThereafter, including after reboots, it should not be necessary the run this app at all.\n\nIntents:\n   org.zapto.smblott.intentradio.STOP\n   org.zapto.smblott.intentradio.PLAY\n   extras:\n           url:URL\n           name:NAME"
       android:cursorVisible="false"
+      android:maxLines = "30"
+      android:scrollbars = "vertical"
+      android:textIsSelectable="true"
       />
+   <!--
+   <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      android:orientation="horizontal"
+      android:layout_width="fill_parent"
+      >
+      <Button
+         android:id="@+id/clipPlay"
+         android:layout_height="wrap_content"
+         android:layout_width="wrap_content"
+         android:text="Clip PLAY"
+         />
+      <Button
+         android:id="@+id/clipStop"
+         android:layout_height="wrap_content"
+         android:layout_width="wrap_content"
+         android:text="Clip STOP"
+         />
+   </LinearLayout>
+   -->
 </LinearLayout>
 
