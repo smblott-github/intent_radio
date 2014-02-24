@@ -8,7 +8,7 @@
       android:id="@+id/log"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
-      android:text="Intent Radio..."
+      android:text="Intent Radio...\n\nThis app must be run once before broadcast intents will be delivered to its background service by the OS. This is an Android security feature.\n\nThereafter, including after reboots, it should not be necessary the run this app at all.\n\nIntents:\n   org.zapto.smblott.intentradio.STOP\n   org.zapto.smblott.intentradio.PLAY\n   extras:\n           url:URL\n           name:NAME"
       android:cursorVisible="false"
       />
 </LinearLayout>
