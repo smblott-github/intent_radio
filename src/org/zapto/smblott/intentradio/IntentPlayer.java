@@ -274,13 +274,14 @@ public class IntentPlayer extends Service
 
    private void log(String msg)
    {
+      counter += 1;
       if ( msg != null )
       {
          if ( debug )
             Log.d(app_name, msg);
 
          Intent intent = new Intent(intent_log);
-         intent.putExtra("msg", msg);
+         intent.putExtra("msg", "" + counter + " " + msg);
          sendBroadcast(intent);
       }
    }
