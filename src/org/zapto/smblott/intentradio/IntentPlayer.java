@@ -225,8 +225,10 @@ public class IntentPlayer extends Service
       String msg = "onInfo...(" + what + ")";
       switch (what)
       {
+         case MediaPlayer.MEDIA_ERROR_UNSUPPORTED:
+            msg += " Media unsupported."; break;
          case MediaPlayer.MEDIA_INFO_BUFFERING_START:
-            msg += " Starting buffering..."; break;
+            msg += " Buffering start..."; break;
          case MediaPlayer.MEDIA_INFO_BUFFERING_END:
             msg += " Buffering end."; break;
          case MediaPlayer.MEDIA_INFO_BAD_INTERLEAVING:
