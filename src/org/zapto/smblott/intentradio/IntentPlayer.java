@@ -51,8 +51,8 @@ public class IntentPlayer extends Service
    private static Context context = null;
    private static PendingIntent pend_intent = null;
    private static Builder builder = null;
-   private static volatile Notification note = null;
-   private static NotificationManager notification_manager = null;
+   private static Notification note = null;
+   private static NotificationManager note_manager = null;
 
    private static String app_name = null;
    private static String intent_play = null;
@@ -75,7 +75,7 @@ public class IntentPlayer extends Service
       intent_play = getString(R.string.intent_play);
       intent_stop = getString(R.string.intent_stop);
 
-      notification_manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+      note_manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
       pend_intent = PendingIntent.getBroadcast(context, 0, new Intent(intent_stop), 0);
 
       try
@@ -358,7 +358,7 @@ public class IntentPlayer extends Service
       {
          builder.setContentText(msg == null ? name : (msg + ": " + name));
          note = builder.build();
-         notification_manager.notify( note_id, note);
+         note_manager.notify(note_id, note);
       }
    }
 
