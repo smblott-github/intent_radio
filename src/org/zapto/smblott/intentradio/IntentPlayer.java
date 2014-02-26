@@ -25,12 +25,10 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpEntity;
 import org.apache.http.util.EntityUtils;
 
-import java.lang.Runnable;
-import java.lang.Thread;
-
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+
 import java.io.File;
 import java.io.FileOutputStream;
 
@@ -38,28 +36,21 @@ import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import android.preference.PreferenceManager;
-import android.content.SharedPreferences;
-
 import android.widget.Toast;
 import android.net.Uri;
 import android.util.Log;
 
 public class IntentPlayer extends Service
-   implements OnBufferingUpdateListener, OnInfoListener, OnErrorListener, OnPreparedListener, Runnable
+   implements OnBufferingUpdateListener, OnInfoListener, OnErrorListener, OnPreparedListener
 {
 
    private static final boolean debug = false;
-   private static final int notification_id = 100;
-   private static volatile boolean running = false;
-   private static int counter = 0;
+   private static final int note_id = 100;
    private static IntentPlayer self = null;
-   private static Thread thread = null;
 
    private static MediaPlayer player = null;
    private static Context context = null;
-   private static SharedPreferences prefs = null;
-   private static PendingIntent stop_intent = null;
+   private static PendingIntent pend_intent = null;
    private static Builder builder = null;
    private static volatile Notification note = null;
    private static NotificationManager notification_manager = null;
@@ -67,32 +58,31 @@ public class IntentPlayer extends Service
    private static String app_name = null;
    private static String intent_play = null;
    private static String intent_stop = null;
-   private static String intent_log = null;
 
-   private static File log_file = null;
    private static FileOutputStream log_file_stream = null;
    private static DateFormat format = null;
 
    private static String name = null;
    private static String url = null;
 
+   /* ********************************************************************
+    * Service methods...
+    */
+
    @Override
    public void onCreate() {
       self = this;
       context = getApplicationContext();
-      prefs = PreferenceManager.getDefaultSharedPreferences(this);
       app_name = getString(R.string.app_name);
       intent_play = getString(R.string.intent_play);
       intent_stop = getString(R.string.intent_stop);
-      intent_log = getString(R.string.intent_log);
       notification_manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
       format = new SimpleDateFormat("HH:mm:ss ");
-
-      stop_intent = PendingIntent.getBroadcast(context, 0, new Intent(intent_stop), 0);
+      pend_intent = PendingIntent.getBroadcast(context, 0, new Intent(intent_stop), 0);
 
       try
       {
-         log_file = new File(getExternalFilesDir(null), getString(R.string.intent_log_file));
+         File log_file = new File(getExternalFilesDir(null), getString(R.string.intent_log_file));
          log_file_stream = new FileOutputStream(log_file);
       }
       catch (Exception e) { log_file_stream = null; }
@@ -100,14 +90,11 @@ public class IntentPlayer extends Service
       builder =
          new Notification.Builder(context)
             .setSmallIcon(R.drawable.ic_launcher)
-            .setContentTitle("Intent Radio")
-            .setContentText("Playing...")
-            .setOngoing(true)
             .setPriority(Notification.PRIORITY_HIGH)
+            .setOngoing(true)
             .setShowWhen(false)
-            .setContentIntent(stop_intent)
+            .setContentIntent(pend_intent)
             ;
-
    }
 
    public void onDestroy()
@@ -116,9 +103,9 @@ public class IntentPlayer extends Service
       {
          try { log_file_stream.close(); }
          catch (Exception e) { }
+         log_file_stream = null;
       }
       stop();
-      ticker_stop();
    }
 
    @Override
@@ -135,32 +122,37 @@ public class IntentPlayer extends Service
       if ( intent_stop.equals(action) )
          return stop();
 
-      url = intent.hasExtra("url") ? intent.getStringExtra("url") : getString(R.string.default_url);
-      name = intent.hasExtra("name") ? intent.getStringExtra("name") : url;
-
-      if ( ! intent.hasExtra("url") && ! intent.hasExtra("name") )
-         name = getString(R.string.default_name);
-
       if ( intent_play.equals(action) )
       {
-         log(url);
+         url = intent.hasExtra("url") ? intent.getStringExtra("url") : getString(R.string.default_url);
+         name = intent.hasExtra("name") ? intent.getStringExtra("name") : url;
+
+         if ( ! intent.hasExtra("url") && ! intent.hasExtra("name") )
+            name = getString(R.string.default_name);
+
          log(name);
-         return play(url, startId);
+         log(url);
+         return play(url);
       }
 
       return Service.START_NOT_STICKY;
    }
 
-   private int play(String url, int startId)
+   /* ********************************************************************
+    * Play...
+    */
+
+   private int play(String url)
    {
       stop();
 
       builder.setContentTitle("Intent Radio");
-      builder.setContentText("Buffering...: " + name);
+      builder.setContentText("Connecting...: " + name);
       note = builder.build();
 
-      if ( url != null && url.endsWith(".pls") )
-         url = playlist(url);
+      if ( url != null )
+         if ( url.endsWith(".pls") )
+            url = playlist(url);
 
       if ( url == null )
       {
@@ -180,11 +172,10 @@ public class IntentPlayer extends Service
 
       try
       {
-         // What if URL fails to parse?
          player.setDataSource(context, Uri.parse(url));
          player.prepareAsync();
-         startForeground(notification_id, note);
-         log("Buffering...");
+         startForeground(note_id, note);
+         log("Connecting...");
       }
       catch (Exception e)
       {
@@ -193,13 +184,15 @@ public class IntentPlayer extends Service
          return stop();
       }
 
-      // ticker();
       return Service.START_NOT_STICKY;
    }
 
+   /* ********************************************************************
+    * Stop...
+    */
+
    private int stop()
    {
-      ticker_stop();
       if ( player != null )
       {
          toast("Stopping...", true);
@@ -209,18 +202,24 @@ public class IntentPlayer extends Service
          player.release();
          player = null;
       }
-      // else
-      //    toast("Stopped.");
       note = null;
       return Service.START_NOT_STICKY;
+   }
+
+   /* ********************************************************************
+    * Listeners...
+    */
+
+   public void onPrepared(MediaPlayer player) {
+      player.start();
+      notificate("Playing");
+      log("Ok (onPrepared).");
    }
 
    public void onBufferingUpdate(MediaPlayer player, int percent)
    {
       if ( 0 <= percent && percent <= 100 )
          log("Buffering: " + percent + "%"); 
-      // else
-      //    log("Buffering: garbage value"); 
    }
 
    public boolean onInfo(MediaPlayer player, int what, int extra)
@@ -253,11 +252,9 @@ public class IntentPlayer extends Service
       return true;
    }
 
-   public void onPrepared(MediaPlayer player) {
-      player.start();
-      notificate("Playing");
-      log("Ok (onPrepared).");
-   }
+   /* ********************************************************************
+    * Extract URL from a playlist...
+    */
 
    private String playlist(String url)
    {
@@ -302,38 +299,41 @@ public class IntentPlayer extends Service
       return links;
    }
 
+   /* ********************************************************************
+    * Logging...
+    */
+
    private void log_to_file(String msg)
    {
-      if ( log_file_stream != null )
-         try
-         {
-            String stamp = format.format(new Date());
-            log_file_stream.write((stamp+msg+"\n").getBytes());
-            log_file_stream.flush();
-         } catch (Exception e) {}
+      if ( log_file_stream == null || msg == null )
+         return;
+
+      try
+      {
+         String stamp = format.format(new Date());
+         log_file_stream.write((stamp+msg+"\n").getBytes());
+         log_file_stream.flush();
+      } catch (Exception e) {}
    }
 
    private void log(String msg)
    {
-      if ( msg != null )
-      {
-         log_to_file(msg);
-         if ( debug )
-            Log.d(app_name, msg);
-         // Intent intent = new Intent(intent_log);
-         // intent.putExtra("msg", "" + counter + " " + msg);
-         // sendBroadcast(intent);
-      }
+      if ( msg == null )
+         return;
+
+      log_to_file(msg);
+      if ( debug )
+         Log.d(app_name, msg);
    }
 
    private void toast(String msg, boolean log_too)
    {
-      if ( msg != null )
-      {
-         Toast.makeText(context, "Intent Radio: \n" + msg, Toast.LENGTH_SHORT).show();
-         if ( log_too )
-            log(msg);
-      }
+      if ( msg == null )
+         return;
+
+      Toast.makeText(context, "Intent Radio: \n" + msg, Toast.LENGTH_SHORT).show();
+      if ( log_too )
+         log(msg);
    }
 
    private void toast(String msg)
@@ -341,49 +341,9 @@ public class IntentPlayer extends Service
       toast(msg,false);
    }
 
-   @Override
-   public IBinder onBind(Intent intent) {
-      return null;
-   }
-
-   /*
-   private void mk_looper()
-   {
-      thread = new Thread() {
-         public void run()
-         {
-            Looper.prepare();
-            looper = Looper.myLooper();
-            handler = new Handler(looper,self);
-            Looper.loop();
-         }
-      };
-      thread.start();
-   }
-
-   public boolean handleMessage(Message msg)
-   {
-      log("handleMessage");
-      return true;
-   }
-
-   private void mk_looper2()
-   {
-      handlerthread = new HandlerThread("Looper");
-      looper = handlerthread.getLooper();
-      handlerthread.start();
-
-      handler = new Handler(looper)
-      {
-         @Override
-         public void handleMessage(Message message)
-         {
-            log("handleMessage");
-         }
-      };
-
-   }
-   */
+   /* ****************************************************************
+    * Notifications...
+    */
 
    private void notificate()
    {
@@ -396,84 +356,16 @@ public class IntentPlayer extends Service
       {
          builder.setContentText(msg == null ? name : (msg + ": " + name));
          note = builder.build();
-         notification_manager.notify( notification_id, note);
+         notification_manager.notify( note_id, note);
       }
    }
 
-   private String make_time(int position)
-   {
-      int seconds = position / 1000;
-      int minutes = seconds / 60; seconds = seconds % 60;
-      int hours = minutes / 60; minutes = minutes % 60;
+   /* ********************************************************************
+    * Required abstract method...
+    */
 
-      String sSeconds = "" + seconds;
-      String sMinutes = "" + minutes;
-
-      if ( seconds < 10 )              sSeconds = "0" + sSeconds;
-      if ( minutes < 10 && 0 < hours ) sMinutes = "0" + sMinutes;
-
-      String time = sMinutes + ":" + sSeconds;
-
-      if ( 0 < hours )
-         time = "" + hours + ":" + time;
-
-      // log(time);
-      return time;
-   }
-
-   private void tick()
-   {
-      // counter += 1;
-      // log("tick " + counter);
-      if ( player != null )
-      {
-         int position = player.getCurrentPosition();
-         // log("position " + position);
-         if ( note != null )
-         {
-            // Concurrency?
-            notificate(make_time(position));
-         }
-      }
-   }
-
-   public void run()
-   {
-      while ( running )
-      {
-         try {
-            Thread.sleep(1000);
-            tick();
-         }
-         catch (Exception e) {
-            log("Thread.sleep() error; interrupted?.");
-            running = false;
-         }
-      }
-      log("Thread.run() done.");
-   }
-
-   private void ticker()
-   {
-      if ( thread == null )
-      {
-         running = true;
-         thread = new Thread(this);
-         thread.start();
-      }
-   }
-
-   private void ticker_stop()
-   {
-      if ( thread != null )
-      {
-         log("ticker_stop");
-         thread.interrupt();
-         // try { thread.join(); }
-         // catch (Exception e) { log("Thread.join() error"); }
-      }
-      running = false;
-      thread = null;
+   public IBinder onBind(Intent intent) {
+      return null;
    }
 
 }
