@@ -97,6 +97,7 @@ public class IntentPlayer extends Service
             .setSmallIcon(R.drawable.ic_launcher)
             .setPriority(Notification.PRIORITY_HIGH)
             .setOngoing(true)
+            // not available in API 16...
             // .setShowWhen(false)
             .setContentIntent(pend_intent)
             ;
@@ -152,7 +153,7 @@ public class IntentPlayer extends Service
       stop();
 
       builder.setContentTitle(app_name_long);
-      builder.setContentText("Connecting...: " + name);
+      builder.setContentText(name + ": connecting...");
       note = builder.build();
 
       if ( url != null )
@@ -162,7 +163,7 @@ public class IntentPlayer extends Service
       if ( url == null )
       {
          toast("No URL.", true);
-         return Service.START_NOT_STICKY;
+         return stop();
       }
 
       toast(name);
@@ -235,6 +236,7 @@ public class IntentPlayer extends Service
          case MediaPlayer.MEDIA_INFO_BUFFERING_END:
             notificate(); return true;
 
+         // not available in API 16...
          // case MediaPlayer.MEDIA_ERROR_UNSUPPORTED:
          //    msg += "/media unsupported"; break;
 
@@ -369,7 +371,7 @@ public class IntentPlayer extends Service
    {
       if ( note != null )
       {
-         builder.setContentText(msg == null ? name : (msg + ": " + name));
+         builder.setContentText(msg == null ? name : msg);
          note = builder.build();
          note_manager.notify(note_id, note);
       }
