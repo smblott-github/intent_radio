@@ -73,6 +73,9 @@ public class IntentPlayer extends Service
    private static FileOutputStream log_file_stream = null;
    private static DateFormat format = null;
 
+   private static String name = null;
+   private static String url = null;
+
    @Override
    public void onCreate() {
       self = this;
@@ -132,8 +135,8 @@ public class IntentPlayer extends Service
       if ( intent_stop.equals(action) )
          return stop();
 
-      String url = intent.hasExtra("url") ? intent.getStringExtra("url") : getString(R.string.default_url);
-      String name = intent.hasExtra("name") ? intent.getStringExtra("name") : url;
+      url = intent.hasExtra("url") ? intent.getStringExtra("url") : getString(R.string.default_url);
+      name = intent.hasExtra("name") ? intent.getStringExtra("name") : url;
 
       if ( ! intent.hasExtra("url") && ! intent.hasExtra("name") )
          name = getString(R.string.default_name);
@@ -142,18 +145,18 @@ public class IntentPlayer extends Service
       {
          log(url);
          log(name);
-         return play(url, name, startId);
+         return play(url, startId);
       }
 
       return Service.START_NOT_STICKY;
    }
 
-   private int play(String url, String name, int startId)
+   private int play(String url, int startId)
    {
       stop();
 
       builder.setContentTitle("Intent Radio");
-      builder.setContentText(name);
+      builder.setContentText("Buffering...: " + name);
       note = builder.build();
 
       if ( url != null && url.endsWith(".pls") )
@@ -222,22 +225,23 @@ public class IntentPlayer extends Service
 
    public boolean onInfo(MediaPlayer player, int what, int extra)
    {
-      String msg = "onInfo...(" + what + ")";
+      String msg = "" + what;
       switch (what)
       {
          case MediaPlayer.MEDIA_ERROR_UNSUPPORTED:
-            msg += " Media unsupported."; break;
+            msg += "/media unsupported"; break;
          case MediaPlayer.MEDIA_INFO_BUFFERING_START:
-            msg += " Buffering start..."; break;
+            msg += "/buffering start.."; break;
          case MediaPlayer.MEDIA_INFO_BUFFERING_END:
-            msg += " Buffering end."; break;
+            msg += "/buffering end"; break;
          case MediaPlayer.MEDIA_INFO_BAD_INTERLEAVING:
-            msg += " Bad interleaving!"; break;
+            msg += "/bad interleaving"; break;
          case MediaPlayer.MEDIA_INFO_NOT_SEEKABLE:
-            msg += " Media not seekable."; break;
+            msg += "/media not seekable"; break;
          case MediaPlayer.MEDIA_INFO_METADATA_UPDATE:
-            msg += " Media info update."; break;
+            msg += "/media info update"; break;
       }
+      notificate(msg);
       toast(msg, true);
       return true;
    }
@@ -251,6 +255,7 @@ public class IntentPlayer extends Service
 
    public void onPrepared(MediaPlayer player) {
       player.start();
+      notificate("Playing");
       log("Ok (onPrepared).");
    }
 
@@ -380,6 +385,21 @@ public class IntentPlayer extends Service
    }
    */
 
+   private void notificate()
+   {
+      notificate(null);
+   }
+
+   private void notificate(String msg)
+   {
+      if ( note != null )
+      {
+         builder.setContentText(msg == null ? name : (msg + ": " + name));
+         note = builder.build();
+         notification_manager.notify( notification_id, note);
+      }
+   }
+
    private String make_time(int position)
    {
       int seconds = position / 1000;
@@ -412,9 +432,7 @@ public class IntentPlayer extends Service
          if ( note != null )
          {
             // Concurrency?
-            builder.setContentText(make_time(position));
-            note = builder.build();
-            notification_manager.notify( notification_id, note);
+            notificate(make_time(position));
          }
       }
    }
