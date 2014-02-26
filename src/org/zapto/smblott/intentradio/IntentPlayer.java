@@ -59,7 +59,6 @@ public class IntentPlayer extends Service
    private static String intent_stop = null;
 
    private static FileOutputStream log_file_stream = null;
-   private static DateFormat format = null;
 
    private static String name = null;
    private static String url = null;
@@ -71,11 +70,12 @@ public class IntentPlayer extends Service
    @Override
    public void onCreate() {
       context = getApplicationContext();
+
       app_name = getString(R.string.app_name);
       intent_play = getString(R.string.intent_play);
       intent_stop = getString(R.string.intent_stop);
+
       notification_manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-      format = new SimpleDateFormat("HH:mm:ss ");
       pend_intent = PendingIntent.getBroadcast(context, 0, new Intent(intent_stop), 0);
 
       try
@@ -210,7 +210,7 @@ public class IntentPlayer extends Service
 
    public void onPrepared(MediaPlayer player) {
       player.start();
-      notificate("Playing");
+      notificate();
       log("Ok (onPrepared).");
    }
 
@@ -225,12 +225,13 @@ public class IntentPlayer extends Service
       String msg = "" + what;
       switch (what)
       {
+         case MediaPlayer.MEDIA_INFO_BUFFERING_END:
+            notificate(); return true;
+
          case MediaPlayer.MEDIA_ERROR_UNSUPPORTED:
             msg += "/media unsupported"; break;
          case MediaPlayer.MEDIA_INFO_BUFFERING_START:
             msg += "/buffering start.."; break;
-         case MediaPlayer.MEDIA_INFO_BUFFERING_END:
-            msg += "/buffering end"; break;
          case MediaPlayer.MEDIA_INFO_BAD_INTERLEAVING:
             msg += "/bad interleaving"; break;
          case MediaPlayer.MEDIA_INFO_NOT_SEEKABLE:
@@ -277,7 +278,8 @@ public class IntentPlayer extends Service
       return null;
    }
 
-   // http://blog.houen.net/java-get-url-from-string/
+   // source: http://blog.houen.net/java-get-url-from-string/
+   //
    private ArrayList links(String text)
    {
       ArrayList links = new ArrayList();
@@ -306,9 +308,11 @@ public class IntentPlayer extends Service
       if ( log_file_stream == null || msg == null )
          return;
 
+      DateFormat format = new SimpleDateFormat("HH:mm:ss ");
+      String stamp = format.format(new Date());
+
       try
       {
-         String stamp = format.format(new Date());
          log_file_stream.write((stamp+msg+"\n").getBytes());
          log_file_stream.flush();
       } catch (Exception e) {}
