@@ -40,6 +40,8 @@ import android.widget.Toast;
 import android.net.Uri;
 import android.util.Log;
 
+import java.util.Random;
+
 public class IntentPlayer extends Service
    implements OnBufferingUpdateListener, OnInfoListener, OnErrorListener, OnPreparedListener
 {
@@ -64,6 +66,8 @@ public class IntentPlayer extends Service
    private static String name = null;
    private static String url = null;
 
+   private static Random random = null;
+
    /* ********************************************************************
     * Service methods...
     */
@@ -71,6 +75,7 @@ public class IntentPlayer extends Service
    @Override
    public void onCreate() {
       context = getApplicationContext();
+      random = new Random();
 
       app_name = getString(R.string.app_name);
       app_name_long = getString(R.string.app_name_long);
@@ -250,6 +255,7 @@ public class IntentPlayer extends Service
    {
       String msg = "onError...(" + what + ")";
       toast(msg, true);
+      stop();
       return true;
    }
 
@@ -270,7 +276,11 @@ public class IntentPlayer extends Service
 
             ArrayList urls = links(text);
             if ( 0 < urls.size() )
-               return (String) urls.get(0);
+            {
+               String real_url = (String) urls.get(random.nextInt(urls.size()));
+               log(real_url);
+               return real_url;
+            }
             else
                toast("Could not extract URLs from playlist.", true);
          }

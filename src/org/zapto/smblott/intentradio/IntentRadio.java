@@ -61,7 +61,7 @@ public class IntentRadio extends Activity
    }
 
    /* ********************************************************************
-    * Buttons...
+    * Clip buttons...
     */
 
    private void clip(String text)
