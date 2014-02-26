@@ -9,11 +9,44 @@
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
       android:cursorVisible="false"
-      android:maxLines = "30"
       android:scrollbars = "vertical"
-      android:textIsSelectable="true"
       />
+
+   <LinearLayout 
+       android:layout_height="wrap_content" 
+       android:layout_width="fill_parent" 
+       android:layout_alignParentBottom="true">
+       <Button 
+           android:id="@+id/clip_play" 
+           android:layout_width="wrap_content" 
+           android:layout_height="wrap_content" 
+           android:layout_weight="1"
+           android:onClick="clip_play"
+           android:text="Clip PLAY Intent">
+       </Button>
+       <Button 
+           android:id="@+id/clip_stop" 
+           android:layout_width="wrap_content" 
+           android:layout_height="wrap_content"
+           android:layout_weight="1" 
+           android:onClick="clip_stop"
+           android:text="Clip STOP Intent">
+       </Button>
+   </LinearLayout>
+
+
+
    <!--
+   <Button
+      android:layout_height="wrap_content"
+      android:layout_width="fill_parent"
+      android:text="Copy PLAY Intent to clipboard."
+      />
+   <Button
+      android:layout_height="wrap_content"
+      android:layout_width="fill_parent"
+      android:text="Copy STOP Intent to clipboard."
+      />
    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
       android:orientation="horizontal"
       android:layout_width="fill_parent"

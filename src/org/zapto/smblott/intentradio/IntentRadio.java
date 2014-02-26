@@ -9,6 +9,12 @@ import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import android.widget.TextView;
 import android.text.method.ScrollingMovementMethod;
+import android.widget.Toast;
+import android.view.View;
+import android.content.Context;
+
+import android.content.ClipData;
+import android.content.ClipboardManager;
 
 public class IntentRadio extends Activity
 {
@@ -38,14 +44,49 @@ public class IntentRadio extends Activity
       return text.toString();
    }
 
+   private static String intent_play = null;
+   private static String intent_stop = null;
+
    @Override
    public void onCreate(Bundle savedInstanceState)
    {
+      intent_play = getString(R.string.intent_play);
+      intent_stop = getString(R.string.intent_stop);
+
       super.onCreate(savedInstanceState);
       setContentView(R.layout.main);
       TextView text = (TextView)findViewById(R.id.text);
       text.setMovementMethod(new ScrollingMovementMethod());
       text.setText(readRawTextFile(getApplicationContext(), R.raw.message));
+   }
+
+   /* ********************************************************************
+    * Buttons...
+    */
+
+   private void clip(String text)
+   {
+      ClipboardManager clip_manager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+
+      ClipData clip_data = ClipData.newPlainText("text", text);
+      clip_manager.setPrimaryClip(clip_data);
+      toast("Clipped:\n" + text);
+   }
+
+   public void clip_play(View view)
+   {
+      clip(intent_play);
+   }
+
+   public void clip_stop(View view)
+   {
+      clip(intent_stop);
+   }
+
+   private void toast(String msg)
+   {
+      Context context = getApplicationContext();
+      Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
    }
 
 }
