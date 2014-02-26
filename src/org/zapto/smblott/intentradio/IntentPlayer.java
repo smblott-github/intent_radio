@@ -46,7 +46,6 @@ public class IntentPlayer extends Service
 
    private static final boolean debug = false;
    private static final int note_id = 100;
-   private static IntentPlayer self = null;
 
    private static MediaPlayer player = null;
    private static Context context = null;
@@ -71,7 +70,6 @@ public class IntentPlayer extends Service
 
    @Override
    public void onCreate() {
-      self = this;
       context = getApplicationContext();
       app_name = getString(R.string.app_name);
       intent_play = getString(R.string.intent_play);
