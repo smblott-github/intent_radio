@@ -10,7 +10,7 @@
    <application android:label="@string/app_name" android:icon="@drawable/ic_launcher">
 
    <activity android:name="IntentRadio"
-      android:label="@string/app_name">
+      android:label="@string/app_name_long">
       <intent-filter>
          <action android:name="android.intent.action.MAIN" />
          <category android:name="android.intent.category.LAUNCHER" />

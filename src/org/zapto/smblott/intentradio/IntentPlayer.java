@@ -55,6 +55,7 @@ public class IntentPlayer extends Service
    private static NotificationManager note_manager = null;
 
    private static String app_name = null;
+   private static String app_name_long = null;
    private static String intent_play = null;
    private static String intent_stop = null;
 
@@ -72,6 +73,7 @@ public class IntentPlayer extends Service
       context = getApplicationContext();
 
       app_name = getString(R.string.app_name);
+      app_name_long = getString(R.string.app_name_long);
       intent_play = getString(R.string.intent_play);
       intent_stop = getString(R.string.intent_stop);
 
@@ -144,7 +146,7 @@ public class IntentPlayer extends Service
    {
       stop();
 
-      builder.setContentTitle("Intent Radio");
+      builder.setContentTitle(app_name_long);
       builder.setContentText("Connecting...: " + name);
       note = builder.build();
 
@@ -333,7 +335,7 @@ public class IntentPlayer extends Service
       if ( msg == null )
          return;
 
-      Toast.makeText(context, "Intent Radio: \n" + msg, Toast.LENGTH_SHORT).show();
+      Toast.makeText(context, app_name_long + "\n" + msg, Toast.LENGTH_SHORT).show();
       if ( log_too )
          log(msg);
    }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">IntentRadio</string>
+    <string name="app_name_long">Intent Radio</string>
     <string name="default_url">http://www.bbc.co.uk/radio/listen/live/r4_heaacv2.pls</string>
     <string name="default_name">BBC Radio 4 (FM)</string>
     <string name="intent_play">org.zapto.smblott.intentradio.PLAY</string>

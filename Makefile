@@ -8,6 +8,9 @@ debug:
 release:
 	ant release
 
+clean:
+	ant clean
+
 install:
 	$(MAKE) debug
 	adb install -r bin/IntentRadio-debug.apk
