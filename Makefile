@@ -40,6 +40,3 @@ log:
 log_file:
 	adb shell cat /mnt/shell/emulated/0/Android/data/org.zapto.smblott.intentradio/files/intent-radio.log
 
-test:
-	adb shell am broadcast -a org.zapto.smblott.intentradio.PLAY -e url mms://wmlive-nonacl.bbc.net.uk/wms/bbc_ami/radio4/radio4_bb_live_int_ep1_sl0 -e name "BBC Radio 4 (MMS)"
-

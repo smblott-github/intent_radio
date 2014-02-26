@@ -97,7 +97,7 @@ public class IntentPlayer extends Service
             .setSmallIcon(R.drawable.ic_launcher)
             .setPriority(Notification.PRIORITY_HIGH)
             .setOngoing(true)
-            .setShowWhen(false)
+            // .setShowWhen(false)
             .setContentIntent(pend_intent)
             ;
    }
@@ -235,8 +235,9 @@ public class IntentPlayer extends Service
          case MediaPlayer.MEDIA_INFO_BUFFERING_END:
             notificate(); return true;
 
-         case MediaPlayer.MEDIA_ERROR_UNSUPPORTED:
-            msg += "/media unsupported"; break;
+         // case MediaPlayer.MEDIA_ERROR_UNSUPPORTED:
+         //    msg += "/media unsupported"; break;
+
          case MediaPlayer.MEDIA_INFO_BUFFERING_START:
             msg += "/buffering start.."; break;
          case MediaPlayer.MEDIA_INFO_BAD_INTERLEAVING:
