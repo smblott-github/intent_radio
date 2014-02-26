@@ -5,9 +5,16 @@ build:
 debug:
 	ant debug
 
+release:
+	ant release
+
 install:
 	$(MAKE) debug
 	adb install -r bin/IntentRadio-debug.apk
+
+install-release:
+	$(MAKE) release
+	adb install -r bin/IntentRadio-release.apk
 
 play:
 	adb shell am broadcast -a org.zapto.smblott.intentradio.PLAY
