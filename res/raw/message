@@ -16,7 +16,11 @@ Broadcast intents:
    org.zapto.smblott.intentradio.STOP
    (no extras)
 
-All extras are strings.
+All extras are strings.  Use the buttons below to copy these intents to the clipboard.
+
+All aspects of media playback are handled by the built-in Android media player.  Additionally, playlist URLs (whose URL/name must end with ".pls") are also supported.
+
+Some URLs, notably the default BBC Radio 4 stream, take in excess of 30 seconds for playback to start.  Sorry, but I don't know why!  Please be patient.
 
 Some logging/debugging information is written to:
 

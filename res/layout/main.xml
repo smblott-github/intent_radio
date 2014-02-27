@@ -10,7 +10,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:layout_alignParentBottom="true" >
-
        <Button 
            android:id="@+id/clip_play" 
            android:layout_width="wrap_content" 
@@ -20,7 +19,6 @@
            android:layout_margin="5dp"
            android:layout_alignParentLeft="true" >
        </Button>
-
        <Button 
            android:id="@+id/clip_stop" 
            android:layout_width="wrap_content" 
@@ -30,7 +28,6 @@
            android:layout_margin="5dp"
            android:layout_alignParentRight="true" >
        </Button>
-
     </RelativeLayout>
     
     <ScrollView
