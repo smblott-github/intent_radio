@@ -1,5 +1,6 @@
+Intent Radio is a streaming internet radio app without a graphical user interface.  It is controlled exclusively through the delivery of broadcast intents.  Automation apps, such as Tasker, can therefore be used to control streaming playback.
 
-This app must be run once before broadcast intents will be delivered to its background service. This is an Android security feature.
+This app itself must be run once before intents will be delivered to its background service. This is an Android security feature.
 
 Thereafter, including after reboots, it should not be necessary the run this app at all.
 
@@ -13,8 +14,10 @@ Broadcast intents:
    org.zapto.smblott.intentradio.STOP
    (no extras)
 
+All extras are strings.
+
 Some logging/debugging information is written to:
 
-   /sdcard/Android/data/org.zapto.smblott.intentradio/files/intent-radio.log
-
-All extras are strings.
+   /sdcard/Android/data/...
+      .../org.zapto.smblott.intentradio/...
+         .../files/intent-radio.log
