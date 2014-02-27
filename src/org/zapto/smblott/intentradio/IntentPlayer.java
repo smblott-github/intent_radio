@@ -46,7 +46,8 @@ public class IntentPlayer extends Service
    implements OnBufferingUpdateListener, OnInfoListener, OnErrorListener, OnPreparedListener
 {
 
-   private static final boolean debug = false;
+   private static final boolean debug_logcat = false;
+   private static final boolean debug_file = true;
    private static final int note_id = 100;
 
    private static MediaPlayer player = null;
@@ -85,12 +86,13 @@ public class IntentPlayer extends Service
       note_manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
       pend_intent = PendingIntent.getBroadcast(context, 0, new Intent(intent_stop), 0);
 
-      try
-      {
-         File log_file = new File(getExternalFilesDir(null), getString(R.string.intent_log_file));
-         log_file_stream = new FileOutputStream(log_file);
-      }
-      catch (Exception e) { log_file_stream = null; }
+      if ( debug_file )
+         try
+         {
+            File log_file = new File(getExternalFilesDir(null), getString(R.string.intent_log_file));
+            log_file_stream = new FileOutputStream(log_file);
+         }
+         catch (Exception e) { log_file_stream = null; }
 
       builder =
          new Notification.Builder(context)
@@ -339,7 +341,7 @@ public class IntentPlayer extends Service
          return;
 
       log_to_file(msg);
-      if ( debug )
+      if ( debug_logcat )
          Log.d(app_name, msg);
    }
 
