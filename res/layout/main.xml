@@ -33,14 +33,18 @@
 
     </RelativeLayout>
     
-    <TextView
-        android:id="@+id/text"
+    <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="0dip"
         android:layout_above="@id/buttons"
-        android:textColor="#FFFFFFFF"
         android:fadeScrollbars="false"
         android:layout_alignParentTop="true" >
-    </TextView>
+       <TextView
+           android:id="@+id/text"
+           android:layout_width="fill_parent"
+           android:layout_height="fill_parent"
+           android:textColor="#FFFFFFFF" >
+       </TextView>
+    </ScrollView>
 
 </RelativeLayout>

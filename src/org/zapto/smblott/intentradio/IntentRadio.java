@@ -55,7 +55,7 @@ public class IntentRadio extends Activity
 
       super.onCreate(savedInstanceState);
       setContentView(R.layout.main);
-      TextView text = (TextView)findViewById(R.id.text);
+      TextView text = (TextView) findViewById(R.id.text);
       text.setMovementMethod(new ScrollingMovementMethod());
       text.setText(readRawTextFile(getApplicationContext(), R.raw.message));
    }
