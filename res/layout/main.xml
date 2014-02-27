@@ -16,7 +16,7 @@
            android:layout_width="wrap_content" 
            android:layout_height="wrap_content" 
            android:onClick="clip_play"
-           android:text="Clip PLAY Intent"
+           android:text="Copy PLAY Intent"
            android:layout_margin="5dp"
            android:layout_alignParentLeft="true" >
        </Button>
@@ -26,7 +26,7 @@
            android:layout_width="wrap_content" 
            android:layout_height="wrap_content"
            android:onClick="clip_stop"
-           android:text="Clip STOP Intent"
+           android:text="Copy STOP Intent"
            android:layout_margin="5dp"
            android:layout_alignParentRight="true" >
        </Button>
@@ -38,6 +38,7 @@
         android:layout_height="0dip"
         android:layout_above="@id/buttons"
         android:fadeScrollbars="false"
+        android:layout_margin="3dp"
         android:layout_alignParentTop="true" >
        <TextView
            android:id="@+id/text"

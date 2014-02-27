@@ -1,8 +1,10 @@
-Intent Radio is a streaming internet radio app without a graphical user interface.  It is controlled exclusively through the delivery of broadcast intents.  Automation apps, such as Tasker, can therefore be used to control streaming playback.
+Intent Radio is a streaming internet radio app without a graphical user interface.  It is controlled exclusively through the delivery of broadcast intents.  Automation apps, such as Tasker, should be used to control streaming playback by issuing suitable broadcast intents.
 
 This app must be run once before Android will deliver intents to its background service. This is an Android security feature.
 
 Thereafter, including after reboots, it should not be necessary the run this app at all.
+
+During playback, Intent Radio adds a notification to the notification area.  Clicking on this notification stops playback.
 
 Broadcast intents:
 

@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import android.widget.TextView;
-import android.text.method.ScrollingMovementMethod;
 import android.widget.Toast;
 import android.view.View;
 import android.content.Context;
@@ -56,7 +55,6 @@ public class IntentRadio extends Activity
       super.onCreate(savedInstanceState);
       setContentView(R.layout.main);
       TextView text = (TextView) findViewById(R.id.text);
-      text.setMovementMethod(new ScrollingMovementMethod());
       text.setText(readRawTextFile(getApplicationContext(), R.raw.message));
    }
 
@@ -70,7 +68,7 @@ public class IntentRadio extends Activity
 
       ClipData clip_data = ClipData.newPlainText("text", text);
       clip_manager.setPrimaryClip(clip_data);
-      toast("Clipped:\n" + text);
+      toast("Clipboard:\n" + text);
    }
 
    public void clip_play(View view)

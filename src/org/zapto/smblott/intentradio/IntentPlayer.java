@@ -348,7 +348,7 @@ public class IntentPlayer extends Service
       if ( msg == null )
          return;
 
-      Toast.makeText(context, app_name_long + "\n" + msg, Toast.LENGTH_SHORT).show();
+      Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
       if ( log_too )
          log(msg);
    }
