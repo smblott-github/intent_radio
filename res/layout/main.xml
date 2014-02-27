@@ -1,42 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-   android:orientation="vertical"
-   android:layout_width="fill_parent"
-   android:layout_height="fill_parent"
-   >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
 
-   <TextView
-      android:id="@+id/text"
-      android:layout_width="fill_parent"
-      android:layout_height="fill_parent"
-      android:cursorVisible="false"
-      android:scrollbars = "vertical"
-      />
+    <RelativeLayout
+        android:id="@+id/buttons"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_alignParentBottom="true" >
 
-   <!--
-   <LinearLayout 
-       android:layout_height="wrap_content" 
-       android:layout_width="fill_parent" 
-       android:layout_weight="1"
-       android:layout_alignParentBottom="true">
        <Button 
            android:id="@+id/clip_play" 
            android:layout_width="wrap_content" 
            android:layout_height="wrap_content" 
-           android:layout_weight="1"
            android:onClick="clip_play"
-           android:text="Clip PLAY Intent">
+           android:text="Clip PLAY Intent"
+           android:layout_margin="5dp"
+           android:layout_alignParentLeft="true" >
        </Button>
+
        <Button 
            android:id="@+id/clip_stop" 
            android:layout_width="wrap_content" 
            android:layout_height="wrap_content"
-           android:layout_weight="1" 
            android:onClick="clip_stop"
-           android:text="Clip STOP Intent">
+           android:text="Clip STOP Intent"
+           android:layout_margin="5dp"
+           android:layout_alignParentRight="true" >
        </Button>
-   </LinearLayout>
-   -->
 
-</LinearLayout>
+    </RelativeLayout>
+    
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_above="@id/buttons"
+        android:textColor="#FFFFFFFF"
+        android:fadeScrollbars="false"
+        android:layout_alignParentTop="true" >
+    </TextView>
 
+</RelativeLayout>
