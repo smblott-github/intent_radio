@@ -46,4 +46,44 @@ _Intent Radio_ was written primarily to be driven by tasker, either via
 task shortcuts on the desktop, or via Tasker's response to events such as
 a headset being plugged in or out.
 
+// /////////////////////////////////////////////////////
+== What? (Again) ==
+
+_Intent Radio_ supports the following broadcast intents...
+
+.`org.smblott.intentradio.PLAY`:
+****
+- start playback
+- extras:
+** `url` the URL to play
+** `name` the display name for the station
+
+Both extras are strings, and both are optional.  If `name` is omitted,
+then the URL is used as the display name.  If `url` is omitted, then
+a built-in URL for BBC Radio 4 is used.
+****
+
+.`org.smblott.intentradio.STOP`:
+****
+- stop playback
+- extras: none
+****
+
+During playback, _Intent Radio_ places a notification in the notification
+area.  Clicking on the notification broadcasts the "`...STOP`" intent, which
+causes playback to stop.
+
+// /////////////////////////////////////////////////////
+== Warning! ==
+
+Although _Intent Radio_ has no graphical user interface, you must
+nevertheless start up the app _at least once_.  Otherwise, Android will not
+deliver broadcast intents to the app.  This is an Android security feature.
+
+// /////////////////////////////////////////////////////
+== A Tasker Project ==
+
+If you're using Tasker, then this link:./Radio.prj.xml[Tasker project] may
+be helpful in getting started with _Intent Radio_.
+
 // vim: set syntax=asciidoc:
