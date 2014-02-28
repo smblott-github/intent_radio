@@ -2,7 +2,48 @@
 Stephen Blott <smblott@gmail.com>
 :toc2:
 
-Intent Radio is an android internet radio app without a graphical user
-interface.
+// /////////////////////////////////////////////////////
+== What? ==
+
+_Intent Radio_ is an android internet radio app without a graphical user
+interface.  It is controlled exclusively through the delivery of
+http://developer.android.com/reference/android/content/BroadcastReceiver.html[broadcast
+intents].  If you do not know what a broadcast intent is, then this is
+probably not the app for you.
+
+// /////////////////////////////////////////////////////
+== Why? ==
+
+There are already many internet radio apps for Android; so, why another
+one?
+
+Well, I couldn't find one that worked just right for me...
+
+Xiialive::
+   I tried (and like) http://xiialive.com/[xiialive].  And it supports external
+   broadcast intents.  However, I was finding it would hang irredeemably
+   on start up about two times in five, mainly when on mobile data.
+
+Tunein::
+   And I particularly like http://tunein.com/[tunein].  However, it doesn't
+   support either shortcuts or broadcast intents, so I have no way to
+   start and stop it automatically, say when a headset is plugged in or
+   out.
+
+BBC IPlayer Radio::
+   The
+   https://play.google.com/store/apps/details?id=uk.co.bbc.android.iplayerradio&hl=en[BBC
+   IPlayer Radio] app is pretty slick; and most of what I listen to is BBC.
+   Again, however, there's no way to control playback without much
+   pointy-pressy action through the GUI.
+
+And then there's http://tasker.dinglisch.net/[Tasker].  Tasker is an
+automation app for Android.  It's like a small graphical programming
+language combined with a mechanism to fire off tasks in response to various
+events.
+
+_Intent Radio_ was written primarily to be driven by tasker, either via
+task shortcuts on the desktop, or via Tasker's response to events such as
+a headset being plugged in or out.
 
 // vim: set syntax=asciidoc:
