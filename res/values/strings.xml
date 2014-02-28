@@ -4,8 +4,8 @@
     <string name="app_name_long">Intent Radio</string>
     <string name="default_url">http://www.bbc.co.uk/radio/listen/live/r4_heaacv2.pls</string>
     <string name="default_name">BBC Radio 4 (FM)</string>
-    <string name="intent_play">org.zapto.smblott.intentradio.PLAY</string>
-    <string name="intent_stop">org.zapto.smblott.intentradio.STOP</string>
-    <string name="intent_log">org.zapto.smblott.intentradio.LOG</string>
+    <string name="intent_play">org.smblott.intentradio.PLAY</string>
+    <string name="intent_stop">org.smblott.intentradio.STOP</string>
+    <string name="intent_log">org.smblott.intentradio.LOG</string>
     <string name="intent_log_file">intent-radio.log</string>
 </resources>

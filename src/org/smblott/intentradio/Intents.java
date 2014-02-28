@@ -1,4 +1,4 @@
-package org.zapto.smblott.intentradio;
+package org.smblott.intentradio;
 
 import android.content.Context;
 import android.content.Intent;

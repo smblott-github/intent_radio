@@ -8,12 +8,12 @@ During playback, Intent Radio adds a notification to the notification area.  Cli
 
 Broadcast intents:
 
-   org.zapto.smblott.intentradio.PLAY
+   org.smblott.intentradio.PLAY
    extras:
       url:URL (optional, default is BBC Radio 4)
       name:NAME (optional, default is URL)
 
-   org.zapto.smblott.intentradio.STOP
+   org.smblott.intentradio.STOP
    (no extras)
 
 All extras are strings.  Use the buttons below to copy these intents to the clipboard.

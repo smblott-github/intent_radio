@@ -26,7 +26,7 @@
 		<pri>10</pri>
 		<Action sr="act0" ve="3">
 			<code>877</code>
-			<Str sr="arg0" ve="3">org.zapto.smblott.intentradio.PLAY</Str>
+			<Str sr="arg0" ve="3">org.smblott.intentradio.PLAY</Str>
 			<Int sr="arg1" val="0"/>
 			<Str sr="arg2" ve="3"/>
 			<Str sr="arg3" ve="3"/>
@@ -48,7 +48,7 @@
 		<pri>10</pri>
 		<Action sr="act0" ve="3">
 			<code>877</code>
-			<Str sr="arg0" ve="3">org.zapto.smblott.intentradio.PLAY</Str>
+			<Str sr="arg0" ve="3">org.smblott.intentradio.PLAY</Str>
 			<Int sr="arg1" val="0"/>
 			<Str sr="arg2" ve="3"/>
 			<Str sr="arg3" ve="3"/>
@@ -70,7 +70,7 @@
 		<pri>10</pri>
 		<Action sr="act0" ve="3">
 			<code>877</code>
-			<Str sr="arg0" ve="3">org.zapto.smblott.intentradio.STOP</Str>
+			<Str sr="arg0" ve="3">org.smblott.intentradio.STOP</Str>
 			<Int sr="arg1" val="0"/>
 			<Str sr="arg2" ve="3"/>
 			<Str sr="arg3" ve="3"/>
@@ -103,7 +103,7 @@
 		<pri>10</pri>
 		<Action sr="act0" ve="3">
 			<code>877</code>
-			<Str sr="arg0" ve="3">org.zapto.smblott.intentradio.PLAY</Str>
+			<Str sr="arg0" ve="3">org.smblott.intentradio.PLAY</Str>
 			<Int sr="arg1" val="0"/>
 			<Str sr="arg2" ve="3"/>
 			<Str sr="arg3" ve="3"/>
@@ -125,7 +125,7 @@
 		<pri>10</pri>
 		<Action sr="act0" ve="3">
 			<code>877</code>
-			<Str sr="arg0" ve="3">org.zapto.smblott.intentradio.PLAY</Str>
+			<Str sr="arg0" ve="3">org.smblott.intentradio.PLAY</Str>
 			<Int sr="arg1" val="0"/>
 			<Str sr="arg2" ve="3"/>
 			<Str sr="arg3" ve="3"/>
@@ -147,7 +147,7 @@
 		<pri>10</pri>
 		<Action sr="act0" ve="3">
 			<code>877</code>
-			<Str sr="arg0" ve="3">org.zapto.smblott.intentradio.PLAY</Str>
+			<Str sr="arg0" ve="3">org.smblott.intentradio.PLAY</Str>
 			<Int sr="arg1" val="0"/>
 			<Str sr="arg2" ve="3"/>
 			<Str sr="arg3" ve="3"/>
@@ -169,7 +169,7 @@
 		<pri>10</pri>
 		<Action sr="act0" ve="3">
 			<code>877</code>
-			<Str sr="arg0" ve="3">org.zapto.smblott.intentradio.PLAY</Str>
+			<Str sr="arg0" ve="3">org.smblott.intentradio.PLAY</Str>
 			<Int sr="arg1" val="0"/>
 			<Str sr="arg2" ve="3"/>
 			<Str sr="arg3" ve="3"/>

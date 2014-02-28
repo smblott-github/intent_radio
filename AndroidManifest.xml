@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="org.zapto.smblott.intentradio"
+      package="org.smblott.intentradio"
       android:versionCode="1"
       android:versionName="1.0">
 
@@ -21,8 +21,8 @@
 
    <receiver android:name=".Intents" android:enabled="true" android:exported="true" >
       <intent-filter>
-         <action android:name="org.zapto.smblott.intentradio.PLAY"/>
-         <action android:name="org.zapto.smblott.intentradio.STOP"/>
+         <action android:name="org.smblott.intentradio.PLAY"/>
+         <action android:name="org.smblott.intentradio.STOP"/>
       </intent-filter>
    </receiver>
 

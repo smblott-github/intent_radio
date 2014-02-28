@@ -1,4 +1,4 @@
-package org.zapto.smblott.intentradio;
+package org.smblott.intentradio;
 
 import android.app.Activity;
 import android.os.Bundle;
