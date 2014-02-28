@@ -40,3 +40,6 @@ log:
 log_file:
 	adb shell cat /mnt/shell/emulated/0/Android/data/org.smblott.intentradio/files/intent-radio.log
 
+update-project:
+	android update project -p .
+

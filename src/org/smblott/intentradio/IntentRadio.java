@@ -15,6 +15,8 @@ import android.content.Context;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 
+import android.text.Html;
+
 public class IntentRadio extends Activity
 {
 
@@ -55,7 +57,7 @@ public class IntentRadio extends Activity
       super.onCreate(savedInstanceState);
       setContentView(R.layout.main);
       TextView text = (TextView) findViewById(R.id.text);
-      text.setText(readRawTextFile(getApplicationContext(), R.raw.message));
+      text.setText(Html.fromHtml(readRawTextFile(getApplicationContext(), R.raw.message)));
    }
 
    /* ********************************************************************

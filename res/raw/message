@@ -1,23 +1,63 @@
-Intent Radio is a streaming internet radio app without a graphical user interface.  It is controlled exclusively through the delivery of broadcast intents.  Automation apps, such as Tasker, should be used to control streaming playback by issuing suitable broadcast intents.
 
-This app must be run once before Android will deliver intents to its background service. This is an Android security feature.
+<h3>Introduction</h3>
 
-Thereafter, including after reboots, it should not be necessary the run this app at all.
+<p>
+   Intent Radio is a streaming internet radio app without a graphical user
+   interface.  It is controlled exclusively through the delivery of broadcast
+   intents.  Automation apps, such as Tasker, should be used to control streaming
+   playback by issuing suitable broadcast intents.
+</p>
 
-During playback, Intent Radio adds a notification to the notification area.  Clicking on this notification stops playback.
+<p>
+   This app must be run once before Android will deliver intents to its background
+   service. This is an Android security feature.
+</p>
 
-Broadcast intents:
+<p>
+   Thereafter, including after reboots, it should not be necessary the run this
+   app at all.
+</p>
 
-   org.smblott.intentradio.PLAY
-   extras:
-      url:URL (optional, default is BBC Radio 4)
-      name:NAME (optional, default is URL)
+<h3>Media Player</h3>
 
-   org.smblott.intentradio.STOP
-   (no extras)
+<p>
+   All aspects of media playback are handled by the built-in Android media player.
+   Additionally, playlist URLs (whose URL/name must end with ".pls") are also
+   supported.
+</p>
 
-All extras are strings.  Use the buttons below to copy these intents to the clipboard.
+<p>
+   During playback, Intent Radio adds a notification to the notification area.
+   Clicking on this notification stops playback.
+</p>
 
-All aspects of media playback are handled by the built-in Android media player.  Additionally, playlist URLs (whose URL/name must end with ".pls") are also supported.
+<p>
+   Some URLs, notably the default BBC Radio 4 stream, take in excess of 30 seconds
+   for playback to start.  Sorry, but I don't know why!  Please be patient.
+</p>
 
-Some URLs, notably the default BBC Radio 4 stream, take in excess of 30 seconds for playback to start.  Sorry, but I don't know why!  Please be patient.
+<h3>Broadcast Intents</h2>
+
+<p>
+<tt>org.smblott.intentradio.PLAY</tt>
+</p>
+
+<p>
+Extras: <br>
+<tt>url</tt>: the URL to play <br>
+<tt>name</tt>: the display name
+</p>
+
+<p>
+If no <tt>name</tt> extra is provided, then the URL is used as the display
+name.  If no <tt>url</tt> is provided, then a built-in URL for BBC Radio 4 is
+used.
+</p>
+
+<p>
+<tt>org.smblott.intentradio.STOP</tt>
+</p>
+
+<p>
+No extras.
+</p>
