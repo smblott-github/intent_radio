@@ -11,7 +11,7 @@ build: $(target)
 	@true
 
 srv = smblott.org
-www = /home/www/smblott.org/intent_radio
+www = /home/www/smblott.org/intent_radio/
 
 install:
 	$(MAKE) build

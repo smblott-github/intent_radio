@@ -1,6 +1,6 @@
 = Intent Radio =
-Stephen Blott <smblott@gmail.com>
-:toc2:
+Stephen Blott <smblott+ir@gmail.com>
+// :toc2:
 
 // /////////////////////////////////////////////////////
 == Who might be interested? ==
@@ -100,7 +100,7 @@ Additionally, _Intent Radio_ supports
 http://en.wikipedia.org/wiki/PLS_(file_format)[playlists] (whose URL must
 end with the suffix `.pls`).  For example:
 
-- `http://www.bbc.co.uk/radio/listen/live/r4_heaacv2.pls`
+- `http://www.bbc.co.uk/.../xxx.pls`
 
 // /////////////////////////////////////////////////////
 == Warnings! ==
