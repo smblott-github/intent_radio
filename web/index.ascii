@@ -3,6 +3,16 @@ Stephen Blott <smblott@gmail.com>
 :toc2:
 
 // /////////////////////////////////////////////////////
+== Who might be interested? ==
+
+You might be interested in _Intent Radio_ if:
+
+- you use Android,
+- you use Tasker,
+- you listen to internet radio, and
+- you're a geek.
+
+// /////////////////////////////////////////////////////
 == What? ==
 
 _Intent Radio_ is an android internet radio app without a graphical user
@@ -10,6 +20,14 @@ interface.  It is controlled exclusively through the delivery of
 http://developer.android.com/reference/android/content/BroadcastReceiver.html[broadcast
 intents].  If you do not know what a broadcast intent is, then this is
 probably not the app for you.
+
+// /////////////////////////////////////////////////////
+== Download ==
+
+I haven't figured out the details of putting _Intent Radio_ onto the play
+store yet.  So, for the moment, the download is here:
+
+- link:IntentRadio-release.apk[]
 
 // /////////////////////////////////////////////////////
 == Why? ==
@@ -43,11 +61,11 @@ language combined with a mechanism to fire off tasks in response to various
 events.
 
 _Intent Radio_ was written primarily to be driven by tasker, either via
-task shortcuts on the desktop, or via Tasker's response to events such as
+task shortcuts on the home screen, or via Tasker's response to events such as
 a headset being plugged in or out.
 
 // /////////////////////////////////////////////////////
-== What? (Again) ==
+== How? ==
 
 _Intent Radio_ supports the following broadcast intents...
 
@@ -55,8 +73,8 @@ _Intent Radio_ supports the following broadcast intents...
 ****
 - start playback
 - extras:
-** `url` the URL to play
-** `name` the display name for the station
+** `url` -- the URL to play
+** `name` -- the display name for the station
 
 Both extras are strings, and both are optional.  If `name` is omitted,
 then the URL is used as the display name.  If `url` is omitted, then
@@ -73,15 +91,33 @@ During playback, _Intent Radio_ places a notification in the notification
 area.  Clicking on the notification broadcasts the "`...STOP`" intent, which
 causes playback to stop.
 
+_Intent Radio_ uses the built-in Android
+http://developer.android.com/reference/android/media/MediaPlayer.html[media
+player] for playback.  So all audio codecs supported natively by Android
+are supported by _Intent Radio_.
+
+Additionally, _Intent Radio_ supports
+http://en.wikipedia.org/wiki/PLS_(file_format)[playlists] (whose URL must
+end with the suffix `.pls`).  For example:
+
+- `http://www.bbc.co.uk/radio/listen/live/r4_heaacv2.pls`
+
 // /////////////////////////////////////////////////////
-== Warning! ==
+== Warnings! ==
 
 Although _Intent Radio_ has no graphical user interface, you must
 nevertheless start up the app _at least once_.  Otherwise, Android will not
 deliver broadcast intents to the app.  This is an Android security feature.
 
+Also, start up can be slow for some streams.  BBC Radio 4, for example,
+takes in excess of 30 seconds for playback to begin.  I do not know the
+source of this delay.  Please be patient.
+
+Finally, _Intent Radio_ is built for Android API level 16, so only for 4.1
+(Jelly Bean) devices and above.
+
 // /////////////////////////////////////////////////////
-== A Tasker Project ==
+== A Sample Tasker Project ==
 
 If you're using Tasker, then this link:./Radio.prj.xml[Tasker project] may
 be helpful in getting started with _Intent Radio_.
