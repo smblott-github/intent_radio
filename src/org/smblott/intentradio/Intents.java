@@ -10,9 +10,15 @@ public class Intents extends BroadcastReceiver {
    public void onReceive(Context context, Intent intent) {
       Intent msg = new Intent(context, IntentPlayer.class);
       msg.putExtra("action", intent.getAction());
-      if ( intent.hasExtra("url")  ) msg.putExtra("url",  intent.getStringExtra("url") );
-      if ( intent.hasExtra("name") ) msg.putExtra("name", intent.getStringExtra("name"));
+      passExtra("url", intent, msg);
+      passExtra("name", intent, msg);
       context.startService(msg);
+   }
+
+   private void passExtra(String key, Intent intent, Intent msg)
+   {
+      if ( intent.hasExtra(key) )
+         msg.putExtra(key, intent.getStringExtra(key));
    }
 
 }
