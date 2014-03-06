@@ -15,12 +15,12 @@ public class PlaylistPls
       Random random = new Random();
       int i;
 
-      List<String> text = HttpGetter.httpGet(url);
-      for (i=0; i<text.size(); i+= 1)
-         if ( ! text.get(i).startsWith("File") && 0 <= text.get(i).indexOf('=') )
-            text.set(i, "");
+      List<String> lines = HttpGetter.httpGet(url);
+      for (i=0; i<lines.size(); i+= 1)
+         if ( ! lines.get(i).startsWith("File") && 0 <= lines.get(i).indexOf('=') )
+            lines.set(i, "");
 
-      ArrayList links = links(TextUtils.join("\n", text));
+      ArrayList links = links(TextUtils.join("\n", lines));
       if ( links.size() == 0 )
          return null;
 
