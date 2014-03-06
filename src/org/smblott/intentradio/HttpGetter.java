@@ -10,14 +10,11 @@ import java.lang.StringBuilder;
 
 import java.util.List;
 import java.util.LinkedList;
+import android.text.TextUtils;
 
 public class HttpGetter
 {
-   HttpGetter()
-   {
-   }
-
-   public List<String> httpGet(String str)
+   public static List<String> httpGet(String str)
    {
       List<String> lines = new LinkedList<String>();
       HttpURLConnection conn;
@@ -43,7 +40,12 @@ public class HttpGetter
       return lines;
    }
 
-   public static List<String> readStream(InputStream in, List<String> lines) throws Exception
+   public static String httpGetStr(String str)
+   {
+      return TextUtils.join("\n", httpGet(str));
+   }
+
+   private static List<String> readStream(InputStream in, List<String> lines) throws Exception
    {
       BufferedReader reader = new BufferedReader(new InputStreamReader(in));
       String line = null;
