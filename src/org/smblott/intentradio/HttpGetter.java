@@ -20,13 +20,11 @@ public class HttpGetter
       List<String> lines = new LinkedList<String>();
       HttpURLConnection conn;
 
-      log(str);
+      log("> " + str);
       try {
-         log("1");
          URL url = new URL(str);
-         log("2");
          conn = (HttpURLConnection) url.openConnection();
-         log("3");
+         log(conn.toString());
       }
       catch ( Exception e ) { return lines; }
 

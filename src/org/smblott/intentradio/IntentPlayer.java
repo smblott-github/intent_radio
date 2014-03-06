@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.Context;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.os.StrictMode;
 
 import android.app.PendingIntent;
 import android.app.Notification;
@@ -86,6 +87,9 @@ public class IntentPlayer extends Service
    public void onCreate() {
       context = getApplicationContext();
       random = new Random();
+
+      StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+      StrictMode.setThreadPolicy(policy);
 
       app_name = getString(R.string.app_name);
       app_name_long = getString(R.string.app_name_long);
