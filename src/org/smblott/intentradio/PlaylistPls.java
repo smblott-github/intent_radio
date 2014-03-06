@@ -20,11 +20,11 @@ public class PlaylistPls
          if ( ! text.get(i).startsWith("File") && 0 <= text.get(i).indexOf('=') )
             text.set(i, "");
 
-      ArrayList urls = links(TextUtils.join("\n", text));
-      if ( urls.size() == 0 )
+      ArrayList links = links(TextUtils.join("\n", text));
+      if ( links.size() == 0 )
          return null;
 
-      return (String) urls.get(random.nextInt(urls.size()));
+      return (String) links.get(random.nextInt(links.size()));
    }
 
    // source: http://blog.houen.net/java-get-url-from-string/
