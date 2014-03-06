@@ -25,6 +25,14 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpEntity;
 import org.apache.http.util.EntityUtils;
 
+import java.net.URL;
+import java.net.HttpURLConnection;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.StringBuilder;
+
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -267,6 +275,45 @@ public class IntentPlayer extends Service
    /* ********************************************************************
     * Extract URL from a playlist...
     */
+
+   private String httpDump(String str)
+   {
+      String txt = "";
+      HttpURLConnection conn;
+
+      try {
+         URL url = new URL(str);
+         conn = (HttpURLConnection) url.openConnection();
+      }
+      catch ( Exception e ) {
+         return "";
+      }
+
+      try {
+         InputStream in = new BufferedInputStream(conn.getInputStream());
+         txt = readStream(in);
+      }
+      catch ( Exception e ) {
+      }
+      finally {
+         conn.disconnect();
+      }
+
+      return txt;
+   }
+
+   public static String readStream(InputStream is) throws Exception
+   {
+      BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+      StringBuilder sb = new StringBuilder();
+      String line = null;
+
+      while ((line = reader.readLine()) != null)
+         sb.append(line);
+
+      is.close();
+      return sb.toString();
+   }
 
    private String playlist(String url)
    {
