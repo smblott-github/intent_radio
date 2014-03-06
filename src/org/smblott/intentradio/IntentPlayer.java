@@ -49,12 +49,13 @@ import android.net.Uri;
 import android.util.Log;
 
 import java.util.Random;
+import org.smblott.intentradio.HttpGetter;
 
 public class IntentPlayer extends Service
    implements OnBufferingUpdateListener, OnInfoListener, OnErrorListener, OnPreparedListener
 {
 
-   private static final boolean debug_logcat = false;
+   private static final boolean debug_logcat = true;
    private static final boolean debug_file = true;
    private static final int note_id = 100;
 
@@ -177,6 +178,11 @@ public class IntentPlayer extends Service
       }
 
       toast(name);
+      if ( true )
+      {
+         toast(url);
+         return stop();
+      }
       player = new MediaPlayer();
       player.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
       player.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -276,47 +282,19 @@ public class IntentPlayer extends Service
     * Extract URL from a playlist...
     */
 
-   private String httpDump(String str)
-   {
-      String txt = "";
-      HttpURLConnection conn;
-
-      try {
-         URL url = new URL(str);
-         conn = (HttpURLConnection) url.openConnection();
-      }
-      catch ( Exception e ) {
-         return "";
-      }
-
-      try {
-         InputStream in = new BufferedInputStream(conn.getInputStream());
-         txt = readStream(in);
-      }
-      catch ( Exception e ) {
-      }
-      finally {
-         conn.disconnect();
-      }
-
-      return txt;
-   }
-
-   public static String readStream(InputStream is) throws Exception
-   {
-      BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-      StringBuilder sb = new StringBuilder();
-      String line = null;
-
-      while ((line = reader.readLine()) != null)
-         sb.append(line);
-
-      is.close();
-      return sb.toString();
-   }
-
    private String playlist(String url)
    {
+      String text = HttpGetter.httpGetStr(url);
+      ArrayList urls = links(text);
+      if ( 0 < urls.size() )
+      {
+         String real_url = (String) urls.get(random.nextInt(urls.size()));
+         log(real_url);
+         return real_url;
+      }
+      return null;
+
+      /*
       log("Extract playlist:\n" + url);
       try {
          HttpClient client = new DefaultHttpClient();  
@@ -340,6 +318,7 @@ public class IntentPlayer extends Service
          toast("Error fetching playlist.", true);
       }
       return null;
+      */
    }
 
    // source: http://blog.houen.net/java-get-url-from-string/
