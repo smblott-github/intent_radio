@@ -10,14 +10,14 @@ import java.lang.StringBuilder;
 
 import android.util.Log;
 import java.util.List;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import android.text.TextUtils;
 
 public class HttpGetter
 {
    public static List<String> httpGet(String str)
    {
-      List<String> lines = new LinkedList<String>();
+      List<String> lines = new ArrayList<String>();
       HttpURLConnection conn;
 
       try {

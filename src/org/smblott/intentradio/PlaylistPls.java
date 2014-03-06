@@ -4,6 +4,8 @@ import java.util.Random;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import android.text.TextUtils;
+import java.util.List;
 
 public class PlaylistPls
 {
@@ -11,8 +13,14 @@ public class PlaylistPls
    public static String get(String url)
    {
       Random random = new Random();
-      String text = HttpGetter.httpGetStr(url);
-      ArrayList urls = links(text);
+      int i;
+
+      List<String> text = HttpGetter.httpGet(url);
+      for (i=0; i<text.size(); i+= 1)
+         if ( ! text.get(i).startsWith("File") && 0 <= text.get(i).indexOf('=') )
+            text.set(i, "");
+
+      ArrayList urls = links(TextUtils.join("\n", text));
       if ( urls.size() == 0 )
          return null;
 

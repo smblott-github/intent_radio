@@ -34,6 +34,10 @@ public class IntentPlayer extends Service
    implements OnBufferingUpdateListener, OnInfoListener, OnErrorListener, OnPreparedListener
 {
 
+   /* ********************************************************************
+    * Globals...
+    */
+
    private static final boolean debug_logcat = true;
    private static final boolean debug_file = true;
    private static final boolean play_disabled = false;
@@ -58,7 +62,7 @@ public class IntentPlayer extends Service
    private static String url = null;
 
    /* ********************************************************************
-    * Service methods...
+    * Create/destroy...
     */
 
    @Override
@@ -98,24 +102,28 @@ public class IntentPlayer extends Service
 
    public void onDestroy()
    {
+      stop();
       if ( log_file_stream != null )
       {
          try { log_file_stream.close(); }
          catch (Exception e) { }
          log_file_stream = null;
       }
-      stop();
    }
+
+   /* ********************************************************************
+    * Primary entry point...
+    */
 
    @Override
    public int onStartCommand(Intent intent, int flags, int startId)
    {
       if ( intent == null )
-         return Service.START_NOT_STICKY;
+         return stop();
 
       String action = intent.getStringExtra("action");
       if ( action == null )
-         return Service.START_NOT_STICKY;
+         return stop();
       log(action);
 
       if ( intent_stop.equals(action) )
@@ -134,7 +142,7 @@ public class IntentPlayer extends Service
          return play(url);
       }
 
-      return Service.START_NOT_STICKY;
+      return stop();
    }
 
    /* ********************************************************************
@@ -160,11 +168,10 @@ public class IntentPlayer extends Service
       }
 
       toast(name);
+      log(url);
+
       if ( play_disabled )
-      {
-         log(url);
          return stop();
-      }
 
       player = new MediaPlayer();
       player.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
