@@ -12,19 +12,17 @@ public class PlaylistPls
 
    public static String get(String url)
    {
-      Random random = new Random();
-      int i;
-
       List<String> lines = HttpGetter.httpGet(url);
-      for (i=0; i<lines.size(); i+= 1)
-         if ( ! lines.get(i).startsWith("File") && 0 <= lines.get(i).indexOf('=') )
+
+      for (int i=0; i<lines.size(); i+= 1)
+         if ( ! lines.get(i).startsWith("File") )
             lines.set(i, "");
 
       ArrayList links = links(TextUtils.join("\n", lines));
       if ( links.size() == 0 )
          return null;
 
-      return (String) links.get(random.nextInt(links.size()));
+      return (String) links.get(new Random().nextInt(links.size()));
    }
 
    // source: http://blog.houen.net/java-get-url-from-string/
