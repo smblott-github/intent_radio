@@ -47,14 +47,13 @@ public class HttpGetter
 
    private static List<String> readStream(InputStream in, List<String> lines) throws Exception
    {
-      BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+      BufferedReader fd = new BufferedReader(new InputStreamReader(in));
       String line = null;
 
-      while ((line = reader.readLine()) != null)
+      while ((line = fd.readLine()) != null)
          lines.add(line);
 
       in.close();
       return lines;
    }
-
 }
