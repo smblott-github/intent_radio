@@ -173,63 +173,6 @@ public class IntentPlayer extends Service
    }
 
    /* ********************************************************************
-    * PlaylistPlsGetter...
-    */
-
-   private class PlaylistPlsGetter extends AsyncTask<String, Void, Void>
-   {
-      protected Void doInBackground(String... args)
-      {
-         if ( args.length != 3 )
-         {
-            log("PlaylistPlsGetter: invalid args length");
-            return null;
-         }
-
-         String plsUrl = args[0];
-         String name = args[1];
-         int cnt = Integer.parseInt(args[2]);
-
-         if ( plsUrl == null )
-         {
-            log("PlaylistPlsGetter: no playlist url");
-            return null;
-         }
-
-         if ( name == null )
-         {
-            log("PlaylistPlsGetter: no name");
-            return null;
-         }
-
-         String url = PlaylistPls.get(plsUrl);
-
-         if ( url == null )
-         {
-            log("PlaylistPlsGetter: failed to extract url");
-            return null;
-         }
-
-         if ( url.endsWith(".pls") )
-         {
-            log("PlaylistPlsGetter: another paylist!");
-            return null;
-         }
-
-         Intent msg = new Intent(context, IntentPlayer.class);
-         msg.putExtra("action", intent_play);
-         msg.putExtra("url", url);
-         msg.putExtra("name", name);
-         msg.putExtra("cnt", cnt);
-
-         if ( ! isCancelled() )
-            context.startService(msg);
-
-         return null;
-      }
-   }
-
-   /* ********************************************************************
     * Play...
     */
 
