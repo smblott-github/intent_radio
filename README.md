@@ -24,7 +24,7 @@ Download
 --------
 
 I haven't figured out the details of putting *Intent Radio* onto the Play
-Store yet.  So, for the moment, the download is [here](http://smblott.org/intent_radio/).
+Store yet.  So, for the moment, the download is on the GitHub project's [release page](https://github.com/smblott-github/intent_radio/releases).
 
 Or, of course, you can build the app yourself.
 
