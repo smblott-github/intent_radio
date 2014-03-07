@@ -181,28 +181,22 @@ public class IntentPlayer extends Service
    {
       stop();
 
-      if ( url != null && url.endsWith(".pls") )
-      {
-         log("playlist/pls: " + url);
-         pltask = new PlaylistPls(context,intent_play);
-         pltask.execute(url, name, "" + counter);
-         return done();
-      }
-
       if ( url == null )
       {
          toast("No URL.", true);
-         return stop();
+         return done();
+      }
+
+      if ( url.endsWith(".pls") )
+      {
+         log("playlist/pls: " + url);
+         pltask = new PlaylistPls(context,intent_play);
+         pltask.execute(url, name, ""+counter);
+         return done();
       }
 
       toast(name);
       log("play: " + url);
-      return play_start(url);
-   }
-
-   private int play_start(String url)
-   {
-      log("play_start: " + url);
 
       if ( play_disabled )
          return stop();
@@ -265,13 +259,23 @@ public class IntentPlayer extends Service
    }
 
    /* ********************************************************************
+    * All onStartCommand invocations end here...
+    */
+
+   int done()
+   {
+      return START_NOT_STICKY;
+   }
+
+   /* ********************************************************************
     * Listeners...
     */
 
-   public void onPrepared(MediaPlayer player) {
+   public void onPrepared(MediaPlayer player)
+   {
+      log("Prepared, starting....");
       player.start();
       notificate();
-      log("Ok (onPrepared).");
    }
 
    public void onBufferingUpdate(MediaPlayer player, int percent)
@@ -318,12 +322,16 @@ public class IntentPlayer extends Service
     * Logging...
     */
 
+   private static DateFormat format = null;
+
    private void log_to_file(String msg)
    {
       if ( log_file_stream == null || msg == null )
          return;
 
-      DateFormat format = new SimpleDateFormat("HH:mm:ss ");
+      if ( format == null )
+         format = new SimpleDateFormat("HH:mm:ss ");
+
       String stamp = format.format(new Date());
 
       try
@@ -375,15 +383,6 @@ public class IntentPlayer extends Service
          note = builder.build();
          note_manager.notify(note_id, note);
       }
-   }
-
-   /* ********************************************************************
-    * All onStartCommand invocations end here...
-    */
-
-   int done()
-   {
-      return START_NOT_STICKY;
    }
 
    /* ********************************************************************
