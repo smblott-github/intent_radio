@@ -122,4 +122,18 @@ Finally, _Intent Radio_ is built for Android API level 16, so only for 4.1
 If you're using Tasker, then this link:./Radio.prj.xml[Tasker project] may
 be helpful in getting started with _Intent Radio_.
 
+// /////////////////////////////////////////////////////
+== Release Notes ==
+
+.Version 1.1
+****
+- Use `httpURLConnection`.
+- Fetch playlists on an asynchronous thread (so, non-blocking).
+****
+
+.Version 1.0
+****
+- Initial release.
+****
+
 // vim: set syntax=asciidoc:
