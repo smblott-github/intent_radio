@@ -20,16 +20,16 @@ install-release:
 	adb install -r bin/IntentRadio-release.apk
 
 play:
-	adb shell am broadcast -a org.smblott.intentradio.PLAY
+	adb shell am broadcast -a org.smblott.intentradio.PLAY -e debug yes
 
 stop:
-	adb shell am broadcast -a org.smblott.intentradio.STOP
+	adb shell am broadcast -a org.smblott.intentradio.STOP -e debug yes
 
 ufm:
-	adb shell am broadcast -a org.smblott.intentradio.PLAY -e url http://192.168.3.3/cgi-bin/sc/wav -e name "Elsa Sound Card"
+	adb shell am broadcast -a org.smblott.intentradio.PLAY -e url http://192.168.3.3/cgi-bin/sc/wav -e name "Elsa Sound Card" -e debug yes
 
 lyric:
-	adb shell am broadcast -a org.smblott.intentradio.PLAY -e url http://icecast2.rte.ie/lyric -e name "RTE Lyric FM"
+	adb shell am broadcast -a org.smblott.intentradio.PLAY -e url http://icecast2.rte.ie/lyric -e name "RTE Lyric FM" -e debug yes
 
 logcat:
 	adb logcat -s IntentRadio

@@ -14,13 +14,12 @@ import android.util.Log;
 public class Logger
 {
    private static Context context = null;
+
+   private static boolean debugging = false;
    private static boolean done_init = false;
 
-   private static boolean debug_file = true;
-   private static boolean debug_log = true;
-
-   private static String app_name = null;
-   private static FileOutputStream log_file_stream = null;
+   private static String name = null;
+   private static FileOutputStream file = null;
 
    private static DateFormat format = null;
 
@@ -30,62 +29,71 @@ public class Logger
 
    public static void init(Context acontext)
    {
+      context = acontext;
+      name = context.getString(R.string.app_name);
+
+      Log.d(name, "Logger init");
+   }
+
+   public static void start()
+   {
       if ( done_init )
          return;
 
-      done_init = true;
-      context = acontext;
-      app_name = context.getString(R.string.app_name);
+      Log.d(name, "Logger start");
 
-      if ( debug_file && log_file_stream == null )
-         try
-         {
-            File log_file = new File(context.getExternalFilesDir(null), context.getString(R.string.intent_log_file));
-            log_file_stream = new FileOutputStream(log_file);
-         }
-         catch (Exception e)
-            { log_file_stream = null; }
+      done_init = true;
+      debugging = true;
+
+      format = new SimpleDateFormat("HH:mm:ss ");
+
+      try
+      {
+         File log_file = new File(context.getExternalFilesDir(null), context.getString(R.string.intent_log_file));
+         file = new FileOutputStream(log_file);
+      }
+      catch (Exception e)
+         { file = null; }
    }
 
    public static void destroy()
    {
-      if ( log_file_stream != null )
+      if ( file != null )
       {
-         try { log_file_stream.close(); }
+         try { file.close(); }
          catch (Exception e) { }
-         log_file_stream = null;
+         file = null;
       }
+
+      debugging = false;
+      done_init = false;
    }
 
    /* ********************************************************************
     * File logging...
     */
 
-   private static void log_to_file(String msg)
+   private static void log_file(String msg)
    {
-      if ( log_file_stream == null )
+      if ( file == null )
          return;
-
-      if ( format == null )
-         format = new SimpleDateFormat("HH:mm:ss ");
 
       String stamp = format.format(new Date());
 
       try
       {
-         log_file_stream.write((stamp+msg+"\n").getBytes());
-         log_file_stream.flush();
+         file.write((stamp+msg+"\n").getBytes());
+         file.flush();
       } catch (Exception e) {}
    }
 
    public static void log(String msg)
    {
-      if ( msg == null )
+      if ( ! debugging || msg == null )
          return;
 
-      log_to_file(msg);
-      if ( debug_log )
-         Log.d(app_name, msg);
+      Log.d(name, msg);
+      log_file(msg);
    }
 
    public static void toast(String msg)

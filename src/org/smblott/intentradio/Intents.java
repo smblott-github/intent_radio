@@ -12,6 +12,7 @@ public class Intents extends BroadcastReceiver {
       msg.putExtra("action", intent.getAction());
       passExtra("url", intent, msg);
       passExtra("name", intent, msg);
+      passExtra("debug", intent, msg);
       context.startService(msg);
    }
 

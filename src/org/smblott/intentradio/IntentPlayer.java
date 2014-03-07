@@ -20,6 +20,7 @@ import android.media.MediaPlayer.OnInfoListener;
 import android.media.MediaPlayer.OnPreparedListener;
 
 import android.net.Uri;
+import android.os.Build.VERSION;
 
 public class IntentPlayer extends Service
    implements OnBufferingUpdateListener, OnInfoListener, OnErrorListener, OnPreparedListener
@@ -106,6 +107,9 @@ public class IntentPlayer extends Service
    @Override
    public int onStartCommand(Intent intent, int flags, int startId)
    {
+      if ( intent != null && intent.hasExtra("debug") )
+         Logger.start();
+
       if ( intent == null || ! intent.hasExtra("action") )
          return done();
 
