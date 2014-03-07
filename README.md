@@ -34,18 +34,18 @@ one?
 
 Well, I couldn't find one that worked just right for me...
 
-Xiialive::
+Xiialive:
    I tried (and like) [xiialaive](http://xiialive.com/).  And it supports external
    broadcast intents.  However, I was finding it would hang irredeemably
    on start up about two times in five, mainly when on mobile data.
 
-Tunein::
+Tunein:
    And I particularly like [tunein](http://tunein.com/).  However, it doesn't
    support either shortcuts or broadcast intents, so I have no way to
    start and stop it automatically, say when a headset is plugged in or
    out.
 
-BBC IPlayer Radio::
+BBC IPlayer Radio:
    The
    [BBC iPlayer Radio](https://play.google.com/store/apps/details?id=uk.co.bbc.android.iplayerradio&hl=en)
    app is pretty slick; and most of what I listen to is BBC.  Again, however,
@@ -67,7 +67,7 @@ How?
 *Intent Radio* supports the following broadcast intents...
 
 `org.smblott.intentradio.PLAY`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 - start playback
 - extras:
 .. `url` -- the URL to play
@@ -78,7 +78,6 @@ then the URL is used as the display name.  If `url` is omitted, then
 a built-in URL for BBC Radio 4 is used.
 
 `org.smblott.intentradio.STOP`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - stop playback
 - extras: none
