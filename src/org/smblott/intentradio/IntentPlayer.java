@@ -40,7 +40,7 @@ public class IntentPlayer extends Service
     * Globals...
     */
 
-   private static final boolean debug_logcat = true;
+   private static final boolean debug_logcat = false;
    private static final boolean debug_file = true;
    private static final boolean play_disabled = false;
    private static Context context = null;
