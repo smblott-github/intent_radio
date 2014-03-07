@@ -11,5 +11,5 @@ public class PlaylistPls extends Playlist
       { super(context,play_intent); }
 
    boolean keep(String line)
-      { return line.startsWith("File"); }
+      { return line.startsWith("File") && 0 < line.indexOf('='); }
 }

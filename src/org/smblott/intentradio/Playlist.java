@@ -25,50 +25,17 @@ public abstract class Playlist extends AsyncTask<String, Void, Void>
       intent_play = play_intent;
    }
 
+   // A playlist contains a sequence of lines.  Only some of those lines may
+   // contain URLs.  Other lines such as comments may also contain URLs, but
+   // they aren't part of the playlist.
+   //
+   // Implementations of keep() must return true if a line of a playlist files
+   // may contain a URL, false, otherwise.
+   //
+   // An implementation which always returns true may work, but may also
+   // occasionally stumble across a URL which is not part of the playlist.
+   //
    abstract boolean keep(String line);
-
-   /* ********************************************************************
-    * Fetch a single (random) url from a playlist...
-    */
-
-   public String get(String url)
-   {
-      List<String> lines = HttpGetter.httpGet(url);
-
-      for (int i=0; i<lines.size(); i+= 1)
-         if ( ! keep(lines.get(i)) )
-            lines.set(i, "");
-
-      List<String> links = getLinks(TextUtils.join("\n", lines));
-      if ( links.size() == 0 )
-         return null;
-
-      return links.get(new Random().nextInt(links.size()));
-   }
-
-   /* ********************************************************************
-    * Extract list of urls from string...
-    *
-    * source: http://blog.houen.net/java-get-url-from-string/
-    */
-
-   private List<String> getLinks(String text)
-   {
-      ArrayList links = new ArrayList<String>();
-    
-      Pattern p = Pattern.compile(regex);
-      Matcher m = p.matcher(text);
-
-      while( m.find() )
-      {
-         String str = m.group();
-         if (str.startsWith("(") && str.endsWith(")"))
-            str = str.substring(1, str.length() - 1);
-         links.add(str);
-      }
-
-      return links;
-   }
 
    /* ********************************************************************
     * Asynchronous task to fetch playlist...
@@ -119,6 +86,49 @@ public abstract class Playlist extends AsyncTask<String, Void, Void>
          context.startService(msg);
 
       return null;
+   }
+
+   /* ********************************************************************
+    * Fetch a single (random) url from a playlist...
+    */
+
+   public String get(String url)
+   {
+      List<String> lines = HttpGetter.httpGet(url);
+
+      for (int i=0; i<lines.size(); i+= 1)
+         if ( ! keep(lines.get(i)) )
+            lines.set(i, "");
+
+      List<String> links = getLinks(TextUtils.join("\n", lines));
+      if ( links.size() == 0 )
+         return null;
+
+      return links.get(new Random().nextInt(links.size()));
+   }
+
+   /* ********************************************************************
+    * Extract list of urls from string...
+    *
+    * source: http://blog.houen.net/java-get-url-from-string/
+    */
+
+   private List<String> getLinks(String text)
+   {
+      ArrayList links = new ArrayList<String>();
+    
+      Pattern p = Pattern.compile(regex);
+      Matcher m = p.matcher(text);
+
+      while( m.find() )
+      {
+         String str = m.group();
+         if (str.startsWith("(") && str.endsWith(")"))
+            str = str.substring(1, str.length() - 1);
+         links.add(str);
+      }
+
+      return links;
    }
 
    /* ********************************************************************
