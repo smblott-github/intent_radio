@@ -57,14 +57,14 @@ public class IntentPlayer extends Service
    private static String url = null;
 
    private static int counter = 0;
-   private static Playlist atask = null;
+   private static Playlist pltask = null;
    private static MediaPlayer player = null;
    private static Builder builder = null;
    private static Notification note = null;
    private static NotificationManager note_manager = null;
 
    /* ********************************************************************
-    * Create/destroy...
+    * Create service...
     */
 
    @Override
@@ -76,27 +76,34 @@ public class IntentPlayer extends Service
       intent_play = getString(R.string.intent_play);
       intent_stop = getString(R.string.intent_stop);
 
-      note_manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-      pend_intent = PendingIntent.getBroadcast(context, 0, new Intent(intent_stop), 0);
-
       if ( debug_file )
          try
          {
             File log_file = new File(getExternalFilesDir(null), getString(R.string.intent_log_file));
             log_file_stream = new FileOutputStream(log_file);
          }
-         catch (Exception e) { log_file_stream = null; }
+         catch (Exception e)
+            { log_file_stream = null; }
+
+      note_manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+      pend_intent = PendingIntent.getBroadcast(context, 0, new Intent(intent_stop), 0);
 
       builder =
          new Notification.Builder(context)
             .setSmallIcon(R.drawable.ic_launcher)
+            // .setLargeIcon(BITMAP)
             .setPriority(Notification.PRIORITY_HIGH)
             .setOngoing(true)
+            .setContentIntent(pend_intent)
+            .setContentTitle(app_name_long)
             // not available in API 16...
             // .setShowWhen(false)
-            .setContentIntent(pend_intent)
             ;
    }
+
+   /* ********************************************************************
+    * Destroy service...
+    */
 
    public void onDestroy()
    {
@@ -109,11 +116,6 @@ public class IntentPlayer extends Service
       }
    }
 
-   int done()
-   {
-      return Service.START_NOT_STICKY;
-   }
-
    /* ********************************************************************
     * Primary entry point...
     *
@@ -124,18 +126,18 @@ public class IntentPlayer extends Service
     * That value must be unchanged when the susequent play intent is received.
     *
     * counter is incremented in stop(), which is called for every valid intent
-    * which is received (and some!).
+    * which is received.
     */
 
    @Override
    public int onStartCommand(Intent intent, int flags, int startId)
    {
       if ( intent == null || ! intent.hasExtra("action") )
-         return stop();
+         return done();
 
       String action = intent.getStringExtra("action");
       if ( action == null )
-         return stop();
+         return done();
       log(action);
 
       if ( intent_stop.equals(action) )
@@ -168,7 +170,7 @@ public class IntentPlayer extends Service
       }
 
       log("unknown action: " + action);
-      return stop();
+      return done();
    }
 
    /* ********************************************************************
@@ -179,15 +181,11 @@ public class IntentPlayer extends Service
    {
       stop();
 
-      builder.setContentTitle(app_name_long);
-      builder.setContentText(name + ": connecting...");
-      note = builder.build();
-
       if ( url != null && url.endsWith(".pls") )
       {
          log("playlist/pls: " + url);
-         atask = new PlaylistPls(context,intent_play);
-         atask.execute(url, name, "" + counter);
+         pltask = new PlaylistPls(context,intent_play);
+         pltask.execute(url, name, "" + counter);
          return done();
       }
 
@@ -208,6 +206,9 @@ public class IntentPlayer extends Service
 
       if ( play_disabled )
          return stop();
+
+      builder.setContentText(name + ", connecting...");
+      note = builder.build();
 
       player = new MediaPlayer();
       player.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
@@ -243,10 +244,10 @@ public class IntentPlayer extends Service
    {
       counter += 1;
 
-      if ( atask != null )
+      if ( pltask != null )
       {
-         atask.cancel(true);
-         atask = null;
+         pltask.cancel(true);
+         pltask = null;
       }
 
       if ( player != null )
@@ -374,6 +375,15 @@ public class IntentPlayer extends Service
          note = builder.build();
          note_manager.notify(note_id, note);
       }
+   }
+
+   /* ********************************************************************
+    * All onStartCommand invocations end here...
+    */
+
+   int done()
+   {
+      return START_NOT_STICKY;
    }
 
    /* ********************************************************************
