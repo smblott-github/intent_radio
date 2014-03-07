@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.view.View;
 import android.content.Context;
 
@@ -26,6 +25,8 @@ public class IntentRadio extends Activity
    @Override
    public void onCreate(Bundle savedInstanceState)
    {
+      Logger.init(getApplicationContext());
+
       intent_play = getString(R.string.intent_play);
       intent_stop = getString(R.string.intent_stop);
 
@@ -80,9 +81,6 @@ public class IntentRadio extends Activity
       { clip(intent_stop); }
 
    private void toast(String msg)
-   {
-      Context context = getApplicationContext();
-      Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
-   }
+      { Logger.toast(msg); }
 
 }

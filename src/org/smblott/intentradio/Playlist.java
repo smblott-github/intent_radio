@@ -10,7 +10,6 @@ import java.util.regex.Matcher;
 import android.text.TextUtils;
 import java.util.List;
 import android.os.AsyncTask;
-import android.util.Log;
 
 public abstract class Playlist extends AsyncTask<String, Void, Void>
 {
@@ -122,9 +121,10 @@ public abstract class Playlist extends AsyncTask<String, Void, Void>
       return null;
    }
 
+   /* ********************************************************************
+    * Logging...
+    */
+
    private static void log(String msg)
-   {
-      if ( msg != null )
-         Log.d("IntentRadio", msg);
-   }
+      { Logger.log(msg); }
 }

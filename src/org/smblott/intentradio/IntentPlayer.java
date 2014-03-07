@@ -19,16 +19,7 @@ import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnInfoListener;
 import android.media.MediaPlayer.OnPreparedListener;
 
-import java.io.File;
-import java.io.FileOutputStream;
-
-import java.util.Date;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-
-import android.widget.Toast;
 import android.net.Uri;
-import android.util.Log;
 
 public class IntentPlayer extends Service
    implements OnBufferingUpdateListener, OnInfoListener, OnErrorListener, OnPreparedListener
@@ -38,8 +29,6 @@ public class IntentPlayer extends Service
     * Globals...
     */
 
-   private static final boolean debug_logcat = true;
-   private static final boolean debug_file = true;
    private static final boolean play_disabled = false;
    private static Context context = null;
    private static PendingIntent pend_intent = null;
@@ -50,8 +39,6 @@ public class IntentPlayer extends Service
    private static String app_name_long = null;
    private static String intent_play = null;
    private static String intent_stop = null;
-
-   private static FileOutputStream log_file_stream = null;
 
    private static String name = null;
    private static String url = null;
@@ -70,20 +57,12 @@ public class IntentPlayer extends Service
    @Override
    public void onCreate() {
       context = getApplicationContext();
+      Logger.init(context);
 
       app_name = getString(R.string.app_name);
       app_name_long = getString(R.string.app_name_long);
       intent_play = getString(R.string.intent_play);
       intent_stop = getString(R.string.intent_stop);
-
-      if ( debug_file )
-         try
-         {
-            File log_file = new File(getExternalFilesDir(null), getString(R.string.intent_log_file));
-            log_file_stream = new FileOutputStream(log_file);
-         }
-         catch (Exception e)
-            { log_file_stream = null; }
 
       note_manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
       pend_intent = PendingIntent.getBroadcast(context, 0, new Intent(intent_stop), 0);
@@ -108,12 +87,7 @@ public class IntentPlayer extends Service
    public void onDestroy()
    {
       stop();
-      if ( log_file_stream != null )
-      {
-         try { log_file_stream.close(); }
-         catch (Exception e) { }
-         log_file_stream = null;
-      }
+      Logger.destroy();
    }
 
    /* ********************************************************************
@@ -322,43 +296,11 @@ public class IntentPlayer extends Service
     * Logging...
     */
 
-   private static DateFormat format = null;
-
-   private void log_to_file(String msg)
-   {
-      if ( log_file_stream == null )
-         return;
-
-      if ( format == null )
-         format = new SimpleDateFormat("HH:mm:ss ");
-
-      String stamp = format.format(new Date());
-
-      try
-      {
-         log_file_stream.write((stamp+msg+"\n").getBytes());
-         log_file_stream.flush();
-      } catch (Exception e) {}
-   }
-
    private void log(String msg)
-   {
-      if ( msg == null )
-         return;
-
-      log_to_file(msg);
-      if ( debug_logcat )
-         Log.d(app_name, msg);
-   }
+      { Logger.log(msg); }
 
    private void toast(String msg)
-   {
-      if ( msg == null )
-         return;
-
-      Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
-      log(msg);
-   }
+      { Logger.toast(msg); }
 
    /* ****************************************************************
     * Notifications...
