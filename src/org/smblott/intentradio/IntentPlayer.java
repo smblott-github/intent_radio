@@ -73,10 +73,6 @@ public class IntentPlayer extends Service
    public void onCreate() {
       context = getApplicationContext();
 
-      // Remove once playlist requests are correctly handled in a separate thread...
-      StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-      StrictMode.setThreadPolicy(policy);
-
       app_name = getString(R.string.app_name);
       app_name_long = getString(R.string.app_name_long);
       intent_play = getString(R.string.intent_play);
@@ -115,6 +111,11 @@ public class IntentPlayer extends Service
       }
    }
 
+   int done()
+   {
+      return Service.START_NOT_STICKY;
+   }
+
    /* ********************************************************************
     * Primary entry point...
     *
@@ -124,8 +125,8 @@ public class IntentPlayer extends Service
     * value of counter at the time that the asynchronous call was launched.
     * That value must be unchanged when the susequent play intent is received.
     *
-    * counter is incremented in stop(), which is called for every intent which
-    * is received.
+    * counter is incremented in stop(), which is called for every valid intent
+    * which is received (and some!).
     */
 
    @Override
@@ -151,7 +152,7 @@ public class IntentPlayer extends Service
          if ( cnt != counter )
          {
             log("incorrect counter: counter=" + counter + " cnt=" + cnt);
-            return Service.START_NOT_STICKY;
+            return done();
          }
       }
 
@@ -178,7 +179,7 @@ public class IntentPlayer extends Service
 
    private int play(String url)
    {
-      stop(); // note: counter is incremented here
+      stop();
 
       builder.setContentTitle(app_name_long);
       builder.setContentText(name + ": connecting...");
@@ -189,18 +190,18 @@ public class IntentPlayer extends Service
          log("playlist/pls: " + url);
          atask = new PlaylistPls(context,intent_play);
          atask.execute(url, name, "" + counter);
-         return Service.START_NOT_STICKY;
+         return done();
       }
 
-      if ( url != null )
+      if ( url == null )
       {
-         toast(name);
-         log("play: " + url);
-         return play_start(url);
+         toast("No URL.", true);
+         return stop();
       }
 
-      toast("No URL.", true);
-      return stop();
+      toast(name);
+      log("play: " + url);
+      return play_start(url);
    }
 
    private int play_start(String url)
@@ -233,7 +234,7 @@ public class IntentPlayer extends Service
          return stop();
       }
 
-      return Service.START_NOT_STICKY;
+      return done();
    }
 
    /* ********************************************************************
@@ -243,6 +244,7 @@ public class IntentPlayer extends Service
    private int stop()
    {
       counter += 1;
+
       if ( atask != null )
       {
          atask.cancel(true);
@@ -260,7 +262,7 @@ public class IntentPlayer extends Service
       }
 
       note = null;
-      return Service.START_NOT_STICKY;
+      return done();
    }
 
    /* ********************************************************************

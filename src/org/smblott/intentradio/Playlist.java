@@ -24,12 +24,14 @@ public abstract class Playlist extends AsyncTask<String, Void, Void>
       intent_play = play_intent;
    }
 
+   abstract boolean keep(String line);
+
    public String get(String url)
    {
       List<String> lines = HttpGetter.httpGet(url);
 
       for (int i=0; i<lines.size(); i+= 1)
-         if ( ! goodLine(lines.get(i)) )
+         if ( ! keep(lines.get(i)) )
             lines.set(i, "");
 
       ArrayList links = links(TextUtils.join("\n", lines));
@@ -38,8 +40,6 @@ public abstract class Playlist extends AsyncTask<String, Void, Void>
 
       return (String) links.get(new Random().nextInt(links.size()));
    }
-
-   abstract boolean goodLine(String line);
 
    // source: http://blog.houen.net/java-get-url-from-string/
    //
@@ -94,7 +94,7 @@ public abstract class Playlist extends AsyncTask<String, Void, Void>
          return null;
       }
 
-      if ( goodLine(url) )
+      if ( keep(url) )
       {
          log("Playlist: another paylist!");
          return null;
