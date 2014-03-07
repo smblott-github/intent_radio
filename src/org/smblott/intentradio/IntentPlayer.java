@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.StrictMode;
+import android.os.AsyncTask;
 
 import android.app.PendingIntent;
 import android.app.Notification;
@@ -19,6 +20,7 @@ import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.media.MediaPlayer.OnInfoListener;
 import android.media.MediaPlayer.OnErrorListener;
 
+import java.net.URL;
 import java.io.File;
 import java.io.FileOutputStream;
 
@@ -44,6 +46,7 @@ public class IntentPlayer extends Service
 
    private static final int note_id = 100;
 
+   private static AsyncTask<URL, Void, Void> atask = null;
    private static MediaPlayer player = null;
    private static Context context = null;
    private static PendingIntent pend_intent = null;
@@ -146,6 +149,22 @@ public class IntentPlayer extends Service
    }
 
    /* ********************************************************************
+    * PlaylistPlsGetter...
+    */
+
+   private class PlaylistPlsGetter extends AsyncTask<URL, Void, Void>
+   {
+      protected Void doInBackground(URL... urls)
+      {
+         if ( ! isCancelled() )
+         {
+         }
+
+         return null;
+      }
+   }
+
+   /* ********************************************************************
     * Play...
     */
 
@@ -168,6 +187,13 @@ public class IntentPlayer extends Service
       }
 
       toast(name);
+      log(url);
+      return play_start(url);
+   }
+
+   private int play_start(String url)
+   {
+      stop();
       log(url);
 
       if ( play_disabled )
@@ -205,6 +231,12 @@ public class IntentPlayer extends Service
 
    private int stop()
    {
+      if ( atask != null )
+      {
+         atask.cancel(true);
+         atask = null;
+      }
+
       if ( player != null )
       {
          toast("Stopping...", true);
@@ -214,6 +246,7 @@ public class IntentPlayer extends Service
          player.release();
          player = null;
       }
+
       note = null;
       return Service.START_NOT_STICKY;
    }
