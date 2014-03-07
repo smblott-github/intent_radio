@@ -92,7 +92,7 @@ public abstract class Playlist extends AsyncTask<String, Void, Void>
     * Fetch a single (random) url from a playlist...
     */
 
-   public String get(String url)
+   private String get(String url)
    {
       List<String> lines = HttpGetter.httpGet(url);
 
