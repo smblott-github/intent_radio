@@ -58,6 +58,7 @@ public class IntentPlayer extends Service
    private static volatile String name = null;
    private static volatile String url = null;
 
+   private static volatile int counter = 0;
    private static volatile AsyncTask<String, Void, Void> atask = null;
    private static volatile MediaPlayer player = null;
    private static volatile Builder builder = null;
@@ -116,6 +117,15 @@ public class IntentPlayer extends Service
 
    /* ********************************************************************
     * Primary entry point...
+    *
+    * For playlists, the fetching of the play list is handled asynchronously.
+    * A second play intent is then delivered to onStartCommand.  To ensure that
+    * that request is still valid, a counter is checked.  The extra cnt is the
+    * value of counter at the time that the asynchronous call was launched.
+    * That value must be unchanged when the susequent play intent is received.
+    *
+    * counter is incremented in stop(), which is called for every intent which
+    * is received.
     */
 
    @Override
@@ -131,6 +141,19 @@ public class IntentPlayer extends Service
 
       if ( intent_stop.equals(action) )
          return stop();
+
+      if ( intent_play.equals(action) && intent.hasExtra("cnt") )
+      {
+         // This is a play request subsequent to an asynchronous playlist
+         // play request: validate cnt.
+         int cnt = intent.getIntExtra("cnt",0);
+         log("checking counter: " + cnt);
+         if ( cnt != counter )
+         {
+            log("incorrect counter: counter=" + counter + " cnt=" + cnt);
+            return Service.START_NOT_STICKY;
+         }
+      }
 
       if ( intent_play.equals(action) )
       {
@@ -156,7 +179,7 @@ public class IntentPlayer extends Service
    {
       protected Void doInBackground(String... args)
       {
-         if ( args.length != 2 )
+         if ( args.length != 3 )
          {
             log("PlaylistPlsGetter: invalid args length");
             return null;
@@ -164,6 +187,7 @@ public class IntentPlayer extends Service
 
          String plsUrl = args[0];
          String nm = args[1];
+         int cnt = Integer.parseInt(args[2]);
 
          if ( plsUrl == null )
          {
@@ -195,6 +219,7 @@ public class IntentPlayer extends Service
          msg.putExtra("action", intent_play);
          msg.putExtra("url", url);
          msg.putExtra("name", nm);
+         msg.putExtra("cnt", cnt);
 
          if ( ! isCancelled() )
             context.startService(msg);
@@ -209,7 +234,7 @@ public class IntentPlayer extends Service
 
    private int play(String url)
    {
-      stop();
+      stop(); // note: counter incremented here
 
       builder.setContentTitle(app_name_long);
       builder.setContentText(name + ": connecting...");
@@ -219,7 +244,7 @@ public class IntentPlayer extends Service
       {
          log("playlist/pls: " + url);
          atask = new PlaylistPlsGetter();
-         atask.execute(url, name);
+         atask.execute(url, name, "" + counter);
          return Service.START_NOT_STICKY;
       }
 
@@ -273,6 +298,7 @@ public class IntentPlayer extends Service
 
    private int stop()
    {
+      counter += 1;
       if ( atask != null )
       {
          atask.cancel(true);
