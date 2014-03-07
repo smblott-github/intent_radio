@@ -55,15 +55,15 @@ public class IntentPlayer extends Service
 
    private static FileOutputStream log_file_stream = null;
 
-   private static volatile String name = null;
-   private static volatile String url = null;
+   private static String name = null;
+   private static String url = null;
 
-   private static volatile int counter = 0;
-   private static volatile AsyncTask<String, Void, Void> atask = null;
-   private static volatile MediaPlayer player = null;
-   private static volatile Builder builder = null;
-   private static volatile Notification note = null;
-   private static volatile NotificationManager note_manager = null;
+   private static int counter = 0;
+   private static AsyncTask<String, Void, Void> atask = null;
+   private static MediaPlayer player = null;
+   private static Builder builder = null;
+   private static Notification note = null;
+   private static NotificationManager note_manager = null;
 
    /* ********************************************************************
     * Create/destroy...
@@ -131,7 +131,7 @@ public class IntentPlayer extends Service
    @Override
    public int onStartCommand(Intent intent, int flags, int startId)
    {
-      if ( intent == null )
+      if ( intent == null || ! intent.hasExtra("action") )
          return stop();
 
       String action = intent.getStringExtra("action");
@@ -168,6 +168,7 @@ public class IntentPlayer extends Service
          return play(url);
       }
 
+      log("unknown action: " + action);
       return stop();
    }
 
@@ -186,7 +187,7 @@ public class IntentPlayer extends Service
          }
 
          String plsUrl = args[0];
-         String nm = args[1];
+         String name = args[1];
          int cnt = Integer.parseInt(args[2]);
 
          if ( plsUrl == null )
@@ -195,7 +196,7 @@ public class IntentPlayer extends Service
             return null;
          }
 
-         if ( nm == null )
+         if ( name == null )
          {
             log("PlaylistPlsGetter: no name");
             return null;
@@ -218,7 +219,7 @@ public class IntentPlayer extends Service
          Intent msg = new Intent(context, IntentPlayer.class);
          msg.putExtra("action", intent_play);
          msg.putExtra("url", url);
-         msg.putExtra("name", nm);
+         msg.putExtra("name", name);
          msg.putExtra("cnt", cnt);
 
          if ( ! isCancelled() )
