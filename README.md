@@ -69,9 +69,8 @@ How?
 `org.smblott.intentradio.PLAY`
 
 - start playback
-- extras:
-.. `url` -- the URL to play
-.. `name` -- the display name for the station
+- extra: `url` -- the URL to play
+- extra: `name` -- the display name for the station
 
 Both extras are strings, and both are optional.  If `name` is omitted,
 then the URL is used as the display name.  If `url` is omitted, then
@@ -96,8 +95,8 @@ end with the suffix `.pls`).  For example:
 
 - `http://www.bbc.co.uk/.../xxx.pls`
 
-// /////////////////////////////////////////////////////
-== Warnings! ==
+Warnings!
+---------
 
 Although *Intent Radio* has no graphical user interface, you must
 nevertheless start up the app *at least once*.  Otherwise, Android will not
@@ -110,24 +109,21 @@ source of this delay.  Please be patient.
 Finally, *Intent Radio* is built for Android API level 16, so only for 4.1
 (Jelly Bean) devices and above.
 
-// /////////////////////////////////////////////////////
-== A Sample Tasker Project ==
+A Sample Tasker Project
+-----------------------
 
-If you're using Tasker, then this [Tasker
-project](https://github.com/smblott-github/intent_radio/tree/master/misc) may
+If you're using Tasker, then this [Tasker project](https://github.com/smblott-github/intent_radio/tree/master/misc) may
 be helpful in getting started with *Intent Radio*.
 
 // /////////////////////////////////////////////////////
 == Release Notes ==
 
-Version 1.1
-~~~~~~~~~~~
+### Version 1.1
 
 - Use `httpURLConnection`.
 - Fetch playlists on an asynchronous thread (so, non-blocking).
 
-Version 1.0
-~~~~~~~~~~~
+### Version 1.0
 
 - Initial release.
 
