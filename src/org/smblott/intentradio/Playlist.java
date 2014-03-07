@@ -103,7 +103,7 @@ public abstract class Playlist extends AsyncTask<String, Void, Void>
          return null;
       }
 
-      if ( keep(url) )
+      if ( url.endsWith(PlaylistPls.suffix) )
       {
          log("Playlist: another paylist!");
          return null;

@@ -5,6 +5,8 @@ import android.content.Context;
 
 public class PlaylistPls extends Playlist
 {
+   public static String suffix = ".pls";
+
    PlaylistPls(Context context, String play_intent)
       { super(context,play_intent); }
 

@@ -161,7 +161,7 @@ public class IntentPlayer extends Service
          return done();
       }
 
-      if ( url.endsWith(".pls") )
+      if ( url.endsWith(PlaylistPls.suffix) )
       {
          log("playlist/pls: " + url);
          pltask = new PlaylistPls(context,intent_play);
