@@ -20,31 +20,6 @@ import android.text.Html;
 public class IntentRadio extends Activity
 {
 
-   // http://stackoverflow.com/questions/4087674/android-read-text-raw-resource-file
-   public static String readRawTextFile(Context ctx, int resId)
-   {
-      InputStream inputStream = ctx.getResources().openRawResource(resId);
-
-      InputStreamReader inputreader = new InputStreamReader(inputStream);
-      BufferedReader buffreader = new BufferedReader(inputreader);
-
-      String line;
-      StringBuilder text = new StringBuilder();
-
-      try {
-         while (( line = buffreader.readLine()) != null)
-         {
-            text.append(line);
-            text.append('\n');
-         }
-      } catch (Exception e)
-      {
-         return null;
-      }
-
-      return text.toString();
-   }
-
    private static String intent_play = null;
    private static String intent_stop = null;
 
@@ -61,6 +36,31 @@ public class IntentRadio extends Activity
    }
 
    /* ********************************************************************
+    * Read raw text file resource...
+    *
+    * source: http://stackoverflow.com/questions/4087674/android-read-text-raw-resource-file
+    */
+
+   public static String readRawTextFile(Context ctx, int resId)
+   {
+      InputStream inputStream = ctx.getResources().openRawResource(resId);
+      InputStreamReader inputreader = new InputStreamReader(inputStream);
+      BufferedReader buffreader = new BufferedReader(inputreader);
+
+      String line;
+      StringBuilder text = new StringBuilder();
+
+      try {
+         while ( ( line = buffreader.readLine()) != null )
+            text.append(line + "\n" );
+      }
+      catch (Exception e)
+         { return ""; }
+
+      return text.toString();
+   }
+
+   /* ********************************************************************
     * Clip buttons...
     */
 
@@ -74,14 +74,10 @@ public class IntentRadio extends Activity
    }
 
    public void clip_play(View view)
-   {
-      clip(intent_play);
-   }
+      { clip(intent_play); }
 
    public void clip_stop(View view)
-   {
-      clip(intent_stop);
-   }
+      { clip(intent_stop); }
 
    private void toast(String msg)
    {
