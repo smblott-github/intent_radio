@@ -15,7 +15,7 @@ public class Intents extends BroadcastReceiver {
       context.startService(msg);
    }
 
-   private void passExtra(String key, Intent intent, Intent msg)
+   private static void passExtra(String key, Intent intent, Intent msg)
    {
       if ( intent.hasExtra(key) )
          msg.putExtra(key, intent.getStringExtra(key));
