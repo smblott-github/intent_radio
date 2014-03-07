@@ -40,7 +40,7 @@ public class IntentPlayer extends Service
     * Globals...
     */
 
-   private static final boolean debug_logcat = false;
+   private static final boolean debug_logcat = true;
    private static final boolean debug_file = true;
    private static final boolean play_disabled = false;
    private static Context context = null;
@@ -235,7 +235,7 @@ public class IntentPlayer extends Service
 
    private int play(String url)
    {
-      stop(); // note: counter incremented here
+      stop(); // note: counter is incremented here
 
       builder.setContentTitle(app_name_long);
       builder.setContentText(name + ": connecting...");
@@ -244,7 +244,7 @@ public class IntentPlayer extends Service
       if ( url != null && url.endsWith(".pls") )
       {
          log("playlist/pls: " + url);
-         atask = new PlaylistPlsGetter();
+         atask = new PlaylistPls(context,intent_play);
          atask.execute(url, name, "" + counter);
          return Service.START_NOT_STICKY;
       }

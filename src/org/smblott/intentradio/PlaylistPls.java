@@ -1,14 +1,28 @@
 package org.smblott.intentradio;
 
+import android.content.Intent;
+import android.content.Context;
+
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import android.text.TextUtils;
 import java.util.List;
+import android.os.AsyncTask;
+import android.util.Log;
 
-public class PlaylistPls
+public class PlaylistPls extends AsyncTask<String, Void, Void>
 {
+   Context context = null;
+   String intent_play = null;
+
+   PlaylistPls(Context ctx, String play)
+   {
+      super();
+      context = ctx;
+      intent_play = play;
+   }
 
    public static String get(String url)
    {
@@ -46,4 +60,59 @@ public class PlaylistPls
       return links;
    }
 
+   protected Void doInBackground(String... args)
+   {
+      if ( args.length != 3 )
+      {
+         log("PlaylistPlsGetter: invalid args length");
+         return null;
+      }
+
+      String plsUrl = args[0];
+      String name = args[1];
+      int cnt = Integer.parseInt(args[2]);
+
+      if ( plsUrl == null )
+      {
+         log("PlaylistPlsGetter: no playlist url");
+         return null;
+      }
+
+      if ( name == null )
+      {
+         log("PlaylistPlsGetter: no name");
+         return null;
+      }
+
+      String url = PlaylistPls.get(plsUrl);
+
+      if ( url == null )
+      {
+         log("PlaylistPlsGetter: failed to extract url");
+         return null;
+      }
+
+      if ( url.endsWith(".pls") )
+      {
+         log("PlaylistPlsGetter: another paylist!");
+         return null;
+      }
+
+      Intent msg = new Intent(context, IntentPlayer.class);
+      msg.putExtra("action", intent_play);
+      msg.putExtra("url", url);
+      msg.putExtra("name", name);
+      msg.putExtra("cnt", cnt);
+
+      if ( ! isCancelled() )
+         context.startService(msg);
+
+      return null;
+   }
+
+   private static void log(String msg)
+   {
+      if ( msg != null )
+         Log.d("IntentRadio", msg);
+   }
 }
