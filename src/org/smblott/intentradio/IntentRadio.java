@@ -42,9 +42,9 @@ public class IntentRadio extends Activity
     * source: http://stackoverflow.com/questions/4087674/android-read-text-raw-resource-file
     */
 
-   public static String readRawTextFile(Context ctx, int resId)
+   public static String readRawTextFile(Context context, int resId)
    {
-      InputStream inputStream = ctx.getResources().openRawResource(resId);
+      InputStream inputStream = context.getResources().openRawResource(resId);
       InputStreamReader inputreader = new InputStreamReader(inputStream);
       BufferedReader buffreader = new BufferedReader(inputreader);
 

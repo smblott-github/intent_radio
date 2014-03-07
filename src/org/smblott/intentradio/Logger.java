@@ -14,6 +14,7 @@ import android.util.Log;
 public class Logger
 {
    private static Context context = null;
+   private static boolean done_init = false;
 
    private static boolean debug_file = true;
    private static boolean debug_log = true;
@@ -29,6 +30,10 @@ public class Logger
 
    public static void init(Context acontext)
    {
+      if ( done_init )
+         return;
+
+      done_init = true;
       context = acontext;
       app_name = context.getString(R.string.app_name);
 
