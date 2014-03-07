@@ -6,3 +6,6 @@ Obtain WiFi lock if running on Wifi:
    WifiLock wifiLock = ((WifiManager) getSystemService(Context.WIFI_SERVICE))
       .createWifiLock(WifiManager.WIFI_MODE_FULL, "mylock");
     wifiLock.acquire();
+
+Correct handling of audio focus:
+   http://developer.android.com/guide/topics/media/mediaplayer.html
