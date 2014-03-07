@@ -187,14 +187,13 @@ public class IntentPlayer extends Service
       }
 
       toast(name);
-      log(url);
+      log("play: " + url);
       return play_start(url);
    }
 
    private int play_start(String url)
    {
-      stop();
-      log(url);
+      log("play_start: " + url);
 
       if ( play_disabled )
          return stop();
