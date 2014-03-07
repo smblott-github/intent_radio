@@ -26,6 +26,8 @@ Download
 I haven't figured out the details of putting *Intent Radio* onto the Play
 Store yet.  So, for the moment, the download is [here](http://smblott.org/intent_radio/).
 
+Or, of course, you can build the app yourself.
+
 Why?
 ----
 
@@ -34,23 +36,20 @@ one?
 
 Well, I couldn't find one that worked just right for me...
 
-Xiialive:
-   I tried (and like) [xiialaive](http://xiialive.com/).  And it supports external
-   broadcast intents.  However, I was finding it would hang irredeemably
-   on start up about two times in five, mainly when on mobile data.
+I tried (and like) [xiialaive](http://xiialive.com/).  And it supports external
+broadcast intents.  However, I was finding it would hang irredeemably
+on start up about two times in five, mainly when on mobile data.
 
-Tunein:
-   And I particularly like [tunein](http://tunein.com/).  However, it doesn't
-   support either shortcuts or broadcast intents, so I have no way to
-   start and stop it automatically, say when a headset is plugged in or
-   out.
+And I particularly like [tunein](http://tunein.com/).  However, it doesn't
+support either shortcuts or broadcast intents, so I have no way to
+start and stop it automatically, say when a headset is plugged in or
+out.
 
-BBC IPlayer Radio:
-   The
-   [BBC iPlayer Radio](https://play.google.com/store/apps/details?id=uk.co.bbc.android.iplayerradio&hl=en)
-   app is pretty slick; and most of what I listen to is BBC.  Again, however,
-   there's no way to control playback without much pointy-pressy action through
-   the GUI.
+The
+[BBC iPlayer Radio](https://play.google.com/store/apps/details?id=uk.co.bbc.android.iplayerradio&hl=en)
+app is pretty slick; and most of what I listen to is BBC.  Again, however,
+there's no way to control playback without much pointy-pressy action through
+the GUI.
 
 And then there's [Tasker](http://tasker.dinglisch.net/).  Tasker is an
 automation app for Android.  It's like a small graphical programming
