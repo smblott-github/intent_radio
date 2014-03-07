@@ -183,7 +183,7 @@ public class IntentPlayer extends Service
 
       if ( url == null )
       {
-         toast("No URL.", true);
+         toast("No URL.");
          return done();
       }
 
@@ -222,8 +222,8 @@ public class IntentPlayer extends Service
       }
       catch (Exception e)
       {
-         toast("MediaPlayer: initialisation error.", true);
-         toast(e.getMessage(), true);
+         toast("MediaPlayer: initialisation error.");
+         toast(e.getMessage());
          return stop();
       }
 
@@ -246,7 +246,7 @@ public class IntentPlayer extends Service
 
       if ( player != null )
       {
-         toast("Stopping...", true);
+         toast("Stopping...");
          stopForeground(true);
          player.stop();
          player.reset();
@@ -306,14 +306,14 @@ public class IntentPlayer extends Service
             msg += "/media info update"; break;
       }
       notificate(msg);
-      toast(msg, true);
+      toast(msg);
       return true;
    }
 
    public boolean onError(MediaPlayer player, int what, int extra)
    {
       String msg = "onError...(" + what + ")";
-      toast(msg, true);
+      toast(msg);
       stop();
       return true;
    }
@@ -326,7 +326,7 @@ public class IntentPlayer extends Service
 
    private void log_to_file(String msg)
    {
-      if ( log_file_stream == null || msg == null )
+      if ( log_file_stream == null )
          return;
 
       if ( format == null )
@@ -351,19 +351,13 @@ public class IntentPlayer extends Service
          Log.d(app_name, msg);
    }
 
-   private void toast(String msg, boolean log_too)
+   private void toast(String msg)
    {
       if ( msg == null )
          return;
 
       Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
-      if ( log_too )
-         log(msg);
-   }
-
-   private void toast(String msg)
-   {
-      toast(msg,false);
+      log(msg);
    }
 
    /* ****************************************************************
