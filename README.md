@@ -56,7 +56,7 @@ automation app for Android.  It's like a small graphical programming
 language combined with a mechanism to fire off tasks in response to various
 events.
 
-*Intent Radio* was written primarily to be driven by tasker, either via
+*Intent Radio* was written primarily to be driven by Tasker, either via
 task shortcuts on the home screen, or via Tasker's response to events such as
 a headset being plugged in or out.
 
