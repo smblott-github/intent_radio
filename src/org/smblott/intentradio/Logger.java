@@ -14,9 +14,7 @@ import android.util.Log;
 public class Logger
 {
    private static Context context = null;
-
    private static boolean debugging = false;
-   private static boolean done_init = false;
 
    private static String name = null;
    private static FileOutputStream file = null;
@@ -31,18 +29,13 @@ public class Logger
    {
       context = acontext;
       name = context.getString(R.string.app_name);
-
-      Log.d(name, "Logger init");
    }
 
    public static void start()
    {
-      if ( done_init )
+      if ( debugging )
          return;
 
-      Log.d(name, "Logger start");
-
-      done_init = true;
       debugging = true;
 
       format = new SimpleDateFormat("HH:mm:ss ");
@@ -66,7 +59,6 @@ public class Logger
       }
 
       debugging = false;
-      done_init = false;
    }
 
    /* ********************************************************************
