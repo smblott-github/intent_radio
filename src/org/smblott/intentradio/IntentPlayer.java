@@ -32,7 +32,7 @@ public class IntentPlayer extends Service
 
    private static final boolean play_disabled = false;
    private static Context context = null;
-   private static PendingIntent pend_intent = null;
+   private static PendingIntent pending = null;
 
    private static final int note_id = 100;
 
@@ -66,7 +66,7 @@ public class IntentPlayer extends Service
       intent_stop = getString(R.string.intent_stop);
 
       note_manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-      pend_intent = PendingIntent.getBroadcast(context, 0, new Intent(intent_stop), 0);
+      pending = PendingIntent.getBroadcast(context, 0, new Intent(intent_stop), 0);
 
       builder =
          new Notification.Builder(context)
@@ -74,7 +74,7 @@ public class IntentPlayer extends Service
             // .setLargeIcon(BITMAP)
             .setPriority(Notification.PRIORITY_HIGH)
             .setOngoing(true)
-            .setContentIntent(pend_intent)
+            .setContentIntent(pending)
             .setContentTitle(app_name_long)
             // not available in API 16...
             // .setShowWhen(false)
