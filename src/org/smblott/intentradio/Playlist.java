@@ -14,8 +14,10 @@ import android.util.Log;
 
 public abstract class Playlist extends AsyncTask<String, Void, Void>
 {
-   Context context = null;
-   String intent_play = null;
+   private static final String regex = "\\(?\\b(http://|www[.])[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|]";
+
+   private Context context = null;
+   private String intent_play = null;
 
    Playlist(Context ctx, String play_intent)
    {
@@ -26,6 +28,10 @@ public abstract class Playlist extends AsyncTask<String, Void, Void>
 
    abstract boolean keep(String line);
 
+   /* ********************************************************************
+    * Fetch a single (random) url from a playlist...
+    */
+
    public String get(String url)
    {
       List<String> lines = HttpGetter.httpGet(url);
@@ -34,33 +40,40 @@ public abstract class Playlist extends AsyncTask<String, Void, Void>
          if ( ! keep(lines.get(i)) )
             lines.set(i, "");
 
-      ArrayList links = links(TextUtils.join("\n", lines));
+      List<String> links = getLinks(TextUtils.join("\n", lines));
       if ( links.size() == 0 )
          return null;
 
-      return (String) links.get(new Random().nextInt(links.size()));
+      return links.get(new Random().nextInt(links.size()));
    }
 
-   // source: http://blog.houen.net/java-get-url-from-string/
-   //
-   private ArrayList links(String text)
+   /* ********************************************************************
+    * Extract list of urls from string...
+    *
+    * source: http://blog.houen.net/java-get-url-from-string/
+    */
+
+   private List<String> getLinks(String text)
    {
-      ArrayList links = new ArrayList();
+      ArrayList links = new ArrayList<String>();
     
-      String regex = "\\(?\\b(http://|www[.])[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|]";
       Pattern p = Pattern.compile(regex);
       Matcher m = p.matcher(text);
 
       while( m.find() )
       {
-         String urlStr = m.group();
-         if (urlStr.startsWith("(") && urlStr.endsWith(")"))
-            urlStr = urlStr.substring(1, urlStr.length() - 1);
-         links.add(urlStr);
+         String str = m.group();
+         if (str.startsWith("(") && str.endsWith(")"))
+            str = str.substring(1, str.length() - 1);
+         links.add(str);
       }
 
       return links;
    }
+
+   /* ********************************************************************
+    * Asynchronous task to fetch playlist...
+    */
 
    protected Void doInBackground(String... args)
    {
@@ -70,23 +83,20 @@ public abstract class Playlist extends AsyncTask<String, Void, Void>
          return null;
       }
 
-      String plsUrl = args[0];
+      String url = args[0];
       String name = args[1];
       int cnt = Integer.parseInt(args[2]);
 
-      if ( plsUrl == null )
-      {
+      if ( url == null )
          log("PlaylistPlsGetter: no playlist url");
-         return null;
-      }
 
       if ( name == null )
-      {
          log("PlaylistPlsGetter: no name");
-         return null;
-      }
 
-      String url = get(plsUrl);
+      if ( url == null || name == null )
+         return null;
+
+      url = get(url);
 
       if ( url == null )
       {
