@@ -70,7 +70,7 @@ public class IntentPlayer extends Service
 
       builder =
          new Notification.Builder(context)
-            .setSmallIcon(R.drawable.ic_launcher)
+            .setSmallIcon(R.drawable.intent_radio)
             // .setLargeIcon(BITMAP)
             .setPriority(Notification.PRIORITY_HIGH)
             .setOngoing(true)
