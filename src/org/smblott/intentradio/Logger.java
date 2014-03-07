@@ -37,7 +37,6 @@ public class Logger
          return;
 
       debugging = true;
-
       format = new SimpleDateFormat("HH:mm:ss ");
 
       try
@@ -49,7 +48,7 @@ public class Logger
          { file = null; }
    }
 
-   public static void destroy()
+   public static void stop()
    {
       if ( file != null )
       {
@@ -62,22 +61,8 @@ public class Logger
    }
 
    /* ********************************************************************
-    * File logging...
+    * Logging methods...
     */
-
-   private static void log_file(String msg)
-   {
-      if ( file == null )
-         return;
-
-      String stamp = format.format(new Date());
-
-      try
-      {
-         file.write((stamp+msg+"\n").getBytes());
-         file.flush();
-      } catch (Exception e) {}
-   }
 
    public static void log(String msg)
    {
@@ -95,6 +80,20 @@ public class Logger
 
       Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
       log(msg);
+   }
+
+   private static void log_file(String msg)
+   {
+      if ( file == null )
+         return;
+
+      String stamp = format.format(new Date());
+
+      try
+      {
+         file.write((stamp+msg+"\n").getBytes());
+         file.flush();
+      } catch (Exception e) {}
    }
 
 }

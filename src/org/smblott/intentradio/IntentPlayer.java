@@ -88,7 +88,7 @@ public class IntentPlayer extends Service
    public void onDestroy()
    {
       stop();
-      Logger.destroy();
+      Logger.stop();
    }
 
    /* ********************************************************************
