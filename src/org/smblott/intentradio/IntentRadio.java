@@ -4,17 +4,19 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import android.content.Context;
+import android.content.Context;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
-import android.widget.TextView;
-import android.view.View;
-import android.content.Context;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
 
 import android.text.Html;
+import android.view.View;
+import android.widget.TextView;
+import android.text.method.LinkMovementMethod;
 
 public class IntentRadio extends Activity
 {
@@ -33,6 +35,7 @@ public class IntentRadio extends Activity
       super.onCreate(savedInstanceState);
       setContentView(R.layout.main);
       TextView text = (TextView) findViewById(R.id.text);
+      text.setMovementMethod(LinkMovementMethod.getInstance());
       text.setText(Html.fromHtml(readRawTextFile(getApplicationContext(), R.raw.message)));
    }
 
@@ -42,7 +45,7 @@ public class IntentRadio extends Activity
     * source: http://stackoverflow.com/questions/4087674/android-read-text-raw-resource-file
     */
 
-   public static String readRawTextFile(Context context, int resId)
+   private static String readRawTextFile(Context context, int resId)
    {
       InputStream inputStream = context.getResources().openRawResource(resId);
       InputStreamReader inputreader = new InputStreamReader(inputStream);
