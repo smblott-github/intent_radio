@@ -6,21 +6,19 @@ import android.content.Context;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.StrictMode;
-import android.os.AsyncTask;
 
 import android.app.PendingIntent;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Notification.Builder;
 
-import android.media.MediaPlayer;
 import android.media.AudioManager;
-import android.media.MediaPlayer.OnPreparedListener;
+import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnBufferingUpdateListener;
-import android.media.MediaPlayer.OnInfoListener;
 import android.media.MediaPlayer.OnErrorListener;
+import android.media.MediaPlayer.OnInfoListener;
+import android.media.MediaPlayer.OnPreparedListener;
 
-import java.net.URL;
 import java.io.File;
 import java.io.FileOutputStream;
 
@@ -59,7 +57,7 @@ public class IntentPlayer extends Service
    private static String url = null;
 
    private static int counter = 0;
-   private static AsyncTask<String, Void, Void> atask = null;
+   private static Playlist atask = null;
    private static MediaPlayer player = null;
    private static Builder builder = null;
    private static Notification note = null;
