@@ -115,8 +115,8 @@ A Sample Tasker Project
 If you're using Tasker, then this [Tasker project](https://github.com/smblott-github/intent_radio/tree/master/misc) may
 be helpful in getting started with *Intent Radio*.
 
-// /////////////////////////////////////////////////////
-== Release Notes ==
+Release Notes
+-------------
 
 ### Version 1.1
 
