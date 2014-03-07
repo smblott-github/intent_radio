@@ -43,16 +43,10 @@ public class IntentPlayer extends Service
    private static final boolean debug_logcat = true;
    private static final boolean debug_file = true;
    private static final boolean play_disabled = false;
-
-   private static final int note_id = 100;
-
-   private static AsyncTask<URL, Void, Void> atask = null;
-   private static MediaPlayer player = null;
    private static Context context = null;
    private static PendingIntent pend_intent = null;
-   private static Builder builder = null;
-   private static Notification note = null;
-   private static NotificationManager note_manager = null;
+
+   private static final int note_id = 100;
 
    private static String app_name = null;
    private static String app_name_long = null;
@@ -61,8 +55,14 @@ public class IntentPlayer extends Service
 
    private static FileOutputStream log_file_stream = null;
 
-   private static String name = null;
-   private static String url = null;
+   private static volatile String name = null;
+   private static volatile String url = null;
+
+   private static volatile AsyncTask<String, Void, Void> atask = null;
+   private static volatile MediaPlayer player = null;
+   private static volatile Builder builder = null;
+   private static volatile Notification note = null;
+   private static volatile NotificationManager note_manager = null;
 
    /* ********************************************************************
     * Create/destroy...
@@ -152,13 +152,52 @@ public class IntentPlayer extends Service
     * PlaylistPlsGetter...
     */
 
-   private class PlaylistPlsGetter extends AsyncTask<URL, Void, Void>
+   private class PlaylistPlsGetter extends AsyncTask<String, Void, Void>
    {
-      protected Void doInBackground(URL... urls)
+      protected Void doInBackground(String... args)
       {
-         if ( ! isCancelled() )
+         if ( args.length != 2 )
          {
+            log("PlaylistPlsGetter: invalid args length");
+            return null;
          }
+
+         String plsUrl = args[0];
+         String nm = args[1];
+
+         if ( plsUrl == null )
+         {
+            log("PlaylistPlsGetter: no playlist url");
+            return null;
+         }
+
+         if ( nm == null )
+         {
+            log("PlaylistPlsGetter: no name");
+            return null;
+         }
+
+         String url = PlaylistPls.get(plsUrl);
+
+         if ( url == null )
+         {
+            log("PlaylistPlsGetter: failed to extract url");
+            return null;
+         }
+
+         if ( url.endsWith(".pls") )
+         {
+            log("PlaylistPlsGetter: another paylist!");
+            return null;
+         }
+
+         Intent msg = new Intent(context, IntentPlayer.class);
+         msg.putExtra("action", intent_play);
+         msg.putExtra("url", url);
+         msg.putExtra("name", nm);
+
+         if ( ! isCancelled() )
+            context.startService(msg);
 
          return null;
       }
@@ -176,19 +215,23 @@ public class IntentPlayer extends Service
       builder.setContentText(name + ": connecting...");
       note = builder.build();
 
-      if ( url != null )
-         if ( url.endsWith(".pls") )
-            url = PlaylistPls.get(url);
-
-      if ( url == null )
+      if ( url != null && url.endsWith(".pls") )
       {
-         toast("No URL.", true);
-         return stop();
+         log("playlist/pls: " + url);
+         atask = new PlaylistPlsGetter();
+         atask.execute(url, name);
+         return Service.START_NOT_STICKY;
       }
 
-      toast(name);
-      log("play: " + url);
-      return play_start(url);
+      if ( url != null )
+      {
+         toast(name);
+         log("play: " + url);
+         return play_start(url);
+      }
+
+      toast("No URL.", true);
+      return stop();
    }
 
    private int play_start(String url)
