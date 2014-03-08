@@ -22,7 +22,7 @@ public class Later extends AsyncTask<Integer, Void, Void>
    {
       context = ctx;
       intent = pintent;
-      seconds = secs;
+      seconds = 0 < secs ? secs : default_seconds;
    }
 
    Later(Context ctx, Intent pintent)

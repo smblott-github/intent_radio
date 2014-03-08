@@ -372,14 +372,21 @@ public class IntentPlayer extends Service
       }
    }
 
-   private void later(String action)
+   /* ********************************************************************
+    * Do something later...
+    */
+
+   private void later(String action, int seconds)
    {
       Intent intent = new Intent(context, IntentPlayer.class);
       intent.putExtra("action", action);
       intent.putExtra("counter", counter);
-      Later later = new Later(context, intent);
-      later.execute();
+      Later soon = new Later(context, intent, seconds);
+      soon.execute();
    }
+
+   private void later(String action)
+      { later(action, 0); }
 
    /* ********************************************************************
     * Logging...
