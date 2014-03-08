@@ -86,7 +86,7 @@ public class Logger
    }
 
    /* ********************************************************************
-    * Logging methods...
+    * Public logging methods...
     */
 
    public static void log(String msg)
@@ -109,6 +109,10 @@ public class Logger
       log(msg);
    }
 
+   /* ********************************************************************
+    * Private logging method...
+    */
+
    private static void log_file(String msg)
    {
       if ( file != null )
@@ -118,5 +122,4 @@ public class Logger
             file.flush();
          } catch (Exception e) {}
    }
-
 }
