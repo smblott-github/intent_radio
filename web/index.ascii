@@ -3,18 +3,6 @@ Stephen Blott <smblott+ir@gmail.com>
 // :toc2:
 
 // /////////////////////////////////////////////////////
-== Who might be interested? ==
-
-****
-You might be interested in _Intent Radio_ if:
-
-- you use Android,
-- you use Tasker,
-- you listen to internet radio, and
-- well, you're a geek.
-****
-
-// /////////////////////////////////////////////////////
 == What? ==
 
 ****
@@ -26,12 +14,25 @@ probably not the app for you.
 ****
 
 // /////////////////////////////////////////////////////
+== Who? ==
+
+****
+You might be interested in _Intent Radio_ if:
+
+- you use Android,
+- you use Tasker,
+- you listen to internet radio, and
+- well, you're a geek.
+****
+
+// /////////////////////////////////////////////////////
 == Download ==
 
 ****
 I'm too tight to pay Google $25 for the honour of hosting this on the
 Play Store.  So, for the moment, the download is on
-https://github.com/smblott-github/intent_radio/releases[GitHub].
+https://github.com/smblott-github/intent_radio/releases[GitHub] (and direct
+`apk` download links are below).
 
 Alternatively, you can download and build the app from
 https://github.com/smblott-github/intent_radio[source].
@@ -159,6 +160,10 @@ be helpful in getting started with _Intent Radio_.
 .Version 1.3:
 ****
 - M3u playlist support.
+
+Direct download (from GitHub):
+
+- https://github.com/smblott-github/intent_radio/releases/download/v1.3/IntentRadio-release-r1.3.apk[IntentRadio-release-r1.3.apk]
 ****
 
 .Version 1.2:
