@@ -25,6 +25,7 @@ events triggered from [Tasker](http://tasker.dinglisch.net/).
 Where?
 ------
 
-More information -- including details of broadcast intents -- and a sample [Tasker project](http://smblott.org/intent_radio/Radio.prj.xml) are
-available on the project [home page](http://smblott.org/intent_radio/).
+More information -- including details of broadcast intents and a sample [Tasker
+project](http://smblott.org/intent_radio/Radio.prj.xml) -- are available on the
+project [home page](http://smblott.org/intent_radio/).
 
