@@ -5,7 +5,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-public class WifiOn
+public class WifiOn extends Logger
 {
    private static ConnectivityManager conn = null;
 
@@ -13,7 +13,7 @@ public class WifiOn
     * Is WiFi on?
     */
 
-   protected static boolean onWifi(Context context)
+   static boolean onWifi(Context context)
    {
       if ( conn == null )
          conn = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -24,11 +24,4 @@ public class WifiOn
       log("Wifi status: " + status);
       return status;
    }
-
-   /* ********************************************************************
-    * Logging...
-    */
-
-   protected static void log(String msg)
-      { Logger.log(msg); }
 }

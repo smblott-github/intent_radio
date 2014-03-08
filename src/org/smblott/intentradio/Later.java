@@ -14,6 +14,10 @@ public class Later extends AsyncTask<Integer, Void, Void>
    private Intent intent = null;
    private int seconds = default_seconds;
 
+   /* ********************************************************************
+    * Constructors...
+    */
+
    Later(Context ctx, Intent pintent, int secs)
    {
       context = ctx;
@@ -25,6 +29,10 @@ public class Later extends AsyncTask<Integer, Void, Void>
    {
       this(ctx,pintent,default_seconds);
    }
+
+   /* ********************************************************************
+    * Background job...
+    */
 
    protected Void doInBackground(Integer... args)
    {

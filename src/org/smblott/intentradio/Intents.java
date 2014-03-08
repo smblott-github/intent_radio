@@ -21,5 +21,4 @@ public class Intents extends BroadcastReceiver {
       if ( intent.hasExtra(key) )
          msg.putExtra(key, intent.getStringExtra(key));
    }
-
 }
