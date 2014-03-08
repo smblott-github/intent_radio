@@ -10,6 +10,13 @@ public class PlaylistPls extends Playlist
    PlaylistPls(Context context, String play_intent)
       { super(context,play_intent); }
 
-   boolean keep(String line)
-      { return line.startsWith("File") && 0 < line.indexOf('='); }
+   String filter(String line)
+   {
+      line = line.trim();
+
+      if ( line.indexOf('#') != 0 && line.startsWith("File") && 0 < line.indexOf('=') )
+         return line;
+
+      return "";
+   }
 }

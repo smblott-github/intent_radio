@@ -29,13 +29,11 @@ public abstract class Playlist extends AsyncTask<String, Void, Void>
    // contain URLs.  Other lines such as comments may also contain URLs, but
    // they aren't part of the playlist.
    //
-   // Implementations of keep() must return true if a line of a playlist files
-   // may contain a URL, false, otherwise.
+   // Implementations of filter() must return a line, possibly edited, if it
+   // may contain a URL.  For example, it may return the empty string if the
+   // line contains a comment.
    //
-   // An implementation which always returns true may work, but may also
-   // occasionally stumble across a URL which is not part of the playlist.
-   //
-   abstract boolean keep(String line);
+   abstract String filter(String line);
 
    /* ********************************************************************
     * Asynchronous task to fetch playlist...
@@ -97,8 +95,7 @@ public abstract class Playlist extends AsyncTask<String, Void, Void>
       List<String> lines = HttpGetter.httpGet(url);
 
       for (int i=0; i<lines.size(); i+= 1)
-         if ( ! keep(lines.get(i)) )
-            lines.set(i, "");
+         lines.set(i, filter(lines.get(i)));
 
       List<String> links = getLinks(TextUtils.join("\n", lines));
       if ( links.size() == 0 )

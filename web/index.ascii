@@ -105,10 +105,14 @@ player] for playback.  So all audio codecs supported natively by Android
 are supported by _Intent Radio_.
 
 Additionally, _Intent Radio_ supports
-http://en.wikipedia.org/wiki/PLS_(file_format)[playlists] (whose URL must
-end with the suffix `.pls`).  For example:
+http://en.wikipedia.org/wiki/PLS_(file_format)[PLS playlists] (whose URL must
+end with the suffix `.pls`) and
+http://en.wikipedia.org/wiki/M3U[M3U playlists] (whose URL
+must
+end with the suffix `.m3u`).  For example:
 
 - `http://www.bbc.co.uk/.../xxx.pls`
+- `http://www.bbc.co.uk/.../xxx.m3u`
 
 // /////////////////////////////////////////////////////
 == Warnings! ==
@@ -135,7 +139,7 @@ be helpful in getting started with _Intent Radio_.
 
 .GitHub/master:
 ****
-- Allow debugging to be turned off dynamically.
+- M3u playlist support.
 ****
 
 .Version 1.2:

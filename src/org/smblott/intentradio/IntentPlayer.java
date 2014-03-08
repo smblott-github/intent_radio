@@ -181,6 +181,14 @@ public class IntentPlayer extends Service
          return done();
       }
 
+      if ( url.endsWith(PlaylistM3u.suffix) )
+      {
+         log("playlist/m3u: " + url);
+         pltask = new PlaylistM3u(context,intent_play);
+         pltask.execute(url, name, ""+counter);
+         return done();
+      }
+
       toast(name);
       log("play: " + url);
 
