@@ -78,7 +78,7 @@ public abstract class Playlist extends AsyncTask<String, Void, Void>
       msg.putExtra("action", intent_play);
       msg.putExtra("url", url);
       msg.putExtra("name", name);
-      msg.putExtra("cnt", cnt);
+      msg.putExtra("counter", cnt);
 
       if ( ! isCancelled() )
          context.startService(msg);

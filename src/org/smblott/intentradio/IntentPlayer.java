@@ -106,8 +106,8 @@ public class IntentPlayer extends Service
     *
     * For playlists, the fetching of the play list is handled asynchronously.
     * A second play intent is then delivered to onStartCommand.  To ensure that
-    * that request is still valid, a counter is checked.  The extra cnt is the
-    * value of counter at the time that the asynchronous call was launched.
+    * that request is still valid, a counter is checked.  The extra counter is
+    * the value of counter at the time that the asynchronous call was launched.
     * That value must be unchanged when the susequent play intent is received.
     *
     * counter is incremented in stop(), which is called for every valid intent
@@ -120,9 +120,9 @@ public class IntentPlayer extends Service
       if ( intent != null && intent.hasExtra("debug") )
          Logger.state(intent.getStringExtra("debug"));
 
-      if ( intent.hasExtra("cnt") )
+      if ( intent.hasExtra("counter") )
       {
-         int cnt = intent.getIntExtra("cnt",0);
+         int cnt = intent.getIntExtra("counter",0);
          log("checking counter: " + cnt);
          if ( cnt != counter )
          {
@@ -337,9 +337,9 @@ public class IntentPlayer extends Service
                {
                   log("audio focus: AUDIOFOCUS_GAIN");
                   WifiLocker.lock(context, app_name_long);
-                  player.setVolume(1.0f, 1.0f);
                   player.start();
                }
+               player.setVolume(1.0f, 1.0f);
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS:
@@ -354,11 +354,11 @@ public class IntentPlayer extends Service
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                if ( player.isPlaying() )
                {
-                  // Spin of a thread to stop playback if we remain without
-                  // focus for too long.
-                  later(intent_stop);
                   log("audio focus: AUDIOFOCUS_LOSS_TRANSIENT");
                   player.setVolume(0.0f, 0.0f);
+                  // Spin off a thread to stop playback if we remain without
+                  // the focus for too long.
+                  later(intent_stop);
                }
                break;
 
@@ -376,7 +376,7 @@ public class IntentPlayer extends Service
    {
       Intent intent = new Intent(context, IntentPlayer.class);
       intent.putExtra("action", action);
-      intent.putExtra("cnt", counter);
+      intent.putExtra("counter", counter);
       Later later = new Later(context, intent);
       later.execute();
    }
