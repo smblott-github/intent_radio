@@ -130,6 +130,11 @@ be helpful in getting started with _Intent Radio_.
 // /////////////////////////////////////////////////////
 == Release Notes ==
 
+.GitHub/master:
+****
+- Obtain Wifi lock when on Wifi.
+****
+
 .Version 1.1
 ****
 - Use `httpURLConnection`.
