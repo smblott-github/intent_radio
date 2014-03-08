@@ -340,6 +340,7 @@ public class IntentPlayer extends Service
                   player.start();
                }
                player.setVolume(1.0f, 1.0f);
+               notificate();
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS:
@@ -348,6 +349,7 @@ public class IntentPlayer extends Service
                   log("audio focus: AUDIOFOCUS_LOSS");
                   WifiLocker.unlock();
                   player.stop();
+                  notificate("Focus lost, not playing.");
                }
                break;
 
@@ -359,6 +361,7 @@ public class IntentPlayer extends Service
                   // Spin off a thread to stop playback if we remain without
                   // the focus for too long.
                   later(intent_stop);
+                  notificate("Focus paused, hopefully back shortly...");
                }
                break;
 
@@ -367,6 +370,7 @@ public class IntentPlayer extends Service
                {
                   log("audio focus: AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
                   player.setVolume(0.1f, 0.1f);
+                  notificate("Focus ducked...");
                }
                break;
       }
