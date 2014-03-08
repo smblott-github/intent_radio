@@ -9,8 +9,8 @@ import android.net.NetworkInfo;
 
 public class Wifi
 {
-   public static WifiLock lock = null;
-   public static WifiManager mgr = null;
+   private static WifiLock lock = null;
+   private static WifiManager mgr = null;
 
    public static void lock(Context context, String app_name)
    {
@@ -45,7 +45,7 @@ public class Wifi
     * Utilities...
     */
 
-   public static ConnectivityManager conn = null;
+   private static ConnectivityManager conn = null;
 
    private static boolean onWifi(Context context)
    {
