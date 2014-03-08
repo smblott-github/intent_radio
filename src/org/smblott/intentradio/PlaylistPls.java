@@ -14,7 +14,7 @@ public class PlaylistPls extends Playlist
    {
       line = line.trim();
 
-      if ( line.indexOf('#') != 0 && line.startsWith("File") && 0 < line.indexOf('=') )
+      if ( line.startsWith("File") && 0 < line.indexOf('=') )
          return line;
 
       return "";

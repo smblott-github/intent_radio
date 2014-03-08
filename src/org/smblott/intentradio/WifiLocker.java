@@ -26,7 +26,7 @@ public class WifiLocker extends WifiOn
       if ( lock.isHeld() )
          return;
 
-      log("Wifi: acquire()");
+      log("Wifi lock: acquire");
       lock.acquire();
    }
 
@@ -34,7 +34,7 @@ public class WifiLocker extends WifiOn
    {
       if ( lock != null && lock.isHeld() )
       {
-         log("Wifi: release()");
+         log("Wifi lock: release");
          lock.release();
       }
    }

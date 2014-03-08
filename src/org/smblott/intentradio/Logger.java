@@ -43,7 +43,7 @@ public class Logger
       if ( how.equals("nodebug") || how.equals("no") || how.equals("off") || how.equals("stop") )
          { stop(); return; }
 
-      Log.d(name, "Logger: invalid state: " + how);
+      Log.d(name, "Logger: invalid state change: " + how);
    }
 
    /* ********************************************************************
@@ -55,10 +55,10 @@ public class Logger
       if ( debugging )
          return;
 
+      debugging = true;
+
       if ( format == null )
          format = new SimpleDateFormat("HH:mm:ss ");
-
-      debugging = true;
 
       try
       {
@@ -75,14 +75,14 @@ public class Logger
    {
       log("Logger: -> off");
 
+      debugging = false;
+
       if ( file != null )
       {
          try { file.close(); }
          catch (Exception e) { }
          file = null;
       }
-
-      debugging = false;
    }
 
    /* ********************************************************************

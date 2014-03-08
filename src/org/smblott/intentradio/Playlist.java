@@ -49,7 +49,7 @@ public abstract class Playlist extends AsyncTask<String, Void, Void>
 
       String url = args[0];
       String name = args[1];
-      int cnt = Integer.parseInt(args[2]);
+      int counter = Integer.parseInt(args[2]);
 
       if ( url == null )
          log("PlaylistPlsGetter: no playlist url");
@@ -78,7 +78,7 @@ public abstract class Playlist extends AsyncTask<String, Void, Void>
       msg.putExtra("action", intent_play);
       msg.putExtra("url", url);
       msg.putExtra("name", name);
-      msg.putExtra("counter", cnt);
+      msg.putExtra("counter", counter);
 
       if ( ! isCancelled() )
          context.startService(msg);

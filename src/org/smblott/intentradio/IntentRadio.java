@@ -83,7 +83,10 @@ public class IntentRadio extends Activity
    public void clip_stop(View view)
       { clip(intent_stop); }
 
+   /* ********************************************************************
+    * Utilities...
+    */
+
    private void toast(String msg)
       { Logger.toast(msg); }
-
 }

@@ -40,11 +40,7 @@ public class Later extends AsyncTask<Integer, Void, Void>
       {
          Thread.sleep(seconds * 1000);
          if ( ! isCancelled() )
-         {
-            String msg = intent.hasExtra("action") ? intent.getStringExtra("action") : "something";
-            log("Later: " + msg);
             context.startService(intent);
-         }
       }
       catch ( Exception e ) { }
 

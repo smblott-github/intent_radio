@@ -81,7 +81,6 @@ public class IntentPlayer extends Service
       builder =
          new Notification.Builder(context)
             .setSmallIcon(R.drawable.intent_radio)
-            // .setLargeIcon(BITMAP)
             .setPriority(Notification.PRIORITY_HIGH)
             .setOngoing(true)
             .setContentIntent(pending)
@@ -106,33 +105,25 @@ public class IntentPlayer extends Service
     *
     * For playlists, the fetching of the play list is handled asynchronously.
     * A second play intent is then delivered to onStartCommand.  To ensure that
-    * that request is still valid, a counter is checked.  The extra counter is
+    * that request is still valid, a counter is checked.  The counter extra is
     * the value of counter at the time that the asynchronous call was launched.
     * That value must be unchanged when the susequent play intent is received.
-    *
-    * counter is incremented in stop(), which is called for every valid intent
-    * which is received.
     */
 
    @Override
    public int onStartCommand(Intent intent, int flags, int startId)
    {
-      if ( intent != null && intent.hasExtra("debug") )
-         Logger.state(intent.getStringExtra("debug"));
-
-      if ( intent.hasExtra("counter") )
-      {
-         int cnt = intent.getIntExtra("counter",0);
-         log("checking counter: " + cnt);
-         if ( cnt != counter )
-         {
-            log("incorrect counter: counter=" + counter + " cnt=" + cnt);
-            return done();
-         }
-      }
-
       if ( intent == null || ! intent.hasExtra("action") )
          return done();
+
+      if ( intent.hasExtra("debug") )
+         Logger.state(intent.getStringExtra("debug"));
+
+      if ( intent.getIntExtra("counter",counter) != counter )
+      {
+         log("incorrect counter: counter=" + counter + " cnt=" + intent.getIntExtra("counter",0));
+         return done();
+      }
 
       String action = intent.getStringExtra("action");
       if ( action == null )
@@ -173,21 +164,24 @@ public class IntentPlayer extends Service
          return done();
       }
 
+      // /////////////////////////////////////////////////////////////////
+      // Playlists...
+
       if ( url.endsWith(PlaylistPls.suffix) )
-      {
-         log("playlist/pls: " + url);
          pltask = new PlaylistPls(context,intent_play);
+
+      if ( url.endsWith(PlaylistM3u.suffix) )
+         pltask = new PlaylistM3u(context,intent_play);
+
+      if ( pltask != null )
+      {
+         log("playlist/m3u: " + url);
          pltask.execute(url, name, ""+counter);
          return done();
       }
 
-      if ( url.endsWith(PlaylistM3u.suffix) )
-      {
-         log("playlist/m3u: " + url);
-         pltask = new PlaylistM3u(context,intent_play);
-         pltask.execute(url, name, ""+counter);
-         return done();
-      }
+      // /////////////////////////////////////////////////////////////////
+      // Set up media player...
 
       toast(name);
       log("play: " + url);
@@ -207,10 +201,16 @@ public class IntentPlayer extends Service
       player.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
       player.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
+      // /////////////////////////////////////////////////////////////////
+      // Listeners...
+
       player.setOnPreparedListener(this);
       player.setOnBufferingUpdateListener(this);
       player.setOnInfoListener(this);
       player.setOnErrorListener(this);
+
+      // /////////////////////////////////////////////////////////////////
+      // Launch...
 
       try
       {
@@ -268,7 +268,7 @@ public class IntentPlayer extends Service
    }
 
    /* ********************************************************************
-    * MediaPlayer listeners...
+    * Listeners...
     */
 
    public void onPrepared(MediaPlayer player)
@@ -403,9 +403,7 @@ public class IntentPlayer extends Service
     */
 
    private void notificate()
-   {
-      notificate(null);
-   }
+      { notificate(null); }
 
    private void notificate(String msg)
    {
@@ -421,7 +419,6 @@ public class IntentPlayer extends Service
     * Required abstract method...
     */
 
-   public IBinder onBind(Intent intent) {
-      return null;
-   }
+   public IBinder onBind(Intent intent)
+      { return null; }
 }
