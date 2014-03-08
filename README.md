@@ -1,8 +1,8 @@
 Intent Radio
 ============
 
-Who might be interested?
-------------------------
+Who?
+----
 
 You might be interested in *Intent Radio* if:
 
