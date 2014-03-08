@@ -7,7 +7,7 @@ import android.net.wifi.WifiManager.WifiLock;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-public class Wifi
+public class WifiLocker
 {
    private static WifiLock lock = null;
    private static WifiManager mgr = null;
