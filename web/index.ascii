@@ -32,7 +32,7 @@ probably not the app for you.
 I'm too tight to pay Google $25 for the honour of hosting this on the
 Play Store.  So, for the moment, the download is here:
 
-- link:releases/IntentRadio-release-r1.2.apk[]
+- link:releases/IntentRadio-release-r1.3.apk[]
 
 Alternatively, you can download and build the app from the source on
 https://github.com/smblott-github/intent_radio[github].
@@ -137,9 +137,13 @@ be helpful in getting started with _Intent Radio_.
 // /////////////////////////////////////////////////////
 == Release Notes ==
 
-.GitHub/master:
+.Version 1.3:
 ****
 - M3u playlist support.
+
+Download:
+
+- link:releases/IntentRadio-release-r1.3.apk[]
 ****
 
 .Version 1.2:
