@@ -19,6 +19,9 @@ interface.  It is controlled exclusively through the delivery of
 If you do not know what a broadcast intent is, then this is probably not the
 app for you.
 
+*Intent Radio* was written primarily to be driven by shortcuts, tasks and
+events triggered from [Tasker](http://tasker.dinglisch.net/).
+
 Where?
 ------
 
