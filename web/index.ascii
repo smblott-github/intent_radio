@@ -3,43 +3,44 @@ Stephen Blott <smblott+ir@gmail.com>
 // :toc2:
 
 // /////////////////////////////////////////////////////
-== News ==
-
-Now available on https://github.com/smblott-github/intent_radio[github].
-
-// /////////////////////////////////////////////////////
 == Who might be interested? ==
 
+****
 You might be interested in _Intent Radio_ if:
 
 - you use Android,
 - you use Tasker,
 - you listen to internet radio, and
 - well, you're a geek.
+****
 
 // /////////////////////////////////////////////////////
 == What? ==
 
+****
 _Intent Radio_ is an android internet radio app without a graphical user
 interface.  It is controlled exclusively through the delivery of
 http://developer.android.com/reference/android/content/BroadcastReceiver.html[broadcast
 intents].  If you do not know what a broadcast intent is, then this is
 probably not the app for you.
+****
 
 // /////////////////////////////////////////////////////
 == Download ==
 
+****
 I'm too tight to pay Google $25 for the honour of hosting this on the
-Play Store.  So, for the moment, the download is here:
+Play Store.  So, for the moment, the download is on
+https://github.com/smblott-github/intent_radio/releases[GitHub].
 
-- link:releases/IntentRadio-release-r1.3.apk[]
-
-Alternatively, you can download and build the app from the source on
-https://github.com/smblott-github/intent_radio[github].
+Alternatively, you can download and build the app from
+https://github.com/smblott-github/intent_radio[source].
+****
 
 // /////////////////////////////////////////////////////
 == Why? ==
 
+****
 There are already many internet radio apps for Android; so, why another
 one?
 
@@ -62,7 +63,9 @@ BBC IPlayer Radio::
    IPlayer Radio] app is pretty slick; and most of what I listen to is BBC.
    Again, however, there's no way to control playback without much
    pointy-pressy action through the GUI.
+****
 
+****
 And then there's http://tasker.dinglisch.net/[Tasker].  Tasker is an
 automation app for Android.  It's like a small graphical programming
 language combined with a mechanism to fire off tasks in response to various
@@ -71,13 +74,19 @@ events.
 _Intent Radio_ was written primarily to be driven by Tasker, either via
 task shortcuts on the home screen, or via Tasker's response to events such as
 a headset being plugged in or out.
+****
 
 // /////////////////////////////////////////////////////
 == How? ==
 
+****
 _Intent Radio_ supports the following broadcast intents...
+****
 
-.`org.smblott.intentradio.PLAY`:
+// /////////////////////////////////////////////////////
+=== Intent: `org.smblott.intentradio.PLAY` ===
+
+.Details:
 ****
 - start playback
 - extras:
@@ -89,12 +98,19 @@ then the URL is used as the display name.  If `url` is omitted, then
 a built-in URL for BBC Radio 4 is used.
 ****
 
-.`org.smblott.intentradio.STOP`:
+// /////////////////////////////////////////////////////
+=== Intent: `org.smblott.intentradio.STOP` ===
+
+.Details:
 ****
 - stop playback
 - extras: none
 ****
 
+// /////////////////////////////////////////////////////
+=== More Information ===
+
+****
 During playback, _Intent Radio_ places a notification in the notification
 area.  Clicking on the notification broadcasts the "`...STOP`" intent, which
 causes playback to stop.
@@ -113,10 +129,12 @@ end with the suffix `.m3u`).  For example:
 
 - `http://www.bbc.co.uk/.../xxx.pls`
 - `http://www.bbc.co.uk/.../xxx.m3u`
+****
 
 // /////////////////////////////////////////////////////
 == Warnings! ==
 
+****
 Although _Intent Radio_ has no graphical user interface, you must
 nevertheless start up the app _at least once_.  Otherwise, Android will not
 deliver broadcast intents to the app.  This is an Android security feature.
@@ -127,34 +145,34 @@ source of this delay.  Please be patient.
 
 Finally, _Intent Radio_ is built for Android API level 16, so only for 4.1
 (Jelly Bean) devices and above.
+****
 
 // /////////////////////////////////////////////////////
 == A Sample Tasker Project ==
 
+****
 If you're using Tasker, then this link:./Radio.prj.xml[Tasker project] may
 be helpful in getting started with _Intent Radio_.
+****
 
 // /////////////////////////////////////////////////////
 [[notes]]
 == Release Notes ==
 
+.Downloads:
+****
+- see the https://github.com/smblott-github/intent_radio/releases[Github releases].
+****
+
 .Version 1.3:
 ****
 - M3u playlist support.
-
-Download:
-
-- link:releases/IntentRadio-release-r1.3.apk[]
 ****
 
 .Version 1.2:
 ****
 - Obtain Wifi lock when on Wifi.
 - Handle audio focus events.
-
-Download:
-
-- link:releases/IntentRadio-release-r1.2.apk[]
 ****
 
 .Version 1.1
