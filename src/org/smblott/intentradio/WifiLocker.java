@@ -7,15 +7,13 @@ import android.net.wifi.WifiManager.WifiLock;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-public class WifiLocker
+public class WifiLocker extends WifiOn
 {
    private static WifiLock lock = null;
    private static WifiManager mgr = null;
 
-   public static void lock(Context context, String app_name)
+   static void lock(Context context, String app_name)
    {
-      unlock();
-
       if ( mgr == null )
          mgr = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
 
@@ -32,7 +30,7 @@ public class WifiLocker
       lock.acquire();
    }
 
-   public static void unlock()
+   static void unlock()
    {
       if ( lock != null && lock.isHeld() )
       {
@@ -40,29 +38,4 @@ public class WifiLocker
          lock.release();
       }
    }
-
-   /* ********************************************************************
-    * Utilities...
-    */
-
-   private static ConnectivityManager conn = null;
-
-   private static boolean onWifi(Context context)
-   {
-      if ( conn == null )
-         conn = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-      NetworkInfo info = conn.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-      boolean status = info.isAvailable();
-
-      log("Wifi status: " + status);
-      return status;
-   }
-
-   /* ********************************************************************
-    * Logging...
-    */
-
-   private static void log(String msg)
-      { Logger.log(msg); }
 }
