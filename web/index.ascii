@@ -135,7 +135,17 @@ be helpful in getting started with _Intent Radio_.
 
 .GitHub/master:
 ****
+- Up to date.
+
+This is also the `apk` version linked from this page.
+****
+
+.Version 1.2:
+****
 - Obtain Wifi lock when on Wifi.
+- Handle audio focus events.
+
+This is also the `apk` version linked from this page.
 ****
 
 .Version 1.1
