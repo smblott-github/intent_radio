@@ -120,6 +120,17 @@ public class IntentPlayer extends Service
       if ( intent != null && intent.hasExtra("debug") )
          Logger.start();
 
+      if ( intent.hasExtra("cnt") )
+      {
+         int cnt = intent.getIntExtra("cnt",0);
+         log("checking counter: " + cnt);
+         if ( cnt != counter )
+         {
+            log("incorrect counter: counter=" + counter + " cnt=" + cnt);
+            return done();
+         }
+      }
+
       if ( intent == null || ! intent.hasExtra("action") )
          return done();
 
@@ -130,19 +141,6 @@ public class IntentPlayer extends Service
 
       if ( intent_stop.equals(action) )
          return stop();
-
-      if ( intent_play.equals(action) && intent.hasExtra("cnt") )
-      {
-         // This is a play request subsequent to an asynchronous playlist
-         // play request: validate cnt.
-         int cnt = intent.getIntExtra("cnt",0);
-         log("checking counter: " + cnt);
-         if ( cnt != counter )
-         {
-            log("incorrect counter: counter=" + counter + " cnt=" + cnt);
-            return done();
-         }
-      }
 
       if ( intent_play.equals(action) )
       {
@@ -316,7 +314,8 @@ public class IntentPlayer extends Service
     * Audio focus listeners...
     */
 
-   public void onAudioFocusChange(int change) {
+   public void onAudioFocusChange(int change)
+   {
       // This is a state change.  If a focus change were to arrive while
       // asynchronously fetching a playlist, then we don't want to start
       // playback.
@@ -345,18 +344,11 @@ public class IntentPlayer extends Service
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-               // How transient?  Assuming this is just for a notification
-               // sound, then it should be just a mement or two.  So, we'll
-               // just reduce the volume here.  If we were to stop playback,
-               // we'd have to tolerate a substantial buffering delay on
-               // resume.
-               //
-               // TODO: Alternatively, we coud spin of an asynchronous task
-               // here to check back in 30 seconds, say.  If we still don't
-               // have the focus then, then pause/stop playback.
-               //
                if ( player.isPlaying() )
                {
+                  // Spin of a thread to stop playback if we remain without
+                  // focus for too long.
+                  later(intent_stop);
                   log("audio focus: AUDIOFOCUS_LOSS_TRANSIENT");
                   player.setVolume(0.0f, 0.0f);
                }
@@ -370,7 +362,16 @@ public class IntentPlayer extends Service
                }
                break;
       }
-}
+   }
+
+   private void later(String action)
+   {
+      Intent intent = new Intent(context, IntentPlayer.class);
+      intent.putExtra("action", action);
+      intent.putExtra("cnt", counter);
+      Later later = new Later(context, intent);
+      later.execute();
+   }
 
    /* ********************************************************************
     * Logging...
