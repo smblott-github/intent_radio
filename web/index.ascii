@@ -32,7 +32,7 @@ probably not the app for you.
 I'm too tight to pay Google $25 for the honour of hosting this on the
 Play Store.  So, for the moment, the download is here:
 
-- link:IntentRadio-release.apk[]
+- link:releases/IntentRadio-release-r1.2.apk[]
 
 Alternatively, you can download and build the app from the source on
 https://github.com/smblott-github/intent_radio[github].
@@ -135,9 +135,7 @@ be helpful in getting started with _Intent Radio_.
 
 .GitHub/master:
 ****
-- Up to date.
-
-This is also the `apk` version linked from this page.
+- Allow debugging to be turned off dynamically.
 ****
 
 .Version 1.2:
@@ -145,7 +143,9 @@ This is also the `apk` version linked from this page.
 - Obtain Wifi lock when on Wifi.
 - Handle audio focus events.
 
-This is also the `apk` version linked from this page.
+Download:
+
+- link:releases/IntentRadio-release-r1.2.apk[]
 ****
 
 .Version 1.1
