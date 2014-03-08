@@ -118,7 +118,7 @@ public class IntentPlayer extends Service
    public int onStartCommand(Intent intent, int flags, int startId)
    {
       if ( intent != null && intent.hasExtra("debug") )
-         Logger.start();
+         Logger.change(intent.getStringExtra("debug"));
 
       if ( intent.hasExtra("cnt") )
       {

@@ -31,7 +31,26 @@ public class Logger
       name = context.getString(R.string.app_name);
    }
 
-   public static void start()
+   /* ********************************************************************
+    * Enable/disable...
+    */
+
+   public static void change(String how)
+   {
+      if ( how.equals("debug") || how.equals("yes") || how.equals("on") || how.equals("start") )
+         { start(); return; }
+
+      if ( how.equals("nodebug") || how.equals("no") || how.equals("off") || how.equals("stop") )
+         { stop(); return; }
+
+      Log.d(name, "Logger: invalid change: " + how);
+   }
+
+   /* ********************************************************************
+    * State changes...
+    */
+
+   private static void start()
    {
       if ( debugging )
          return;
@@ -46,10 +65,14 @@ public class Logger
       }
       catch (Exception e)
          { file = null; }
+
+      log("Logger: -> on");
    }
 
    public static void stop()
    {
+      log("Logger: -> off");
+
       if ( file != null )
       {
          try { file.close(); }
