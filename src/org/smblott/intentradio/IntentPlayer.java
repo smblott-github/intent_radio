@@ -182,6 +182,7 @@ public class IntentPlayer extends Service
       builder.setContentText(name + ", connecting...");
       note = builder.build();
 
+      Wifi.lock(context, app_name_long);
       player = new MediaPlayer();
       player.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
       player.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -230,6 +231,7 @@ public class IntentPlayer extends Service
          player.reset();
          player.release();
          player = null;
+         Wifi.unlock();
       }
 
       note = null;
