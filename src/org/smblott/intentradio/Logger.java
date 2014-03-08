@@ -114,7 +114,7 @@ public class Logger
       if ( file != null )
          try
          {
-            file.write((msg+"\n").getBytes());
+            file.write((msg + "\n").getBytes());
             file.flush();
          } catch (Exception e) {}
    }
