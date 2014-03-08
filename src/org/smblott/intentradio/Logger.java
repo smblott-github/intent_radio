@@ -35,15 +35,15 @@ public class Logger
     * Enable/disable...
     */
 
-   public static void state(String how)
+   public static void state(String s)
    {
-      if ( how.equals("debug") || how.equals("yes") || how.equals("on") || how.equals("start") )
+      if ( s.equals("debug") || s.equals("yes") || s.equals("on") || s.equals("start") )
          { start(); return; }
 
-      if ( how.equals("nodebug") || how.equals("no") || how.equals("off") || how.equals("stop") )
+      if ( s.equals("nodebug") || s.equals("no") || s.equals("off") || s.equals("stop") )
          { stop(); return; }
 
-      Log.d(name, "Logger: invalid state change: " + how);
+      Log.d(name, "Logger: invalid state change: " + s);
    }
 
    /* ********************************************************************
