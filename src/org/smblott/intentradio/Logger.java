@@ -55,8 +55,10 @@ public class Logger
       if ( debugging )
          return;
 
+      if ( format == null )
+         format = new SimpleDateFormat("HH:mm:ss ");
+
       debugging = true;
-      format = new SimpleDateFormat("HH:mm:ss ");
 
       try
       {
@@ -92,6 +94,8 @@ public class Logger
       if ( ! debugging || msg == null )
          return;
 
+      msg = format.format(new Date()) + msg;
+
       Log.d(name, msg);
       log_file(msg);
    }
@@ -107,16 +111,12 @@ public class Logger
 
    private static void log_file(String msg)
    {
-      if ( file == null )
-         return;
-
-      String stamp = format.format(new Date());
-
-      try
-      {
-         file.write((stamp+msg+"\n").getBytes());
-         file.flush();
-      } catch (Exception e) {}
+      if ( file != null )
+         try
+         {
+            file.write((msg+"\n").getBytes());
+            file.flush();
+         } catch (Exception e) {}
    }
 
 }
