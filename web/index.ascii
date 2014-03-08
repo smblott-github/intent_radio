@@ -15,7 +15,7 @@ You might be interested in _Intent Radio_ if:
 - you use Android,
 - you use Tasker,
 - you listen to internet radio, and
-- you're a geek.
+- well, you're a geek.
 
 // /////////////////////////////////////////////////////
 == What? ==
@@ -29,10 +29,13 @@ probably not the app for you.
 // /////////////////////////////////////////////////////
 == Download ==
 
-I haven't figured out the details of putting _Intent Radio_ onto the Play
-Store yet.  So, for the moment, the download is here:
+I'm too tight to pay Google $25 for the honour of hosting this on the
+Play Store.  So, for the moment, the download is here:
 
 - link:IntentRadio-release.apk[]
+
+Alternatively, you can download and build the app from the source on
+https://github.com/smblott-github/intent_radio[github].
 
 // /////////////////////////////////////////////////////
 == Why? ==
