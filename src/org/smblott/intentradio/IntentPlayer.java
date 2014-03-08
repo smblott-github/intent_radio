@@ -13,6 +13,8 @@ import android.app.NotificationManager;
 import android.app.Notification.Builder;
 
 import android.media.AudioManager;
+import android.media.AudioManager.OnAudioFocusChangeListener;
+
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.media.MediaPlayer.OnErrorListener;
@@ -23,7 +25,12 @@ import android.net.Uri;
 import android.os.Build.VERSION;
 
 public class IntentPlayer extends Service
-   implements OnBufferingUpdateListener, OnInfoListener, OnErrorListener, OnPreparedListener
+   implements
+      OnBufferingUpdateListener,
+      OnInfoListener,
+      OnErrorListener,
+      OnPreparedListener,
+      OnAudioFocusChangeListener
 {
 
    /* ********************************************************************
@@ -50,6 +57,7 @@ public class IntentPlayer extends Service
    private static Builder builder = null;
    private static Notification note = null;
    private static NotificationManager note_manager = null;
+   private static AudioManager audioManager = null;
 
    /* ********************************************************************
     * Create service...
@@ -67,6 +75,8 @@ public class IntentPlayer extends Service
 
       note_manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
       pending = PendingIntent.getBroadcast(context, 0, new Intent(intent_stop), 0);
+
+      audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
       builder =
          new Notification.Builder(context)
@@ -182,6 +192,10 @@ public class IntentPlayer extends Service
       builder.setContentText(name + ", connecting...");
       note = builder.build();
 
+      int focus = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+      if ( focus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
+         return stop();
+
       WifiLocker.lock(context, app_name_long);
       player = new MediaPlayer();
       player.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
@@ -248,7 +262,7 @@ public class IntentPlayer extends Service
    }
 
    /* ********************************************************************
-    * Listeners...
+    * MediaPlayer listeners...
     */
 
    public void onPrepared(MediaPlayer player)
@@ -297,6 +311,66 @@ public class IntentPlayer extends Service
       stop();
       return true;
    }
+
+   /* ********************************************************************
+    * Audio focus listeners...
+    */
+
+   public void onAudioFocusChange(int change) {
+      // This is a state change.  If a focus change were to arrive while
+      // asynchronously fetching a playlist, then we don't want to start
+      // playback.
+      counter += 1;
+
+      if ( player != null )
+         switch (change)
+         {
+            case AudioManager.AUDIOFOCUS_GAIN:
+               if ( ! player.isPlaying() )
+               {
+                  log("audio focus: AUDIOFOCUS_GAIN");
+                  WifiLocker.lock(context, app_name_long);
+                  player.setVolume(1.0f, 1.0f);
+                  player.start();
+               }
+               break;
+
+            case AudioManager.AUDIOFOCUS_LOSS:
+               if ( player.isPlaying() )
+               {
+                  log("audio focus: AUDIOFOCUS_LOSS");
+                  WifiLocker.unlock();
+                  player.stop();
+               }
+               break;
+
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+               // How transient?  Assuming this is just for a notification
+               // sound, then it should be just a mement or two.  So, we'll
+               // just reduce the volume here.  If we were to stop playback,
+               // we'd have to tolerate a substantial buffering delay on
+               // resume.
+               //
+               // TODO: Alternatively, we coud spin of an asynchronous task
+               // here to check back in 30 seconds, say.  If we still don't
+               // have the focus then, then pause/stop playback.
+               //
+               if ( player.isPlaying() )
+               {
+                  log("audio focus: AUDIOFOCUS_LOSS_TRANSIENT");
+                  player.setVolume(0.0f, 0.0f);
+               }
+               break;
+
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+               if ( player.isPlaying() )
+               {
+                  log("audio focus: AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
+                  player.setVolume(0.1f, 0.1f);
+               }
+               break;
+      }
+}
 
    /* ********************************************************************
     * Logging...
