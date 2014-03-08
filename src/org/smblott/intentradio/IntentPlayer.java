@@ -98,7 +98,7 @@ public class IntentPlayer extends Service
    public void onDestroy()
    {
       stop();
-      Logger.stop();
+      Logger.state("off");
    }
 
    /* ********************************************************************
@@ -118,7 +118,7 @@ public class IntentPlayer extends Service
    public int onStartCommand(Intent intent, int flags, int startId)
    {
       if ( intent != null && intent.hasExtra("debug") )
-         Logger.change(intent.getStringExtra("debug"));
+         Logger.state(intent.getStringExtra("debug"));
 
       if ( intent.hasExtra("cnt") )
       {

@@ -35,7 +35,7 @@ public class Logger
     * Enable/disable...
     */
 
-   public static void change(String how)
+   public static void state(String how)
    {
       if ( how.equals("debug") || how.equals("yes") || how.equals("on") || how.equals("start") )
          { start(); return; }
@@ -43,7 +43,7 @@ public class Logger
       if ( how.equals("nodebug") || how.equals("no") || how.equals("off") || how.equals("stop") )
          { stop(); return; }
 
-      Log.d(name, "Logger: invalid change: " + how);
+      Log.d(name, "Logger: invalid state: " + how);
    }
 
    /* ********************************************************************
@@ -69,7 +69,7 @@ public class Logger
       log("Logger: -> on");
    }
 
-   public static void stop()
+   private static void stop()
    {
       log("Logger: -> off");
 
