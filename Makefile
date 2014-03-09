@@ -55,3 +55,18 @@ log_file:
 update-project:
 	android update project -p .
 
+# Release process:
+#
+# - bump version/code in ./AndroidManifest.xml
+# - update release notes in web/index.ascii
+# - git commit/push
+# - build release APK
+# - git tag -a vX.Y
+# - git push origin --tags
+# - on GitHub, publish release
+#   including upload of release APK
+# - add link to release APK to web/index.ascii (at bottom)
+# - in web: make install
+# - git commit/push
+#
+
