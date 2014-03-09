@@ -15,6 +15,7 @@
            android:layout_width="fill_parent" 
            android:layout_height="wrap_content" 
            android:text="Clip Intents"
+           android:onClick="clip_buttons"
            android:layout_margin="5dp"
            android:layout_alignParentLeft="true" >
        </Button>
