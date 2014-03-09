@@ -26,17 +26,21 @@ public class IntentRadio extends Activity
    @Override
    public void onCreate(Bundle savedInstanceState)
    {
-      Logger.init(getApplicationContext());
+      Context context = getApplicationContext();
+      Logger.init(context);
 
       String app_name_long = getString(R.string.app_name_long);
       String version = getString(R.string.version);
-      version = "\n<p>This is " + app_name_long + ", Version " + version + ".</p>\n";
+      version = "<p>This is " + app_name_long + ", Version " + version + ".<br>\n";
+
+      String build_date = Build.getBuildDate(context);
+      build_date = "Build: " + build_date + ".</p>\n";
 
       super.onCreate(savedInstanceState);
       setContentView(R.layout.main);
       TextView text = (TextView) findViewById(R.id.text);
       text.setMovementMethod(LinkMovementMethod.getInstance());
-      text.setText(Html.fromHtml(readRawTextFile(getApplicationContext(), R.raw.message) + version));
+      text.setText(Html.fromHtml(readRawTextFile(getApplicationContext(), R.raw.message) + version + build_date));
    }
 
    /* ********************************************************************
