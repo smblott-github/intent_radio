@@ -130,7 +130,7 @@ public class IntentPlayer extends Service
       log(action);
 
       if ( intent_stop.equals(action) )
-         return stop();
+         return stop(intent);
 
       if ( intent_play.equals(action) )
       {
@@ -225,6 +225,7 @@ public class IntentPlayer extends Service
          return stop();
       }
 
+      // later(intent_stop,5);
       return done();
    }
 
@@ -233,10 +234,24 @@ public class IntentPlayer extends Service
     */
 
    private int stop()
-      { return stop(true,null); }
+      { return stop(null,true,null); }
 
-   private int stop(boolean kill_note, String text)
+   private int stop(Intent intent)
+      { return stop(intent,true,null); }
+
+   private int stop(Intent intent, boolean kill_note, String text)
    {
+      if ( intent != null && intent.getBooleanExtra("asynchronous",false) )
+      {
+         // If we received an asynchronous stop request, then it was spun off
+         // from an earlier AUDIOFOCUS_LOSS_TRANSIENT event.  Make audio focus
+         // loss final.  This will result in a further call to stop() which will
+         // preserve the notifiaction.
+         //
+         onAudioFocusChange(AudioManager.AUDIOFOCUS_LOSS);
+         return done();
+      }
+
       counter += 1;
 
       // Kill any outstanding asynchronous playlist task...
@@ -370,8 +385,7 @@ public class IntentPlayer extends Service
 
             case AudioManager.AUDIOFOCUS_LOSS:
                log("audio focus: AUDIOFOCUS_LOSS");
-               if ( player.isPlaying() )
-                  stop(false, "Streaming stopped because audio focus was lost.");
+               stop(null,false, "Audio focus lost, streaming stopped.");
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:

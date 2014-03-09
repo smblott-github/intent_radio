@@ -157,6 +157,12 @@ be helpful in getting started with _Intent Radio_.
 - see the https://github.com/smblott-github/intent_radio/releases[Github releases].
 ****
 
+.Github/master:
+****
+- Improved handling of audio focus.
+- Improved notifications.
+****
+
 .Version 1.3:
 ****
 - M3u playlist support.
