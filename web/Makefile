@@ -14,7 +14,7 @@ www = /home/www/smblott.org/intent_radio/
 
 install:
 	$(MAKE) build
-	rsync -av --delete releases $(target) $(srv):$(www)
+	rsync -av --delete $(target) $(srv):$(www)
 
 Radio.prj.xml: ../misc/Radio.prj.xml
 	install -m 0444 $< $@
