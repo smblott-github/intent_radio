@@ -57,7 +57,9 @@ update-project:
 
 # Release process:
 #
-# - bump version/code in ./AndroidManifest.xml
+# - bump
+#   ** version code in ./AndroidManifest.xml
+#   ** version name in ./res/values/strings.xml
 # - update release notes in web/index.ascii
 # - git commit/push
 # - build release APK

@@ -28,11 +28,15 @@ public class IntentRadio extends Activity
    {
       Logger.init(getApplicationContext());
 
+      String app_name_long = getString(R.string.app_name_long);
+      String version = getString(R.string.version);
+      version = "\n<p>This is " + app_name_long + ", Version " + version + ".</p>\n";
+
       super.onCreate(savedInstanceState);
       setContentView(R.layout.main);
       TextView text = (TextView) findViewById(R.id.text);
       text.setMovementMethod(LinkMovementMethod.getInstance());
-      text.setText(Html.fromHtml(readRawTextFile(getApplicationContext(), R.raw.message)));
+      text.setText(Html.fromHtml(readRawTextFile(getApplicationContext(), R.raw.message) + version));
    }
 
    /* ********************************************************************
