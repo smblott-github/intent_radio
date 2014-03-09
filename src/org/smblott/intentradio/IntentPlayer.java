@@ -424,14 +424,31 @@ public class IntentPlayer extends Service
    /* ********************************************************************
     * Do something later...
     */
+   
+   Later prev_task = null;
+   String prev_action = null;
 
    private void later(String action, int seconds)
    {
+      if ( prev_task != null && prev_action != null )
+         if ( action.equals(prev_action) && prev_task.active() )
+         {
+            // TODO: This works currently (while the only action is STOP), but
+            // wouldn't work if several different actions could be launched
+            // simultaneously.
+            //
+            log("Later: killing previous task...");
+            prev_task.cancel(true);
+         }
+
       Intent intent = new Intent(context, IntentPlayer.class);
       intent.putExtra("action", action);
       intent.putExtra("counter", counter);
       Later soon = new Later(context, intent, seconds);
       soon.execute();
+
+      prev_task = soon;
+      prev_action = action;
    }
 
    private void later(String action)

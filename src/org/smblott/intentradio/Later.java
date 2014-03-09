@@ -8,7 +8,7 @@ import java.lang.Thread;
 
 public class Later extends AsyncTask<Integer, Void, Void>
 {
-   private static final int default_seconds = 30;
+   private static final int default_seconds = 120;
 
    private Context context = null;
    private Intent intent = null;
@@ -49,6 +49,13 @@ public class Later extends AsyncTask<Integer, Void, Void>
 
       return null;
    }
+
+   /* ********************************************************************
+    * Active...
+    */
+
+   boolean active()
+      { return getStatus() != AsyncTask.Status.FINISHED; }
 
    /* ********************************************************************
     * Logging...
