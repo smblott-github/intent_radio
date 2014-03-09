@@ -226,7 +226,7 @@ public class IntentPlayer extends Service
       {
          toast("MediaPlayer: initialisation error.");
          toast(e.getMessage());
-         return stop();
+         return stop("Initialisation error!");
       }
 
       // later(intent_stop,5);
@@ -239,6 +239,9 @@ public class IntentPlayer extends Service
 
    private int stop()
       { return stop(null,true,null); }
+
+   private int stop(String msg)
+      { return stop(null,false,msg); }
 
    private int stop(Intent intent)
       { return stop(intent,true,null); }
@@ -382,7 +385,7 @@ public class IntentPlayer extends Service
    {
       String msg = "onError...(" + what + ")";
       toast(msg);
-      stop();
+      stop("Error: " + what + ".");
       return true;
    }
 
@@ -419,7 +422,7 @@ public class IntentPlayer extends Service
                // it without checking back there.
                //
                log("audio focus: AUDIOFOCUS_LOSS");
-               stop(null,false, "Audio focus lost, streaming stopped.");
+               stop("Audio focus lost, streaming stopped.");
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
