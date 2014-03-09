@@ -6,6 +6,8 @@
     <string name="default_name">BBC Radio 4 (FM)</string>
     <string name="intent_play">org.smblott.intentradio.PLAY</string>
     <string name="intent_stop">org.smblott.intentradio.STOP</string>
+    <string name="intent_pause">org.smblott.intentradio.PAUSE</string>
+    <string name="intent_restart">org.smblott.intentradio.RESTART</string>
     <string name="intent_log">org.smblott.intentradio.LOG</string>
     <string name="intent_log_file">intent-radio.log</string>
 </resources>

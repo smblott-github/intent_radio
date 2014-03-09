@@ -47,11 +47,12 @@ public class IntentPlayer extends Service
    private static String app_name_long = null;
    private static String intent_play = null;
    private static String intent_stop = null;
+   private static String intent_pause = null;
+   private static String intent_restart = null;
 
    private static String name = null;
    private static String url = null;
 
-   private static int counter = 0;
    private static Playlist pltask = null;
    private static MediaPlayer player = null;
    private static Builder builder = null;
@@ -72,6 +73,8 @@ public class IntentPlayer extends Service
       app_name_long = getString(R.string.app_name_long);
       intent_play = getString(R.string.intent_play);
       intent_stop = getString(R.string.intent_stop);
+      intent_pause = getString(R.string.intent_pause);
+      intent_restart = getString(R.string.intent_restart);
 
       note_manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
       pending = PendingIntent.getBroadcast(context, 0, new Intent(intent_stop), 0);
@@ -118,9 +121,9 @@ public class IntentPlayer extends Service
       if ( intent.hasExtra("debug") )
          Logger.state(intent.getStringExtra("debug"));
 
-      if ( intent.getIntExtra("counter",counter) != counter )
+      if ( intent.getIntExtra("counter",now()) != now() )
       {
-         log("Incorrect intent counter: current=" + counter + " received=" + intent.getIntExtra("counter",0));
+         log("Incorrect intent counter: current=" + now() + " received=" + intent.getIntExtra("counter",0));
          return done();
       }
 
@@ -129,8 +132,9 @@ public class IntentPlayer extends Service
          return done();
       log(action);
 
-      if ( intent_stop.equals(action) )
-         return stop(intent);
+      if ( intent_stop.equals(action)    ) return stop(intent);
+      if ( intent_pause.equals(action)   ) return pause();
+      if ( intent_restart.equals(action) ) return restart();
 
       if ( intent_play.equals(action) )
       {
@@ -175,7 +179,7 @@ public class IntentPlayer extends Service
       if ( pltask != null )
       {
          log("playlist: " + url);
-         pltask.execute(url, name, ""+counter);
+         pltask.execute(url, name, ""+now());
          return done();
       }
 
@@ -255,7 +259,7 @@ public class IntentPlayer extends Service
 
       // Time moves on...
       //
-      counter += 1;
+      time_passes();
 
       // Kill any outstanding asynchronous playlist task...
       //
@@ -285,6 +289,36 @@ public class IntentPlayer extends Service
          note = null;
       else
          notificate(text,false);
+
+      return done();
+   }
+
+   /* ********************************************************************
+    * Pause/restart...
+    */
+
+   private int pause()
+   {
+      time_passes();
+
+      if ( player != null && player.isPlaying() )
+      {
+         player.pause();
+         notificate("Paused.");
+      }
+
+      return done();
+   }
+
+   private int restart()
+   {
+      time_passes();
+
+      if ( player != null && ! player.isPlaying() )
+      {
+         player.start();
+         notificate();
+      }
 
       return done();
    }
@@ -365,7 +399,7 @@ public class IntentPlayer extends Service
       // This is a state change.  If a focus change were to arrive while
       // asynchronously fetching a playlist, then we don't want to start
       // playback.
-      counter += 1;
+      time_passes();
 
       if ( player != null )
          switch (change)
@@ -376,6 +410,7 @@ public class IntentPlayer extends Service
             case AudioManager.AUDIOFOCUS_GAIN:
                log("audio focus: AUDIOFOCUS_GAIN");
                if ( ! player.isPlaying() )
+                  restart();
                {
                   WifiLocker.lock(context, app_name_long);
                   player.start();
@@ -394,14 +429,18 @@ public class IntentPlayer extends Service
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                log("audio focus: AUDIOFOCUS_LOSS_TRANSIENT");
+               /*
                if ( player.isPlaying() )
                {
                   player.setVolume(0.0f, 0.0f);
                   // Spin off a thread to stop playback if we remain without
                   // the focus for too long.
                   later(intent_stop);
-                  notificate("Focus paused, hopefully back shortly...");
+                  notificate("Focus lost, paused...");
                }
+               */
+               pause();
+               notificate("Focus lost, paused...");
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
@@ -441,7 +480,7 @@ public class IntentPlayer extends Service
 
       Intent intent = new Intent(context, IntentPlayer.class);
       intent.putExtra("action", action);
-      intent.putExtra("counter", counter);
+      intent.putExtra("counter", now());
       Later soon = new Later(context, intent, seconds);
       soon.execute();
 
@@ -484,6 +523,21 @@ public class IntentPlayer extends Service
          note_manager.notify(note_id, note);
       }
    }
+
+   /* ********************************************************************
+    * Time...
+    */
+
+   private static int counter = 0;
+
+   static void time_passes()
+      { counter += 1; }
+
+   static boolean still(int cnt)
+      { return cnt == counter; }
+
+   static int now()
+      { return counter; }
 
    /* ********************************************************************
     * Required abstract method...

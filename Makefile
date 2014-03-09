@@ -37,6 +37,12 @@ newstalk:
 lyric:
 	adb shell am broadcast -a org.smblott.intentradio.PLAY -e url http://icecast2.rte.ie/lyric -e name "RTE Lyric FM" -e debug yes
 
+pause:
+	adb shell am broadcast -a org.smblott.intentradio.PAUSE -e debug yes
+
+restart:
+	adb shell am broadcast -a org.smblott.intentradio.RESTART -e debug yes
+
 logcat:
 	adb logcat -s IntentRadio
 

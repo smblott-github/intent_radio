@@ -28,6 +28,8 @@
          <intent-filter>
             <action android:name="org.smblott.intentradio.PLAY"/>
             <action android:name="org.smblott.intentradio.STOP"/>
+            <action android:name="org.smblott.intentradio.PAUSE"/>
+            <action android:name="org.smblott.intentradio.RESTART"/>
          </intent-filter>
       </receiver>
 

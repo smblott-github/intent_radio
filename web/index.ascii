@@ -109,6 +109,18 @@ a built-in URL for BBC Radio 4 is used.
 - extras: none
 ****
 
+.`org.smblott.intentradio.PAUSE`
+****
+- pause playback, if playing
+- extras: none
+****
+
+.`org.smblott.intentradio.RESTART`
+****
+- restart playback, if paused
+- extras: none
+****
+
 .More Information
 ****
 During playback, _Intent Radio_ places a notification in the notification
@@ -167,6 +179,7 @@ be helpful in getting started with _Intent Radio_.
 
 .Github/master:
 ****
+- Pause/restart broadcast intents.
 - Improved handling of audio focus.
 - Improved notifications.
 ****
