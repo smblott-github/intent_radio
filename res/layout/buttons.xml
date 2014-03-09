@@ -9,6 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="No need to type in those long broadcast-intent names. Copy them to clipboard here..."
+        android:layout_margin="15dp"
         android:textColor="#FFFFFFFF" >
     </TextView>
 
