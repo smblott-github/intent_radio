@@ -184,11 +184,14 @@ Finally, _Intent Radio_ is built for Android API level 16, so only for 4.1
 - see the https://github.com/smblott-github/intent_radio/releases[Github releases].
 ****
 
-.Github/master:
+.Version 1.6:
 ****
 - Separate page for clipping intents to clipboard.
-- Notification persists after errors (but it is then not _ongoing_, so it can be dismissed).
+- Better layout in app.
+- Notification persists after errors +
+  (but then it is not _ongoing_, so it can be dismissed).
 - Version and build date visible in app.
+- Much code refactoring and clean up.
 ****
 
 .Version 1.5:
