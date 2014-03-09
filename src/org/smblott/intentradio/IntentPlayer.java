@@ -246,12 +246,15 @@ public class IntentPlayer extends Service
          // If we received an asynchronous stop request, then it was spun off
          // from an earlier AUDIOFOCUS_LOSS_TRANSIENT event.  Make audio focus
          // loss final.  This will result in a further call to stop() which will
-         // preserve the notifiaction.
+         // preserve the notification.  So at least the user knows what
+         // happened.
          //
          onAudioFocusChange(AudioManager.AUDIOFOCUS_LOSS);
          return done();
       }
 
+      // Time moves on...
+      //
       counter += 1;
 
       // Kill any outstanding asynchronous playlist task...
@@ -266,7 +269,7 @@ public class IntentPlayer extends Service
       //
       if ( player != null )
       {
-         toast("Stopping...");
+         log("Stopping player...");
          player.stop();
          player.reset();
          player.release();
