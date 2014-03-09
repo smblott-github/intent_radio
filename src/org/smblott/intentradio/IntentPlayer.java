@@ -384,6 +384,9 @@ public class IntentPlayer extends Service
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS:
+               // Warning: this block is also called from stop(); do not change
+               // it without checking back there.
+               //
                log("audio focus: AUDIOFOCUS_LOSS");
                stop(null,false, "Audio focus lost, streaming stopped.");
                break;
