@@ -160,11 +160,18 @@ Finally, _Intent Radio_ is built for Android API level 16, so only for 4.1
 ****
 
 // /////////////////////////////////////////////////////
-== A Sample Tasker Project ==
+== More... ==
 
+.If you're using Tasker:
 ****
-If you're using Tasker, then this link:./Radio.prj.xml[Tasker project] may
-be helpful in getting started with _Intent Radio_.
+- Then this link:./Radio.prj.xml[Tasker project] may be helpful in getting
+  started with _Intent Radio_.
+- Or, there are instructions link:./tasker.html[here].
+****
+
+.Debugging
+****
+- See link:./debug.html[here].
 ****
 
 // /////////////////////////////////////////////////////

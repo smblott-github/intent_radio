@@ -1,0 +1,37 @@
+= Intent Radio -- Tasker =
+Stephen Blott <smblott+ir@gmail.com>
+// :toc2:
+
+.The simple way
+****
+- Download and experiment with this link:Radio.prj.xml[sample Tasker project].
+****
+
+.Alternatively, create a Tasker task as follows
+****
+- Create a new task.
+- Add an action:
+** select _Misc/Send Intent_.
+- Under _Action_, insert the name of the intent.
+- Leave _Cat_, _Mime Type_ and _Data_ at their default values; either
+  `None` or empty.
+- For the `PLAY` intent, under _Extra_ insert: +
+   +
+   `url: INSERT-YOUR-URL-HERE` +
+   +
+   and, in the second _Extra_, insert: +
+   +
+   `name: INSERT-YOUR-NAME-HERE` +
+- Leave everything else empty, except ensure that the _Target_ is
+  set to `Broadcast Receiver`.
+
+Save the task and run it.
+
+[TIP]
+====
+You can save on typing the long intent names (and possible typos) by using
+the _Copy_ buttons within the app itself.
+====
+****
+
+// vim: set syntax=asciidoc:

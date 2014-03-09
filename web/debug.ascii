@@ -1,0 +1,44 @@
+= Intent Radio -- Debugging =
+Stephen Blott <smblott+ir@gmail.com>
+// :toc2:
+
+// /////////////////////////////////////////////////////
+== Enable Debugging ==
+
+.Enable/disable
+****
+- Debugging is enabled whenever an intent is received with a string extra
+  `debug` with the value `on`.
+
+- Debugging is disabled whenever an intent is received with a string extra
+  `debug` with the value `off`.
+****
+
+// /////////////////////////////////////////////////////
+== Debugging Features ==
+
+.Logcat
+****
+When debugging is enabled, various informational messages are written to
+the Android log with the tag `IntentRadio`.  These can be viewed as
+follows:
+
+[source, sh]
+----
+adb logcat -s IntentRadio
+----
+
+Of course, the Android SDK is required.
+****
+
+.File logging
+****
+Additionally, a log file containing the same messages is written to the
+app's private files space on the SD card.  For me, that's:
+
+- `/sdcard/Android/data/org.smblott.intentradio/files/intent-radio.log`
+
+This file is truncated each time the _Intent Radio_ service starts.
+****
+
+// vim: set syntax=asciidoc:
