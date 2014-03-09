@@ -409,11 +409,8 @@ public class IntentPlayer extends Service
             //    // Drop through...
             case AudioManager.AUDIOFOCUS_GAIN:
                log("audio focus: AUDIOFOCUS_GAIN");
-               if ( ! player.isPlaying() )
-               {
-                  restart();
-                  player.setVolume(1.0f, 1.0f);
-               }
+               restart();
+               player.setVolume(1.0f, 1.0f);
                notificate();
                break;
 
@@ -443,11 +440,8 @@ public class IntentPlayer extends Service
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
                log("audio focus: AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
-               if ( player.isPlaying() )
-               {
-                  player.setVolume(0.1f, 0.1f);
-                  notificate("Focus ducked...");
-               }
+               player.setVolume(0.1f, 0.1f);
+               notificate("Focus lost, quiet mode...");
                break;
 
             default:
@@ -460,6 +454,7 @@ public class IntentPlayer extends Service
     * Do something later...
     */
    
+   /*
    Later prev_task = null;
    String prev_action = null;
 
@@ -488,6 +483,7 @@ public class IntentPlayer extends Service
 
    private void later(String action)
       { later(action, 0); }
+   */
 
    /* ********************************************************************
     * Logging...
