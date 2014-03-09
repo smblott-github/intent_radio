@@ -410,12 +410,10 @@ public class IntentPlayer extends Service
             case AudioManager.AUDIOFOCUS_GAIN:
                log("audio focus: AUDIOFOCUS_GAIN");
                if ( ! player.isPlaying() )
-                  restart();
                {
-                  WifiLocker.lock(context, app_name_long);
-                  player.start();
+                  restart();
+                  player.setVolume(1.0f, 1.0f);
                }
-               player.setVolume(1.0f, 1.0f);
                notificate();
                break;
 
