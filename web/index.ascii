@@ -187,8 +187,8 @@ Finally, _Intent Radio_ is built for Android API level 16, so only for 4.1
 .Github/master:
 ****
 - Separate page for clipping intents to clipboard.
-- Notification persists after errors (but it is then not _ongoing_, so it can
-  be dismissed).
+- Notification persists after errors (but it is then not _ongoing_, so it can be dismissed).
+- Version and build date visible in app.
 ****
 
 .Version 1.5:
