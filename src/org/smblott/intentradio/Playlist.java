@@ -17,12 +17,14 @@ public abstract class Playlist extends AsyncTask<String, Void, Void>
 
    private Context context = null;
    private String intent_play = null;
+   private int counter = 0;
 
    Playlist(Context ctx, String play_intent)
    {
       super();
       context = ctx;
       intent_play = play_intent;
+      counter = IntentPlayer.now();
    }
 
    // A playlist contains a sequence of lines.  Only some of those lines may
@@ -41,7 +43,7 @@ public abstract class Playlist extends AsyncTask<String, Void, Void>
 
    protected Void doInBackground(String... args)
    {
-      if ( args.length != 3 )
+      if ( args.length != 2 )
       {
          log("Playlist: invalid args length");
          return null;
@@ -49,7 +51,6 @@ public abstract class Playlist extends AsyncTask<String, Void, Void>
 
       String url = args[0];
       String name = args[1];
-      int counter = Integer.parseInt(args[2]);
 
       if ( url == null )
          log("Playlist: no playlist url");
@@ -95,7 +96,7 @@ public abstract class Playlist extends AsyncTask<String, Void, Void>
       List<String> lines = HttpGetter.httpGet(url);
 
       for (int i=0; i<lines.size(); i+= 1)
-         lines.set(i, filter(lines.get(i)));
+         lines.set(i, filter(lines.get(i).trim()));
 
       List<String> links = getLinks(TextUtils.join("\n", lines));
       if ( links.size() == 0 )

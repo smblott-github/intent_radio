@@ -121,8 +121,10 @@ public class IntentPlayer extends Service
       if ( intent.hasExtra("debug") )
          Logger.state(intent.getStringExtra("debug"));
 
-      if ( intent.getIntExtra("counter",now()) != now() )
+      if ( ! still(intent.getIntExtra("counter",now())) )
       {
+         // Asynchronous request, but arrived too late...
+         //
          log("Incorrect intent counter: current=" + now() + " received=" + intent.getIntExtra("counter",0));
          return done();
       }
@@ -179,7 +181,7 @@ public class IntentPlayer extends Service
       if ( pltask != null )
       {
          log("playlist: " + url);
-         pltask.execute(url, name, ""+now());
+         pltask.execute(url, name);
          return done();
       }
 
@@ -197,7 +199,7 @@ public class IntentPlayer extends Service
 
       int focus = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
       if ( focus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
-         return stop();
+         return stop("Could not get audio focus!");
 
       WifiLocker.lock(context, app_name_long);
       player = new MediaPlayer();
@@ -229,7 +231,6 @@ public class IntentPlayer extends Service
          return stop("Initialisation error!");
       }
 
-      // later(intent_stop,5);
       return done();
    }
 
@@ -248,6 +249,7 @@ public class IntentPlayer extends Service
 
    private int stop(Intent intent, boolean kill_note, String text)
    {
+      /*
       if ( intent != null && intent.getBooleanExtra("asynchronous",false) )
       {
          // If we received an asynchronous stop request, then it was spun off
@@ -259,6 +261,7 @@ public class IntentPlayer extends Service
          onAudioFocusChange(AudioManager.AUDIOFOCUS_LOSS);
          return done();
       }
+      */
 
       // Time moves on...
       //
