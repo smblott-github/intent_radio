@@ -177,6 +177,12 @@ be helpful in getting started with _Intent Radio_.
 - see the https://github.com/smblott-github/intent_radio/releases[Github releases].
 ****
 
+.Github/master:
+****
+- Separate page for clipping intents to clipboard.
+- Notification persists after errors.
+****
+
 .Version 1.5:
 ****
 - Pause/restart broadcast intents.
