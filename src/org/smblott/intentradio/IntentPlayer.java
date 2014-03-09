@@ -121,7 +121,7 @@ public class IntentPlayer extends Service
 
       if ( intent.getIntExtra("counter",counter) != counter )
       {
-         log("incorrect counter: counter=" + counter + " cnt=" + intent.getIntExtra("counter",0));
+         log("Incorrect intent counter: current=" + counter + " received=" + intent.getIntExtra("counter",0));
          return done();
       }
 
@@ -189,7 +189,7 @@ public class IntentPlayer extends Service
       if ( play_disabled )
          return stop();
 
-      builder.setContentText(name + ", connecting...");
+      builder.setContentText("Connecting...");
       note = builder.build();
 
       int focus = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
@@ -286,24 +286,29 @@ public class IntentPlayer extends Service
 
    public boolean onInfo(MediaPlayer player, int what, int extra)
    {
-      String msg = "" + what;
+      log("onInfo: " + what);
+      String msg = "Buffering: " + what;
       switch (what)
       {
          case MediaPlayer.MEDIA_INFO_BUFFERING_END:
-            notificate(); return true;
+            log(msg + "/end");
+            notificate();
+            return true;
 
          // not available in API 16...
          // case MediaPlayer.MEDIA_ERROR_UNSUPPORTED:
          //    msg += "/media unsupported"; break;
 
          case MediaPlayer.MEDIA_INFO_BUFFERING_START:
-            msg += "/buffering start.."; break;
+            msg += "/start..."; break;
          case MediaPlayer.MEDIA_INFO_BAD_INTERLEAVING:
             msg += "/bad interleaving"; break;
          case MediaPlayer.MEDIA_INFO_NOT_SEEKABLE:
             msg += "/media not seekable"; break;
          case MediaPlayer.MEDIA_INFO_METADATA_UPDATE:
             msg += "/media info update"; break;
+         default:
+            return true;
       }
       notificate(msg);
       toast(msg);
@@ -324,6 +329,10 @@ public class IntentPlayer extends Service
 
    public void onAudioFocusChange(int change)
    {
+      log("onAudioFocusChange: " + change);
+      // if ( change == AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
+      //    return;
+
       // This is a state change.  If a focus change were to arrive while
       // asynchronously fetching a playlist, then we don't want to start
       // playback.
@@ -332,10 +341,13 @@ public class IntentPlayer extends Service
       if ( player != null )
          switch (change)
          {
+            // case AudioManager.AUDIOFOCUS_REQUEST_GRANTED:
+            //    log("audio focus: AUDIOFOCUS_REQUEST_GRANTED");
+            //    // Drop through...
             case AudioManager.AUDIOFOCUS_GAIN:
+               log("audio focus: AUDIOFOCUS_GAIN");
                if ( ! player.isPlaying() )
                {
-                  log("audio focus: AUDIOFOCUS_GAIN");
                   WifiLocker.lock(context, app_name_long);
                   player.start();
                }
@@ -344,19 +356,19 @@ public class IntentPlayer extends Service
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS:
+               log("audio focus: AUDIOFOCUS_LOSS");
                if ( player.isPlaying() )
                {
-                  log("audio focus: AUDIOFOCUS_LOSS");
                   WifiLocker.unlock();
                   player.stop();
-                  notificate("Focus lost, not playing.");
                }
+               notificate("Focus lost, playback stopped.");
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+               log("audio focus: AUDIOFOCUS_LOSS_TRANSIENT");
                if ( player.isPlaying() )
                {
-                  log("audio focus: AUDIOFOCUS_LOSS_TRANSIENT");
                   player.setVolume(0.0f, 0.0f);
                   // Spin off a thread to stop playback if we remain without
                   // the focus for too long.
@@ -366,12 +378,16 @@ public class IntentPlayer extends Service
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+               log("audio focus: AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
                if ( player.isPlaying() )
                {
-                  log("audio focus: AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
                   player.setVolume(0.1f, 0.1f);
                   notificate("Focus ducked...");
                }
+               break;
+
+            default:
+               log("audio focus: unhandled");
                break;
       }
    }
