@@ -38,7 +38,7 @@ You might be interested in _Intent Radio_ if:
 I'm too tight to pay Google $25 for the honour of hosting this on the
 Play Store.  So, for the moment, the download is on
 https://github.com/smblott-github/intent_radio/releases[GitHub] (and direct
-`apk` download links are below).
+`apk` download links are link:#downloads[below]).
 
 Alternatively, you can download and build the app from
 https://github.com/smblott-github/intent_radio[source].
@@ -149,7 +149,7 @@ end with the suffix `.m3u`).  For example:
 ****
 Although _Intent Radio_ has no graphical user interface, you must
 nevertheless start up the app _at least once_.  Otherwise, Android will not
-deliver broadcast intents to the app.  This is an Android security feature.
+deliver broadcast intents to the app's background service.  This is an Android security feature.
 
 Also, start up can be slow for some streams.  BBC Radio 4, for example,
 takes in excess of 30 seconds for playback to begin.  I do not know the
@@ -187,7 +187,8 @@ Finally, _Intent Radio_ is built for Android API level 16, so only for 4.1
 .Github/master:
 ****
 - Separate page for clipping intents to clipboard.
-- Notification persists after errors.
+- Notification persists after errors (but it is then not _ongoing_, so it can
+  be dismissed).
 ****
 
 .Version 1.5:
