@@ -31,6 +31,9 @@ ufm:
 wnyc:
 	adb shell am broadcast -a org.smblott.intentradio.PLAY -e url http://www.wnyc.org/stream/fm.pls -e name "WNYC" -e debug yes
 
+newstalk:
+	adb shell am broadcast -a org.smblott.intentradio.PLAY -e url http://communicorp.mp3.miisolutions.net:8000/communicorp/Newstalk_low.m3u -e name "Newstalk" -e debug yes
+
 lyric:
 	adb shell am broadcast -a org.smblott.intentradio.PLAY -e url http://icecast2.rte.ie/lyric -e name "RTE Lyric FM" -e debug yes
 
