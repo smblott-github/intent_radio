@@ -2,6 +2,12 @@
 Stephen Blott <smblott+ir@gmail.com>
 // :toc2:
 
+.Quick links:
+****
+- jump straight to link:#downloads[downloads].
+- jump straight to broadcast intent link:#how[instructions].
+****
+
 // /////////////////////////////////////////////////////
 == What? ==
 
@@ -78,6 +84,7 @@ a headset being plugged in or out.
 ****
 
 // /////////////////////////////////////////////////////
+[[how]]
 == How? ==
 
 ****
@@ -152,6 +159,7 @@ be helpful in getting started with _Intent Radio_.
 [[notes]]
 == Release Notes ==
 
+[[downloads]]
 .Downloads:
 ****
 - see the https://github.com/smblott-github/intent_radio/releases[Github releases].
