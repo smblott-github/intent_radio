@@ -33,13 +33,6 @@ public class IntentRadio extends Activity
       TextView text = (TextView) findViewById(R.id.text);
       text.setMovementMethod(LinkMovementMethod.getInstance());
       text.setText(Html.fromHtml(readRawTextFile(getApplicationContext(), R.raw.message)));
-
-      // Button button = (Button) findViewById(R.id.clip_buttons);
-      // button.setOnClickListener( new Button.OnClickListener() {
-      //          public void onClick(View v) {
-      //             Intent c = new Intent(IntentRadio.this, ClipButtons.class);
-      //             startActivity(c);
-      //          } } );
    }
 
    /* ********************************************************************
