@@ -177,7 +177,7 @@ be helpful in getting started with _Intent Radio_.
 - see the https://github.com/smblott-github/intent_radio/releases[Github releases].
 ****
 
-.Version 1.4:
+.Version 1.5:
 ****
 - Pause/restart broadcast intents.
 - Improved handling of audio focus.
