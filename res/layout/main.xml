@@ -11,22 +11,12 @@
         android:layout_margin="5dp"
         android:layout_alignParentBottom="true" >
        <Button 
-           android:id="@+id/clip_play" 
-           android:layout_width="wrap_content" 
+           android:id="@+id/clip_buttons" 
+           android:layout_width="fill_parent" 
            android:layout_height="wrap_content" 
-           android:onClick="clip_play"
-           android:text="Clip PLAY"
+           android:text="Clip Intents"
            android:layout_margin="5dp"
            android:layout_alignParentLeft="true" >
-       </Button>
-       <Button 
-           android:id="@+id/clip_stop" 
-           android:layout_width="wrap_content" 
-           android:layout_height="wrap_content"
-           android:onClick="clip_stop"
-           android:text="Clip STOP"
-           android:layout_margin="5dp"
-           android:layout_alignParentRight="true" >
        </Button>
     </RelativeLayout>
     

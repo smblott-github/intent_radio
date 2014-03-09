@@ -2,6 +2,7 @@ package org.smblott.intentradio;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.content.Intent;
 
 import android.content.Context;
 import android.content.Context;
@@ -16,27 +17,29 @@ import android.content.ClipboardManager;
 import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Button;
 import android.text.method.LinkMovementMethod;
 
 public class IntentRadio extends Activity
 {
-
-   private static String intent_play = null;
-   private static String intent_stop = null;
 
    @Override
    public void onCreate(Bundle savedInstanceState)
    {
       Logger.init(getApplicationContext());
 
-      intent_play = getString(R.string.intent_play);
-      intent_stop = getString(R.string.intent_stop);
-
       super.onCreate(savedInstanceState);
       setContentView(R.layout.main);
       TextView text = (TextView) findViewById(R.id.text);
       text.setMovementMethod(LinkMovementMethod.getInstance());
       text.setText(Html.fromHtml(readRawTextFile(getApplicationContext(), R.raw.message)));
+
+      Button button = (Button) findViewById(R.id.clip_buttons);
+      button.setOnClickListener( new Button.OnClickListener() {
+               public void onClick(View v) {
+                  Intent c = new Intent(IntentRadio.this, ClipButtons.class);
+                  startActivity(c);
+               } } );
    }
 
    /* ********************************************************************
@@ -68,25 +71,11 @@ public class IntentRadio extends Activity
     * Clip buttons...
     */
 
-   private void clip(String text)
+   public void clip_buttons()
    {
-      ClipboardManager clip_manager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-
-      ClipData clip_data = ClipData.newPlainText("text", text);
-      clip_manager.setPrimaryClip(clip_data);
-      toast("Clipboard:\n" + text);
+      Logger.log("Clip buttons.");
+      // Intent c = new Intent(IntentRadio.this, ClipButtons.class);
+      // startActivity(c);
    }
 
-   public void clip_play(View view)
-      { clip(intent_play); }
-
-   public void clip_stop(View view)
-      { clip(intent_stop); }
-
-   /* ********************************************************************
-    * Utilities...
-    */
-
-   private void toast(String msg)
-      { Logger.toast(msg); }
 }

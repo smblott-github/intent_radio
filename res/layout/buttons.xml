@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <Button 
+        android:id="@+id/clip_play" 
+        android:layout_width="fill_parent" 
+        android:layout_height="wrap_content" 
+        android:onClick="clip_play"
+        android:text="Clip PLAY Intent"
+        android:layout_margin="10dp" >
+    </Button>
+    <Button 
+        android:id="@+id/clip_stop" 
+        android:layout_width="fill_parent" 
+        android:layout_height="wrap_content"
+        android:onClick="clip_stop"
+        android:text="Clip STOP Intent"
+        android:layout_margin="10dp" >
+    </Button>
+    <Button 
+        android:id="@+id/clip_pause" 
+        android:layout_width="fill_parent" 
+        android:layout_height="wrap_content"
+        android:onClick="clip_pause"
+        android:text="Clip PAUSE Intent"
+        android:layout_margin="10dp" >
+    </Button>
+    <Button 
+        android:id="@+id/clip_restart" 
+        android:layout_width="fill_parent" 
+        android:layout_height="wrap_content"
+        android:onClick="clip_restart"
+        android:text="Clip RESTART Intent"
+        android:layout_margin="10dp" >
+    </Button>
+    
+</LinearLayout>
