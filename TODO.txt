@@ -2,3 +2,5 @@
 Better playlist detection:
 
    - check the mime type header received by HTTP/get.
+
+Some links in the app seem to not be working?
