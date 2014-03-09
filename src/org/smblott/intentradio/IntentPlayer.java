@@ -174,7 +174,7 @@ public class IntentPlayer extends Service
 
       if ( pltask != null )
       {
-         log("playlist/m3u: " + url);
+         log("playlist: " + url);
          pltask.execute(url, name, ""+counter);
          return done();
       }
@@ -294,9 +294,7 @@ public class IntentPlayer extends Service
     */
 
    int done()
-   {
-      return START_NOT_STICKY;
-   }
+      { return START_NOT_STICKY; }
 
    /* ********************************************************************
     * Listeners...
