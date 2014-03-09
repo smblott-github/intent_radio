@@ -28,17 +28,28 @@ follows:
 adb logcat -s IntentRadio
 ----
 
+
+[TIP]
+====
 Of course, the Android SDK is required.
+
+If you don't already know what `adb` and `logcat` are, then this probably
+isn't for you.
+====
 ****
 
 .File logging
 ****
-Additionally, a log file containing the same messages is written to the
-app's private files space on the SD card.  For me, that's:
+Additionally, the same messages are written to a log file in the app's
+private file space on the SD card.  For me, that's:
 
 - `/sdcard/Android/data/org.smblott.intentradio/files/intent-radio.log`
 
+[NOTE]
+====
 This file is truncated each time the _Intent Radio_ service starts.
+However, it is never removed by the app itself.
+====
 ****
 
 // vim: set syntax=asciidoc:

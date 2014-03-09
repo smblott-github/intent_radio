@@ -5,6 +5,8 @@ include $(HOME)/.gnumake.mk
 
 target += Radio.prj.xml 
 target += index.html
+target += debug.html
+target += tasker.html
 
 build: $(target)
 	@true
