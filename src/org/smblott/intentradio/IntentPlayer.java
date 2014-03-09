@@ -82,7 +82,6 @@ public class IntentPlayer extends Service
          new Notification.Builder(context)
             .setSmallIcon(R.drawable.intent_radio)
             .setPriority(Notification.PRIORITY_HIGH)
-            .setOngoing(true)
             .setContentIntent(pending)
             .setContentTitle(app_name_long)
             // not available in API 16...
@@ -189,7 +188,7 @@ public class IntentPlayer extends Service
       if ( play_disabled )
          return stop();
 
-      builder.setContentText("Connecting...");
+      builder.setOngoing(true).setContentText("Connecting...");
       note = builder.build();
 
       int focus = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
@@ -234,19 +233,25 @@ public class IntentPlayer extends Service
     */
 
    private int stop()
+      { return stop(true,null); }
+
+   private int stop(boolean kill_note, String text)
    {
       counter += 1;
 
+      // Kill any outstanding asynchronous playlist task...
+      //
       if ( pltask != null )
       {
          pltask.cancel(true);
          pltask = null;
       }
 
+      // Stop player...
+      //
       if ( player != null )
       {
          toast("Stopping...");
-         stopForeground(true);
          player.stop();
          player.reset();
          player.release();
@@ -254,7 +259,15 @@ public class IntentPlayer extends Service
          WifiLocker.unlock();
       }
 
-      note = null;
+      // Kill or keep notification...
+      //
+      stopForeground(true);
+
+      if ( kill_note || text == null || text.length() == 0 )
+         note = null;
+      else
+         notificate(text,false);
+
       return done();
    }
 
@@ -358,11 +371,7 @@ public class IntentPlayer extends Service
             case AudioManager.AUDIOFOCUS_LOSS:
                log("audio focus: AUDIOFOCUS_LOSS");
                if ( player.isPlaying() )
-               {
-                  WifiLocker.unlock();
-                  player.stop();
-               }
-               notificate("Focus lost, playback stopped.");
+                  stop(false, "Streaming stopped because audio focus was lost.");
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
@@ -423,7 +432,13 @@ public class IntentPlayer extends Service
     */
 
    private void notificate()
-      { notificate(null); }
+      { notificate(null,true); }
+
+   private void notificate(String msg, boolean ongoing)
+   {
+      builder.setOngoing(ongoing);
+      notificate(msg);
+   }
 
    private void notificate(String msg)
    {
