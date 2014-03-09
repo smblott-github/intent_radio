@@ -43,7 +43,7 @@ public abstract class Playlist extends AsyncTask<String, Void, Void>
    {
       if ( args.length != 3 )
       {
-         log("PlaylistPlsGetter: invalid args length");
+         log("Playlist: invalid args length");
          return null;
       }
 
@@ -52,10 +52,10 @@ public abstract class Playlist extends AsyncTask<String, Void, Void>
       int counter = Integer.parseInt(args[2]);
 
       if ( url == null )
-         log("PlaylistPlsGetter: no playlist url");
+         log("Playlist: no playlist url");
 
       if ( name == null )
-         log("PlaylistPlsGetter: no name");
+         log("Playlist: no name");
 
       if ( url == null || name == null )
          return null;
@@ -64,11 +64,11 @@ public abstract class Playlist extends AsyncTask<String, Void, Void>
 
       if ( url == null )
       {
-         log("PlaylistPlsGetter: failed to extract url");
+         log("Playlist: failed to extract url");
          return null;
       }
 
-      if ( url.endsWith(PlaylistPls.suffix) )
+      if ( url.endsWith(PlaylistPls.suffix) || url.endsWith(PlaylistM3u.suffix) )
       {
          log("Playlist: another paylist!");
          return null;
