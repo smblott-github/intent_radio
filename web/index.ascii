@@ -192,6 +192,10 @@ Finally, _Intent Radio_ is built for Android API level 16, so only for 4.1
   (but then it is not _ongoing_, so it can be dismissed).
 - Version and build date visible in app.
 - Much code refactoring and clean up.
+
+Direct download (from GitHub):
+
+- https://github.com/smblott-github/intent_radio/releases/download/v1.6/IntentRadio-release.apk[v1.6/IntentRadio-release.apk]
 ****
 
 .Version 1.5:
