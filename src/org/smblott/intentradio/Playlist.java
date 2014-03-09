@@ -133,6 +133,6 @@ public abstract class Playlist extends AsyncTask<String, Void, Void>
     * Logging...
     */
 
-   private static void log(String msg)
+   private static void log(String... msg)
       { Logger.log(msg); }
 }

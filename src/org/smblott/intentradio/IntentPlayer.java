@@ -125,7 +125,7 @@ public class IntentPlayer extends Service
       {
          // Asynchronous request, but arrived too late...
          //
-         log("Incorrect intent counter: current=" + now() + " received=" + intent.getIntExtra("counter",0));
+         log("Incorrect intent counter: current=", ""+now(), " received=", ""+intent.getIntExtra("counter",0));
          return done();
       }
 
@@ -151,7 +151,7 @@ public class IntentPlayer extends Service
          return play(url);
       }
 
-      log("unknown action: " + action);
+      log("unknown action: ", action);
       return done();
    }
 
@@ -180,7 +180,7 @@ public class IntentPlayer extends Service
 
       if ( pltask != null )
       {
-         log("playlist: " + url);
+         log("Playlist: ", url);
          pltask.execute(url, name);
          return done();
       }
@@ -189,7 +189,7 @@ public class IntentPlayer extends Service
       // Set up media player...
 
       toast(name);
-      log("play: " + url);
+      log("Play: ", url);
 
       if ( play_disabled )
          return stop();
@@ -350,17 +350,17 @@ public class IntentPlayer extends Service
    public void onBufferingUpdate(MediaPlayer player, int percent)
    {
       if ( 0 <= percent && percent <= 100 )
-         log("Buffering: " + percent + "%"); 
+         log("Buffering: ", ""+percent, "%"); 
    }
 
    public boolean onInfo(MediaPlayer player, int what, int extra)
    {
-      log("onInfo: " + what);
+      log("onInfo: ", ""+what);
       String msg = "Buffering: " + what;
       switch (what)
       {
          case MediaPlayer.MEDIA_INFO_BUFFERING_END:
-            log(msg + "/end");
+            log(msg, "/end");
             notificate();
             return true;
 
@@ -398,7 +398,7 @@ public class IntentPlayer extends Service
 
    public void onAudioFocusChange(int change)
    {
-      log("onAudioFocusChange: " + change);
+      log("onAudioFocusChange: ", ""+change);
       // if ( change == AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
       //    return;
 
@@ -495,7 +495,7 @@ public class IntentPlayer extends Service
     * Logging...
     */
 
-   private void log(String msg)
+   private void log(String... msg)
       { Logger.log(msg); }
 
    private void toast(String msg)

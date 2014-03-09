@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import android.text.TextUtils;
 
 import android.content.Context;
 import android.widget.Toast;
@@ -89,15 +90,15 @@ public class Logger
     * Public logging methods...
     */
 
-   public static void log(String msg)
+   public static void log(String... msg)
    {
       if ( ! debugging || msg == null )
          return;
 
-      msg = format.format(new Date()) + msg;
+      String text = format.format(new Date()) + TextUtils.join("",msg);
 
-      Log.d(name, msg);
-      log_file(msg);
+      Log.d(name, text);
+      log_file(text);
    }
 
    public static void toast(String msg)

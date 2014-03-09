@@ -11,5 +11,5 @@ public class PlaylistM3u extends Playlist
       { super(context,play_intent); }
 
    String filter(String line)
-      { return line.trim().indexOf('#') == 0 ? "" : line; }
+      { return line.indexOf('#') == 0 ? "" : line; }
 }

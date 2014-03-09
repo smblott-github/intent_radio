@@ -12,8 +12,6 @@ public class PlaylistPls extends Playlist
 
    String filter(String line)
    {
-      line = line.trim();
-
       if ( line.startsWith("File") && 0 < line.indexOf('=') )
          return line;
 

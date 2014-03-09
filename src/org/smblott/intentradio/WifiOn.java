@@ -21,7 +21,7 @@ public class WifiOn extends Logger
       NetworkInfo info = conn.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
       boolean status = info.isAvailable() && info.isConnected();
 
-      log("Wifi status: " + status);
+      log("Wifi status: ", ""+status);
       return status;
    }
 }
