@@ -17,6 +17,7 @@ import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
 import android.text.method.LinkMovementMethod;
+import android.widget.Button;
 
 public class ClipButtons extends Activity
 {
@@ -38,11 +39,26 @@ public class ClipButtons extends Activity
 
       super.onCreate(savedInstanceState);
       setContentView(R.layout.buttons);
+
+      /*
+      setText(R.id.clip_play, intent_play);
+      setText(R.id.clip_stop, intent_stop);
+      setText(R.id.clip_pause, intent_pause);
+      setText(R.id.clip_restart, intent_restart);
+      */
    }
 
    /* ********************************************************************
     * Clip buttons...
     */
+
+   /*
+   private void setText(int id, String txt)
+   {
+      Button button = (Button) findViewById(id);
+      button.setText("Copy " + txt);
+   }
+   */
 
    private void clip(String text)
    {
