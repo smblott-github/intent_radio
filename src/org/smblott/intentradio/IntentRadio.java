@@ -15,10 +15,11 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 
 import android.text.Html;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Button;
 import android.text.method.LinkMovementMethod;
+import android.text.Spanned;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 public class IntentRadio extends Activity
 {
@@ -26,21 +27,24 @@ public class IntentRadio extends Activity
    @Override
    public void onCreate(Bundle savedInstanceState)
    {
+      super.onCreate(savedInstanceState);
       Context context = getApplicationContext();
       Logger.init(context);
 
-      String app_name_long = getString(R.string.app_name_long);
+      setContentView(R.layout.main);
+
       String version = getString(R.string.version);
-      version = "<p>This is " + app_name_long + ", Version " + version + ".<br>\n";
+      version = "<p>Version: " + version + "<br>\n";
 
       String build_date = Build.getBuildDate(context);
-      build_date = "Build: " + build_date + ".</p>\n";
+      build_date = "Build: " + build_date + "\n</p>\n";
 
-      super.onCreate(savedInstanceState);
-      setContentView(R.layout.main);
+      String file = readRawTextFile(getApplicationContext(),R.raw.message);
+      Spanned html = Html.fromHtml(file + version + build_date );
+
       TextView text = (TextView) findViewById(R.id.text);
       text.setMovementMethod(LinkMovementMethod.getInstance());
-      text.setText(Html.fromHtml(readRawTextFile(getApplicationContext(), R.raw.message) + version + build_date));
+      text.setText(html);
    }
 
    /* ********************************************************************
