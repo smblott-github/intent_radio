@@ -24,6 +24,7 @@ public class ClipButtons extends Activity
    @Override
    public void onCreate(Bundle savedInstanceState)
    {
+      super.onCreate(savedInstanceState);
       Logger.init(getApplicationContext());
 
       intent_play = getString(R.string.intent_play);
@@ -33,7 +34,6 @@ public class ClipButtons extends Activity
 
       clip_manager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
-      super.onCreate(savedInstanceState);
       setContentView(R.layout.buttons);
 
       /*

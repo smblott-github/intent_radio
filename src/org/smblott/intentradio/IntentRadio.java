@@ -20,7 +20,6 @@ public class IntentRadio extends Activity
    {
       super.onCreate(savedInstanceState);
       Context context = getApplicationContext();
-      Logger.init(context);
 
       setContentView(R.layout.main);
 
@@ -39,7 +38,7 @@ public class IntentRadio extends Activity
    }
 
    /* ********************************************************************
-    * Clip buttons...
+    * Launch clip buttons...
     */
 
    public void clip_buttons(View v)
