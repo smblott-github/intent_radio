@@ -27,6 +27,8 @@ public class ClipButtons extends Activity
    private static String intent_pause = null;
    private static String intent_restart = null;
 
+   private static ClipboardManager clip_manager = null;
+
    @Override
    public void onCreate(Bundle savedInstanceState)
    {
@@ -36,6 +38,8 @@ public class ClipButtons extends Activity
       intent_stop = getString(R.string.intent_stop);
       intent_pause = getString(R.string.intent_pause);
       intent_restart = getString(R.string.intent_restart);
+
+      clip_manager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
       super.onCreate(savedInstanceState);
       setContentView(R.layout.buttons);
@@ -60,31 +64,22 @@ public class ClipButtons extends Activity
    }
    */
 
-   private void clip(String text)
+   private static void clip(String text)
    {
-      ClipboardManager clip_manager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-
       ClipData clip_data = ClipData.newPlainText("text", text);
       clip_manager.setPrimaryClip(clip_data);
       toast("Clipboard:\n" + text);
    }
 
-   public void clip_play(View view)
-      { clip(intent_play); }
-
-   public void clip_stop(View view)
-      { clip(intent_stop); }
-
-   public void clip_pause(View view)
-      { clip(intent_pause); }
-
-   public void clip_restart(View view)
-      { clip(intent_restart); }
+   public static void clip_play(View view)    { clip(intent_play); }
+   public static void clip_stop(View view)    { clip(intent_stop); }
+   public static void clip_pause(View view)   { clip(intent_pause); }
+   public static void clip_restart(View view) { clip(intent_restart); }
 
    /* ********************************************************************
     * Utilities...
     */
 
-   private void toast(String msg)
+   private static void toast(String msg)
       { Logger.toast(msg); }
 }
