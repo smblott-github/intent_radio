@@ -15,20 +15,16 @@ import android.util.Log;
 public class Logger
 {
    private static Context context = null;
-   private static boolean debugging = false;
-
    private static String name = null;
-   private static FileOutputStream file = null;
-
-   private static DateFormat format = null;
+   private static boolean debugging = false;
 
    /* ********************************************************************
     * Initialisation...
     */
 
-   public static void init(Context acontext)
+   public static void init(Context a_context)
    {
-      context = acontext;
+      context = a_context;
       name = context.getString(R.string.app_name);
    }
 
@@ -50,6 +46,9 @@ public class Logger
    /* ********************************************************************
     * State changes...
     */
+
+   private static DateFormat format = null;
+   private static FileOutputStream file = null;
 
    private static void start()
    {

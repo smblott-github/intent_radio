@@ -32,9 +32,9 @@ public class IntentRadio extends Activity
       String file = ReadRawTextFile.read(getApplicationContext(),R.raw.message);
       Spanned html = Html.fromHtml(file + version + build_date );
 
-      TextView text = (TextView) findViewById(R.id.text);
-      text.setMovementMethod(LinkMovementMethod.getInstance());
-      text.setText(html);
+      TextView view = (TextView) findViewById(R.id.text);
+      view.setMovementMethod(LinkMovementMethod.getInstance());
+      view.setText(html);
    }
 
    /* ********************************************************************
@@ -43,7 +43,7 @@ public class IntentRadio extends Activity
 
    public void clip_buttons(View v)
    {
-      Intent c = new Intent(IntentRadio.this, ClipButtons.class);
-      startActivity(c);
+      Intent clipper = new Intent(IntentRadio.this, ClipButtons.class);
+      startActivity(clipper);
    }
 }

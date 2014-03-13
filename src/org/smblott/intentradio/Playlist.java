@@ -10,8 +10,8 @@ import android.os.AsyncTask;
 
 public abstract class Playlist extends AsyncTask<String, Void, String>
 {
-   private IntentPlayer player = null;
-   private int then = 0;
+   private IntentPlayer player;
+   private int then;
 
    Playlist(IntentPlayer the_player)
    {
@@ -21,14 +21,6 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
       log("Playlist: then=" + then);
    }
 
-   // A playlist contains a sequence of lines.  Only some of those lines may
-   // contain URLs.  Other lines such as comments may also contain URLs, but
-   // they aren't part of the playlist.
-   //
-   // Implementations of filter() must return a line, possibly edited, if it
-   // may contain a URL.  For example, it may return the empty string if the
-   // line contains a comment.  All lines are trimmed.
-   //
    abstract String filter(String line);
 
    /* ********************************************************************

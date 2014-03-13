@@ -16,31 +16,30 @@ public class HttpGetter
 {
    public static List<String> httpGet(String str)
    {
+      HttpURLConnection connection = null;
       List<String> lines = new ArrayList<String>();
-      HttpURLConnection conn = null;
 
-      try {
+      try
+      {
          URL url = new URL(str);
-         conn = (HttpURLConnection) url.openConnection();
-         InputStream in = new BufferedInputStream(conn.getInputStream());
-         readStream(in, lines);
+         connection = (HttpURLConnection) url.openConnection();
+         InputStream stream = new BufferedInputStream(connection.getInputStream());
+         readStream(stream, lines);
       }
-      catch ( Exception e ) {
-         if ( conn != null )
-            conn.disconnect();
-      }
+      catch ( Exception e )
+         { if ( connection != null ) connection.disconnect(); }
 
       return lines;
    }
 
-   private static void readStream(InputStream in, List<String> lines) throws Exception
+   private static void readStream(InputStream stream, List<String> lines) throws Exception
    {
-      BufferedReader fd = new BufferedReader(new InputStreamReader(in));
-      String line = null;
+      String line;
+      BufferedReader buff = new BufferedReader(new InputStreamReader(stream));
 
-      while ((line = fd.readLine()) != null)
+      while ((line = buff.readLine()) != null)
          lines.add(line);
 
-      in.close();
+      stream.close();
    }
 }
