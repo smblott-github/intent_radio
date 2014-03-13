@@ -140,8 +140,8 @@ public class IntentPlayer extends Service
          else if ( intent.hasExtra("name") )
             name = intent.getStringExtra("name");
 
-         log(name);
-         log(url);
+         log("Name: ", name);
+         log("URL: ", url);
          return play(url);
       }
 

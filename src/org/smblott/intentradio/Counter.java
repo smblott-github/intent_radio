@@ -14,7 +14,7 @@ public class Counter extends Logger
    {
       boolean ok = (then == now());
       if ( ! ok )
-         log("Counter: too late: then=" + then + " now=" + now());
+         log("Counter: too late: then=", ""+then, " now=", ""+now());
       return ok;
    }
 }
