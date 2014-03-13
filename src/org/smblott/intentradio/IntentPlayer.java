@@ -159,6 +159,16 @@ public class IntentPlayer extends Service
     * Play...
     */
 
+   public int play(String url, int then)
+   {
+      if ( then == now() )
+         return play(url);
+
+      log("Play: too late: " + url);
+      log("Play: too late: then=" + then + " now=" + now());
+      return done();
+   }
+
    private int play(String url)
    {
       stop();
@@ -173,15 +183,15 @@ public class IntentPlayer extends Service
       // Playlists...
 
       if ( url.endsWith(PlaylistPls.suffix) )
-         pltask = new PlaylistPls(context,intent_play);
+         pltask = new PlaylistPls(this);
 
       if ( url.endsWith(PlaylistM3u.suffix) )
-         pltask = new PlaylistM3u(context,intent_play);
+         pltask = new PlaylistM3u(this);
 
       if ( pltask != null )
       {
          log("Playlist: ", url);
-         pltask.execute(url, name);
+         pltask.execute(url);
          return done();
       }
 

@@ -1,8 +1,5 @@
 package org.smblott.intentradio;
 
-import android.content.Intent;
-import android.content.Context;
-
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -11,20 +8,18 @@ import android.text.TextUtils;
 import java.util.List;
 import android.os.AsyncTask;
 
-public abstract class Playlist extends AsyncTask<String, Void, Void>
+public abstract class Playlist extends AsyncTask<String, Void, String>
 {
    private static final String regex = "\\(?\\b(http://|www[.])[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|]";
 
-   private Context context = null;
-   private String intent_play = null;
-   private int counter = 0;
+   private IntentPlayer player = null;
+   private int then = 0;
 
-   Playlist(Context ctx, String play_intent)
+   Playlist(IntentPlayer the_player)
    {
       super();
-      context = ctx;
-      intent_play = play_intent;
-      counter = IntentPlayer.now();
+      player = the_player;
+      then = player.now();
    }
 
    // A playlist contains a sequence of lines.  Only some of those lines may
@@ -41,57 +36,37 @@ public abstract class Playlist extends AsyncTask<String, Void, Void>
     * Asynchronous task to fetch playlist...
     */
 
-   protected Void doInBackground(String... args)
+   protected String doInBackground(String... args)
    {
-      if ( args.length != 2 )
-      {
-         log("Playlist: invalid args length");
-         return null;
-      }
-
-      String url = args[0];
-      String name = args[1];
-
-      if ( url == null )
-         log("Playlist: no playlist url");
-
-      if ( name == null )
-         log("Playlist: no name");
-
-      if ( url == null || name == null )
-         return null;
-
-      url = get(url);
+      String url = fetch_url(args[0]);
 
       if ( url == null )
       {
-         log("Playlist: failed to extract url");
+         log("Playlist: failed to extract URL from playlist.");
          return null;
       }
 
       if ( url.endsWith(PlaylistPls.suffix) || url.endsWith(PlaylistM3u.suffix) )
       {
-         log("Playlist: another paylist!");
+         log("Playlist: another playlist!");
          return null;
       }
 
-      Intent msg = new Intent(context, IntentPlayer.class);
-      msg.putExtra("action", intent_play);
-      msg.putExtra("url", url);
-      msg.putExtra("name", name);
-      msg.putExtra("counter", counter);
+      return url;
+   }
 
-      if ( ! isCancelled() )
-         context.startService(msg);
-
-      return null;
+   // This runs on the main thread...
+   //
+   protected void onPostExecute(String url) {
+      if ( url != null && ! isCancelled() )
+         player.play(url, then);
    }
 
    /* ********************************************************************
     * Fetch a single (random) url from a playlist...
     */
 
-   private String get(String url)
+   private String fetch_url(String url)
    {
       List<String> lines = HttpGetter.httpGet(url);
 
