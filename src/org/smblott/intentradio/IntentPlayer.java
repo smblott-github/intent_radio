@@ -104,12 +104,6 @@ public class IntentPlayer extends Service
 
    /* ********************************************************************
     * Primary entry point...
-    *
-    * For playlists, the fetching of the play list is handled asynchronously.
-    * A second play intent is then delivered to onStartCommand.  To ensure that
-    * that request is still valid, a Counter is checked.  The Counter extra is
-    * the value of Counter at the time that the asynchronous call was launched.
-    * That value must be unchanged when the susequent play intent is received.
     */
 
    @Override
@@ -165,10 +159,7 @@ public class IntentPlayer extends Service
       stop();
 
       if ( url == null )
-      {
-         toast("No URL.");
-         return done();
-      }
+         { toast("No URL."); return done(); }
 
       // /////////////////////////////////////////////////////////////////
       // Playlists...
@@ -200,7 +191,7 @@ public class IntentPlayer extends Service
 
       int focus = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
       if ( focus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
-         return stop("Could not get audio focus!");
+         return stop("Failed to get audio focus!");
 
       WifiLocker.lock(context, app_name_long);
       player = new MediaPlayer();
@@ -226,11 +217,7 @@ public class IntentPlayer extends Service
          log("Connecting...");
       }
       catch (Exception e)
-      {
-         toast("MediaPlayer: initialisation error.");
-         toast(e.getMessage());
-         return stop("Initialisation error!");
-      }
+         { return stop("Initialisation error."); }
 
       return done();
    }
@@ -250,20 +237,6 @@ public class IntentPlayer extends Service
 
    private int stop(Intent intent, boolean kill_note, String text)
    {
-      /*
-      if ( intent != null && intent.getBooleanExtra("asynchronous",false) )
-      {
-         // If we received an asynchronous stop request, then it was spun off
-         // from an earlier AUDIOFOCUS_LOSS_TRANSIENT event.  Make audio focus
-         // loss final.  This will result in a further call to stop() which will
-         // preserve the notification.  So at least the user knows what
-         // happened.
-         //
-         onAudioFocusChange(AudioManager.AUDIOFOCUS_LOSS);
-         return done();
-      }
-      */
-
       // Time moves on...
       //
       Counter.time_passes();
@@ -400,20 +373,11 @@ public class IntentPlayer extends Service
    public void onAudioFocusChange(int change)
    {
       log("onAudioFocusChange: ", ""+change);
-      // if ( change == AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
-      //    return;
-
-      // This is a state change.  If a focus change were to arrive while
-      // asynchronously fetching a playlist, then we don't want to start
-      // playback.
       Counter.time_passes();
 
       if ( player != null )
          switch (change)
          {
-            // case AudioManager.AUDIOFOCUS_REQUEST_GRANTED:
-            //    log("audio focus: AUDIOFOCUS_REQUEST_GRANTED");
-            //    // Drop through...
             case AudioManager.AUDIOFOCUS_GAIN:
                log("audio focus: AUDIOFOCUS_GAIN");
                restart();
@@ -422,25 +386,12 @@ public class IntentPlayer extends Service
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS:
-               // Warning: this block is also called from stop(); do not change
-               // it without checking back there.
-               //
                log("audio focus: AUDIOFOCUS_LOSS");
                stop("Audio focus lost, streaming stopped.");
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                log("audio focus: AUDIOFOCUS_LOSS_TRANSIENT");
-               /*
-               if ( player.isPlaying() )
-               {
-                  player.setVolume(0.0f, 0.0f);
-                  // Spin off a thread to stop playback if we remain without
-                  // the focus for too long.
-                  later(intent_stop);
-                  notificate("Focus lost, paused...");
-               }
-               */
                pause();
                notificate("Focus lost, paused...");
                break;
@@ -456,51 +407,6 @@ public class IntentPlayer extends Service
                break;
       }
    }
-
-   /* ********************************************************************
-    * Do something later...
-    */
-   
-   /*
-   Later prev_task = null;
-   String prev_action = null;
-
-   private void later(String action, int seconds)
-   {
-      if ( prev_task != null && prev_action != null )
-         if ( action.equals(prev_action) && prev_task.active() )
-         {
-            // TODO: This works currently (while the only action is STOP), but
-            // wouldn't work if several different actions could be launched
-            // simultaneously.
-            //
-            log("Later: killing previous task...");
-            prev_task.cancel(true);
-         }
-
-      Intent intent = new Intent(context, IntentPlayer.class);
-      intent.putExtra("action", action);
-      intent.putExtra("counter", Counter.now());
-      Later soon = new Later(context, intent, seconds);
-      soon.execute();
-
-      prev_task = soon;
-      prev_action = action;
-   }
-
-   private void later(String action)
-      { later(action, 0); }
-   */
-
-   /* ********************************************************************
-    * Logging...
-    */
-
-   private void log(String... msg)
-      { Logger.log(msg); }
-
-   private void toast(String msg)
-      { Logger.toast(msg); }
 
    /* ****************************************************************
     * Notifications...
@@ -524,6 +430,16 @@ public class IntentPlayer extends Service
          note_manager.notify(note_id, note);
       }
    }
+
+   /* ********************************************************************
+    * Logging...
+    */
+
+   private void log(String... msg)
+      { Logger.log(msg); }
+
+   private void toast(String msg)
+      { Logger.toast(msg); }
 
    /* ********************************************************************
     * Required abstract method...
