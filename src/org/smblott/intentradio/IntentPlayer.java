@@ -314,11 +314,14 @@ public class IntentPlayer extends Service
     * Listeners...
     */
 
-   public void onPrepared(MediaPlayer player)
+   public void onPrepared(MediaPlayer a_player)
    {
-      log("Prepared, starting....");
-      player.start();
-      notificate();
+      if ( a_player == player )
+      {
+         log("Prepared, starting....");
+         player.start();
+         notificate();
+      }
    }
 
    public void onBufferingUpdate(MediaPlayer player, int percent)
