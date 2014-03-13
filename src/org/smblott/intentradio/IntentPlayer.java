@@ -426,10 +426,11 @@ public class IntentPlayer extends Service
    {
       if ( note != null )
       {
-         note = builder
-            .setOngoing(ongoing)
-            .setContentText(msg == null ? name : msg)
-            .build();
+         note =
+            builder
+               .setOngoing(ongoing)
+               .setContentText(msg == null ? name : msg)
+               .build();
          note_manager.notify(note_id, note);
       }
    }
