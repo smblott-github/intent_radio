@@ -74,7 +74,7 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
       for (int i=0; i<lines.size(); i+= 1)
          lines.set(i, filter(lines.get(i).trim()));
 
-      List<String> links = getLinks(TextUtils.join("\n", lines));
+      List<String> links = get_links(TextUtils.join("\n", lines));
       if ( links.size() == 0 )
          return null;
 
@@ -93,7 +93,7 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
    private static final String url_regex = "\\(?\\b(http://|www[.])[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|]";
    private static Pattern url_pattern = null;
 
-   private static List<String> getLinks(String text)
+   private static List<String> get_links(String text)
    {
       ArrayList links = new ArrayList<String>();
 
