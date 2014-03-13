@@ -121,7 +121,7 @@ public class IntentPlayer extends Service
       String action = intent.getStringExtra("action");
       if ( action == null )
          return done();
-      log(action);
+      log("Action: " + action);
 
       if ( intent_stop.equals(action)    ) return stop(intent);
       if ( intent_pause.equals(action)   ) return pause();
@@ -129,11 +129,16 @@ public class IntentPlayer extends Service
 
       if ( intent_play.equals(action) )
       {
-         url = intent.hasExtra("url") ? intent.getStringExtra("url") : getString(R.string.default_url);
-         name = intent.hasExtra("name") ? intent.getStringExtra("name") : url;
+         url = getString(R.string.default_url);
+         name = getString(R.string.default_name);
 
-         if ( ! intent.hasExtra("url") && ! intent.hasExtra("name") )
-            name = getString(R.string.default_name);
+         if ( intent.hasExtra("url") )
+         {
+            url = intent.getStringExtra("url");
+            name = intent.hasExtra("name") ? intent.getStringExtra("name") : url;
+         }
+         else if ( intent.hasExtra("name") )
+            name = intent.getStringExtra("name");
 
          log(name);
          log(url);
