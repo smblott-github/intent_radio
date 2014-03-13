@@ -107,8 +107,8 @@ public class IntentPlayer extends Service
     *
     * For playlists, the fetching of the play list is handled asynchronously.
     * A second play intent is then delivered to onStartCommand.  To ensure that
-    * that request is still valid, a counter is checked.  The counter extra is
-    * the value of counter at the time that the asynchronous call was launched.
+    * that request is still valid, a Counter is checked.  The Counter extra is
+    * the value of Counter at the time that the asynchronous call was launched.
     * That value must be unchanged when the susequent play intent is received.
     */
 
@@ -121,13 +121,8 @@ public class IntentPlayer extends Service
       if ( intent.hasExtra("debug") )
          Logger.state(intent.getStringExtra("debug"));
 
-      if ( ! still(intent.getIntExtra("counter",now())) )
-      {
-         // Asynchronous request, but arrived too late...
-         //
-         log("Incorrect intent counter: current=", ""+now(), " received=", ""+intent.getIntExtra("counter",0));
+      if ( ! Counter.still(intent.getIntExtra("counter", Counter.now())) )
          return done();
-      }
 
       String action = intent.getStringExtra("action");
       if ( action == null )
@@ -159,14 +154,10 @@ public class IntentPlayer extends Service
     * Play...
     */
 
-   public int play(String url, int then)
+   public void play(String url, int then)
    {
-      if ( then == now() )
-         return play(url);
-
-      log("Play: too late: " + url);
-      log("Play: too late: then=" + then + " now=" + now());
-      return done();
+      if ( Counter.still(then) )
+         play(url);
    }
 
    private int play(String url)
@@ -275,7 +266,7 @@ public class IntentPlayer extends Service
 
       // Time moves on...
       //
-      time_passes();
+      Counter.time_passes();
 
       // Kill any outstanding asynchronous playlist task...
       //
@@ -315,7 +306,7 @@ public class IntentPlayer extends Service
 
    private int pause()
    {
-      time_passes();
+      Counter.time_passes();
 
       if ( player != null && player.isPlaying() )
       {
@@ -328,7 +319,7 @@ public class IntentPlayer extends Service
 
    private int restart()
    {
-      time_passes();
+      Counter.time_passes();
 
       if ( player != null && ! player.isPlaying() )
       {
@@ -415,7 +406,7 @@ public class IntentPlayer extends Service
       // This is a state change.  If a focus change were to arrive while
       // asynchronously fetching a playlist, then we don't want to start
       // playback.
-      time_passes();
+      Counter.time_passes();
 
       if ( player != null )
          switch (change)
@@ -489,7 +480,7 @@ public class IntentPlayer extends Service
 
       Intent intent = new Intent(context, IntentPlayer.class);
       intent.putExtra("action", action);
-      intent.putExtra("counter", now());
+      intent.putExtra("counter", Counter.now());
       Later soon = new Later(context, intent, seconds);
       soon.execute();
 
@@ -533,21 +524,6 @@ public class IntentPlayer extends Service
          note_manager.notify(note_id, note);
       }
    }
-
-   /* ********************************************************************
-    * Time...
-    */
-
-   private static int counter = 0;
-
-   static void time_passes()
-      { counter += 1; }
-
-   static boolean still(int cnt)
-      { return cnt == counter; }
-
-   static int now()
-      { return counter; }
 
    /* ********************************************************************
     * Required abstract method...

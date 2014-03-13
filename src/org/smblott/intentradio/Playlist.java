@@ -17,7 +17,8 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
    {
       super();
       player = the_player;
-      then = player.now();
+      then = Counter.now();
+      log("Playlist: then=" + then);
    }
 
    // A playlist contains a sequence of lines.  Only some of those lines may
