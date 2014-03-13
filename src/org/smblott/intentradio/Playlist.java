@@ -65,6 +65,8 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
     * Fetch a single (random) url from a playlist...
     */
 
+   private static Random random = null;
+
    private String fetch_url(String url)
    {
       List<String> lines = HttpGetter.httpGet(url);
@@ -76,7 +78,10 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
       if ( links.size() == 0 )
          return null;
 
-      return links.get(new Random().nextInt(links.size()));
+      if ( random == null )
+         random = new Random();
+
+      return links.get(random.nextInt(links.size()));
    }
 
    /* ********************************************************************
@@ -86,17 +91,20 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
     */
 
    private static final String regex = "\\(?\\b(http://|www[.])[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|]";
+   private static Pattern pattern = null;
 
    private static List<String> getLinks(String text)
    {
       ArrayList links = new ArrayList<String>();
-    
-      Pattern p = Pattern.compile(regex);
-      Matcher m = p.matcher(text);
 
-      while( m.find() )
+      if ( pattern == null )
+         pattern = Pattern.compile(regex);
+
+      Matcher matcher = pattern.matcher(text);
+
+      while( matcher.find() )
       {
-         String str = m.group();
+         String str = matcher.group();
          if (str.startsWith("(") && str.endsWith(")"))
             str = str.substring(1, str.length() - 1);
          links.add(str);
