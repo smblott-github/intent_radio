@@ -90,17 +90,17 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
     * source: http://blog.houen.net/java-get-url-from-string/
     */
 
-   private static final String regex = "\\(?\\b(http://|www[.])[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|]";
-   private static Pattern pattern = null;
+   private static final String url_regex = "\\(?\\b(http://|www[.])[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|]";
+   private static Pattern url_pattern = null;
 
    private static List<String> getLinks(String text)
    {
       ArrayList links = new ArrayList<String>();
 
-      if ( pattern == null )
-         pattern = Pattern.compile(regex);
+      if ( url_pattern == null )
+         url_pattern = Pattern.compile(url_regex);
 
-      Matcher matcher = pattern.matcher(text);
+      Matcher matcher = url_pattern.matcher(text);
 
       while( matcher.find() )
       {
