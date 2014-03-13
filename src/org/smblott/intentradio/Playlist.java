@@ -10,8 +10,6 @@ import android.os.AsyncTask;
 
 public abstract class Playlist extends AsyncTask<String, Void, String>
 {
-   private static final String regex = "\\(?\\b(http://|www[.])[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|]";
-
    private IntentPlayer player = null;
    private int then = 0;
 
@@ -28,7 +26,7 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
    //
    // Implementations of filter() must return a line, possibly edited, if it
    // may contain a URL.  For example, it may return the empty string if the
-   // line contains a comment.
+   // line contains a comment.  All lines are trimmed.
    //
    abstract String filter(String line);
 
@@ -86,7 +84,9 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
     * source: http://blog.houen.net/java-get-url-from-string/
     */
 
-   private List<String> getLinks(String text)
+   private static final String regex = "\\(?\\b(http://|www[.])[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|]";
+
+   private static List<String> getLinks(String text)
    {
       ArrayList links = new ArrayList<String>();
     
