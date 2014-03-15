@@ -5,44 +5,51 @@
       android:versionName="@string/version">
 
    <uses-sdk android:minSdkVersion="16" />
+
+   <!-- *****************************************************************
+        Permissions -->
+
    <uses-permission android:name="android.permission.INTERNET" />
    <uses-permission android:name="android.permission.WAKE_LOCK" />
    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
    <!-- <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> -->
 
-   <application
-      android:label="@string/app_name"
-      android:icon="@drawable/intent_radio">
+   <!-- *****************************************************************
+        Application -->
 
-      <activity android:name="IntentRadio"
-         android:label="@string/app_name_long">
+   <application android:label="@string/app_name" android:icon="@drawable/intent_radio">
+
+      <!-- /////////////////////////////
+           Activities -->
+
+      <activity android:name="IntentRadio" android:label="@string/app_name_long">
          <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
          </intent-filter>
       </activity>
 
-      <activity android:name="IntentRadio">
-         <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-         </intent-filter>
-      </activity>
+      <activity android:name=".ClipButtons" />
 
-      <activity
-         android:name=".ClipButtons" >
-      </activity>
+      <!-- /////////////////////////////
+           Services -->
 
       <service android:name=".IntentPlayer"/>
 
+      <!-- /////////////////////////////
+           Broadcast Receivers -->
+
       <receiver android:name=".Intents" android:enabled="true" android:exported="true" >
          <intent-filter>
-            <action android:name="org.smblott.intentradio.PLAY"/>
-            <action android:name="org.smblott.intentradio.STOP"/>
-            <action android:name="org.smblott.intentradio.PAUSE"/>
-            <action android:name="org.smblott.intentradio.RESTART"/>
+            <action android:name="org.smblott.intentradio.PLAY" />
+            <action android:name="org.smblott.intentradio.STOP" />
+            <action android:name="org.smblott.intentradio.PAUSE" />
+            <action android:name="org.smblott.intentradio.RESTART" />
          </intent-filter>
       </receiver>
+
+   <!-- *****************************************************************
+        Done -->
 
    </application>
 </manifest>

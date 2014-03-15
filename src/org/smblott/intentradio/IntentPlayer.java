@@ -38,10 +38,10 @@ public class IntentPlayer extends Service
     */
 
    private static final boolean play_disabled = false;
+   private static final int note_id = 100;
+
    private static Context context = null;
    private static PendingIntent pending = null;
-
-   private static final int note_id = 100;
 
    private static String app_name = null;
    private static String app_name_long = null;
@@ -58,7 +58,7 @@ public class IntentPlayer extends Service
    private static Builder builder = null;
    private static Notification note = null;
    private static NotificationManager note_manager = null;
-   private static AudioManager audioManager = null;
+   private static AudioManager audio_manager = null;
 
    /* ********************************************************************
     * Create service...
@@ -79,7 +79,7 @@ public class IntentPlayer extends Service
       note_manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
       pending = PendingIntent.getBroadcast(context, 0, new Intent(intent_stop), 0);
 
-      audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+      audio_manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
       builder =
          new Notification.Builder(context)
@@ -119,15 +119,13 @@ public class IntentPlayer extends Service
          return done();
 
       String action = intent.getStringExtra("action");
-      if ( action == null )
-         return done();
-      log("Action: " + action);
+      log("Action: ", action);
 
-      if ( intent_stop.equals(action)    ) return stop(intent);
-      if ( intent_pause.equals(action)   ) return pause();
-      if ( intent_restart.equals(action) ) return restart();
+      if ( action.equals(intent_stop)    ) return stop();
+      if ( action.equals(intent_pause)   ) return pause();
+      if ( action.equals(intent_restart) ) return restart();
 
-      if ( intent_play.equals(action) )
+      if ( action.equals(intent_play) )
       {
          url = getString(R.string.default_url);
          name = getString(R.string.default_name);
@@ -185,8 +183,8 @@ public class IntentPlayer extends Service
       // /////////////////////////////////////////////////////////////////
       // Set up media player...
 
-      toast(name);
       log("Play: ", url);
+      toast(name);
 
       if ( play_disabled )
          return stop();
@@ -194,7 +192,7 @@ public class IntentPlayer extends Service
       builder.setOngoing(true).setContentText("Connecting...");
       note = builder.build();
 
-      int focus = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+      int focus = audio_manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
       if ( focus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
          return stop("Failed to get audio focus!");
 
@@ -214,12 +212,13 @@ public class IntentPlayer extends Service
       // /////////////////////////////////////////////////////////////////
       // Launch...
 
+      startForeground(note_id, note);
+      log("Connecting...");
+
       try
       {
          player.setDataSource(context, Uri.parse(url));
          player.prepareAsync();
-         startForeground(note_id, note);
-         log("Connecting...");
       }
       catch (Exception e)
          { return stop("Initialisation error."); }
@@ -232,15 +231,12 @@ public class IntentPlayer extends Service
     */
 
    private int stop()
-      { return stop(null,true,null); }
+      { return stop(true,null); }
 
    private int stop(String msg)
-      { return stop(null,false,msg); }
+      { return stop(false,msg); }
 
-   private int stop(Intent intent)
-      { return stop(intent,true,null); }
-
-   private int stop(Intent intent, boolean kill_note, String text)
+   private int stop(boolean kill_note, String text)
    {
       // Time moves on...
       //
@@ -380,38 +376,38 @@ public class IntentPlayer extends Service
 
    public void onAudioFocusChange(int change)
    {
-      log("onAudioFocusChange: ", ""+change);
       Counter.time_passes();
+      log("onAudioFocusChange: ", ""+change);
 
       if ( player != null )
          switch (change)
          {
             case AudioManager.AUDIOFOCUS_GAIN:
-               log("audio focus: AUDIOFOCUS_GAIN");
+               log("Audio focus: AUDIOFOCUS_GAIN");
                restart();
                player.setVolume(1.0f, 1.0f);
                notificate();
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS:
-               log("audio focus: AUDIOFOCUS_LOSS");
+               log("Audio focus: AUDIOFOCUS_LOSS");
                stop("Audio focus lost, streaming stopped.");
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-               log("audio focus: AUDIOFOCUS_LOSS_TRANSIENT");
+               log("Audio focus: AUDIOFOCUS_LOSS_TRANSIENT");
                pause();
                notificate("Focus lost, paused...");
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-               log("audio focus: AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
+               log("Audio focus: AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
                player.setVolume(0.1f, 0.1f);
                notificate("Focus lost, quiet mode...");
                break;
 
             default:
-               log("audio focus: unhandled");
+               log("Audio focus: unhandled");
                break;
       }
    }
@@ -421,20 +417,20 @@ public class IntentPlayer extends Service
     */
 
    private void notificate()
-      { notificate(null,true); }
+      { notificate(null); }
+
+   private void notificate(String msg)
+      { notificate(msg,true); }
 
    private void notificate(String msg, boolean ongoing)
    {
-      builder.setOngoing(ongoing);
-      notificate(msg);
-   }
-
-   private void notificate(String msg)
-   {
       if ( note != null )
       {
-         builder.setContentText(msg == null ? name : msg);
-         note = builder.build();
+         note =
+            builder
+               .setOngoing(ongoing)
+               .setContentText(msg == null ? name : msg)
+               .build();
          note_manager.notify(note_id, note);
       }
    }

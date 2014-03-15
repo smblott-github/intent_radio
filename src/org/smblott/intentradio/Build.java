@@ -8,21 +8,26 @@ import java.text.SimpleDateFormat;
 
 public class Build
 {
+   static private String build = null;
+
    // source: http://stackoverflow.com/questions/7607165/how-to-write-build-time-stamp-into-apk
    //
    public static String getBuildDate(Context context)
    {
-      String stamp = "Unknown";
+      if ( build != null )
+         return build;
+
       try
       {
-         ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), 0);
-         ZipFile zf = new ZipFile(ai.sourceDir);
-         ZipEntry ze = zf.getEntry("classes.dex");
-         long time = ze.getTime();
-         stamp = SimpleDateFormat.getInstance().format(new java.util.Date(time));
+         ApplicationInfo info = context.getPackageManager().getApplicationInfo(context.getPackageName(), 0);
+         ZipFile file = new ZipFile(info.sourceDir);
+         ZipEntry entry = file.getEntry("classes.dex");
+         long time = entry.getTime();
+         build = SimpleDateFormat.getInstance().format(new java.util.Date(time));
       }
-      catch(Exception e){ }
+      catch (Exception e)
+         { build = "Unknown"; }
 
-      return stamp;
+      return build;
    }
 }

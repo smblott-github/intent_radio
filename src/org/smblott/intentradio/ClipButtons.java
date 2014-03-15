@@ -35,26 +35,16 @@ public class ClipButtons extends Activity
       clip_manager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
       setContentView(R.layout.buttons);
-
-      /*
-      setText(R.id.clip_play, intent_play);
-      setText(R.id.clip_stop, intent_stop);
-      setText(R.id.clip_pause, intent_pause);
-      setText(R.id.clip_restart, intent_restart);
-      */
    }
 
    /* ********************************************************************
     * Clip buttons...
     */
 
-   /*
-   private void setText(int id, String txt)
-   {
-      Button button = (Button) findViewById(id);
-      button.setText("Copy " + txt);
-   }
-   */
+   public static void clip_play(View view)    { clip(intent_play); }
+   public static void clip_stop(View view)    { clip(intent_stop); }
+   public static void clip_pause(View view)   { clip(intent_pause); }
+   public static void clip_restart(View view) { clip(intent_restart); }
 
    private static void clip(String text)
    {
@@ -62,11 +52,6 @@ public class ClipButtons extends Activity
       clip_manager.setPrimaryClip(clip_data);
       toast("Clipboard:\n" + text);
    }
-
-   public static void clip_play(View view)    { clip(intent_play); }
-   public static void clip_stop(View view)    { clip(intent_stop); }
-   public static void clip_pause(View view)   { clip(intent_pause); }
-   public static void clip_restart(View view) { clip(intent_restart); }
 
    /* ********************************************************************
     * Utilities...

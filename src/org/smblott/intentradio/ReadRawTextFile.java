@@ -16,15 +16,15 @@ public class ReadRawTextFile
 
    public static String read(Context context, int resId)
    {
-      InputStream inputStream = context.getResources().openRawResource(resId);
-      InputStreamReader inputreader = new InputStreamReader(inputStream);
-      BufferedReader buffreader = new BufferedReader(inputreader);
+      InputStream stream = context.getResources().openRawResource(resId);
+      InputStreamReader reader = new InputStreamReader(stream);
+      BufferedReader buff = new BufferedReader(reader);
 
       String line;
       StringBuilder text = new StringBuilder();
 
       try {
-         while ( ( line = buffreader.readLine()) != null )
+         while ( ( line = buff.readLine()) != null )
             text.append(line + "\n" );
       }
       catch (Exception e)
