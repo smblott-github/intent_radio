@@ -17,16 +17,17 @@ public class CopyResource extends Logger
     */
 
    public static String copy(Context context, int id, String path)
+      { return copy(context, id, path, false); }
+
+   public static String copy(Context context, int id, String path, boolean overwrite)
    {
       log("CopyResource id: ", ""+id);
       log("CopyResource path: ", path);
 
-      byte[] buffer = new byte[1024];
-      int count = 0;
       boolean success = true;
-
       InputStream input = null;
       FileOutputStream output = null;
+      File tmp = null;
 
       log("CopyResource SD card: ", Environment.getExternalStorageState(), ".");
       File sdcard = Environment.getExternalStorageDirectory();
@@ -42,16 +43,19 @@ public class CopyResource extends Logger
       if ( ! directory.isDirectory() )
          { return "Error:\nParent directory does not exist...\n\n" + file.getParent(); }
 
-      if ( file.exists() )
+      if ( file.exists() && ! overwrite )
          { return "Error:\nFile already exists, not copied...\n\n" + path; }
-
-      File tmp = new File(path + "." + "TmpFile." + Process.myTid());
-      log("CopyResource tmp path: ", tmp.toString());
 
       try
       {
+         tmp = File.createTempFile(".IntentRadio.", null, directory);
+         log("CopyResource tmp path: ", tmp.toString());
+
          input = context.getResources().openRawResource(id);
          output = new FileOutputStream(tmp);
+
+         byte[] buffer = new byte[1024];
+         int count = 0;
 
          while ( 0 < (count = input.read(buffer)) )
             output.write(buffer, 0, count);
@@ -71,6 +75,10 @@ public class CopyResource extends Logger
 
       if ( success )
          success = tmp.renameTo(file);
+
+      if ( tmp != null && tmp.exists() )
+         if ( ! tmp.delete() )
+            log("CopyResource failed to delete: ", tmp.toString());
 
       return success ? path : "Unknown error.";
    }
