@@ -59,18 +59,20 @@ public class CopyResource extends Logger
 
          while ( 0 < (count = input.read(buffer)) )
             output.write(buffer, 0, count);
+
+         input.close();
+         output.close();
+
+         input = null;
+         output = null;
       }
-      catch ( Exception e)
-         { success = false; }
-      finally
+      catch (Exception e1)
       {
-         try
-         {
+         success = false;
+         try {
             if ( input  != null ) input.close();
             if ( output != null ) output.close();
-         }
-         catch ( Exception e)
-            { success = false; }
+         } catch (Exception e2) {}
       }
 
       if ( success )
