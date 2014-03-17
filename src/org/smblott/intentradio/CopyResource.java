@@ -61,9 +61,9 @@ public class CopyResource extends Logger
             output.write(buffer, 0, count);
 
          input.close();
-         output.close();
-
          input = null;
+
+         output.close();
          output = null;
       }
       catch (Exception e1)

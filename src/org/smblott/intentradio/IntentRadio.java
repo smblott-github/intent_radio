@@ -27,18 +27,34 @@ public class IntentRadio extends Activity
 
       setContentView(R.layout.main);
 
-      String version = getString(R.string.version);
-      version = "<p>Version: " + version + "<br>\n";
-
-      String build_date = Build.getBuildDate(context);
-      build_date = "Build: " + build_date + "\n</p>\n";
-
-      String file = ReadRawTextFile.read(getApplicationContext(),R.raw.message);
-      Spanned html = Html.fromHtml(file + version + build_date );
-
       TextView view = (TextView) findViewById(R.id.text);
       view.setMovementMethod(LinkMovementMethod.getInstance());
-      view.setText(html);
+      view.setText("Loading...");
+
+      new AsyncTask<TextView, Void, Spanned>()
+      {
+         TextView view = null;
+
+         @Override
+         protected Spanned doInBackground(TextView... v)
+         {
+            view = v[0];
+            String file = ReadRawTextFile.read(getApplicationContext(),R.raw.message);
+
+            String version = getString(R.string.version);
+            version = "<p>Version: " + version + "<br>\n";
+
+            String build_date = Build.getBuildDate(context);
+            build_date = "Build: " + build_date + "\n</p>\n";
+
+            return Html.fromHtml(file + version + build_date );
+         }
+
+         @Override
+         protected void onPostExecute(Spanned html)
+            { view.setText(html); }
+
+      }.execute(view);
    }
 
    /* ********************************************************************
@@ -59,6 +75,9 @@ public class IntentRadio extends Activity
     *    - /sdcard/Tasker/projects
     *
     * Does it?
+    *
+    * File I/O is more blocking than anything else we're doing, so we'll do it
+    * asyncronously.
     */
 
    public void install_tasker(View v)
