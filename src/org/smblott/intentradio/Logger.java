@@ -101,17 +101,23 @@ public class Logger
    }
 
    public static void toast(String msg)
-   {
-      if ( msg == null )
-         return;
+      { toast(msg,false); }
 
-      Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
-      log(msg);
-   }
+   public static void toast_long(String msg)
+      { toast(msg,true); }
 
    /* ********************************************************************
     * Private logging method...
     */
+
+   public static void toast(String msg, boolean vlong)
+   {
+      if ( msg == null )
+         return;
+
+      Toast.makeText(context, msg, (vlong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT)).show();
+      log(msg);
+   }
 
    private static void log_file(String msg)
    {

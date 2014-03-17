@@ -1,0 +1,231 @@
+<TaskerData sr="" dvi="1" tv="4.2u3m">
+	<Profile sr="prof194" ve="2">
+		<cdate>1393584370629</cdate>
+		<clp>true</clp>
+		<edate>1393516924127</edate>
+		<id>194</id>
+		<mid0>191</mid0>
+		<mid1>187</mid1>
+		<nme>Headset Plugged</nme>
+		<State sr="con0">
+			<code>30</code>
+			<Int sr="arg0" val="0"/>
+		</State>
+	</Profile>
+	<Project sr="proj0">
+		<cdate>1392739136719</cdate>
+		<name>Radio</name>
+		<pids>194</pids>
+		<psort>Alpha</psort>
+		<tids>190,192,79,186,187,169,193,189,188,191</tids>
+	</Project>
+	<Task sr="task169">
+		<cdate>1392739152451</cdate>
+		<edate>1394365485093</edate>
+		<id>169</id>
+		<nme>Radio Restart</nme>
+		<pri>10</pri>
+		<Action sr="act0" ve="3">
+			<code>877</code>
+			<Str sr="arg0" ve="3">org.smblott.intentradio.RESTART</Str>
+			<Int sr="arg1" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Str sr="arg5" ve="3"/>
+			<Str sr="arg6" ve="3"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+		</Action>
+		<Img sr="icn" ve="2">
+			<nme>hd_av_pause_over_video</nme>
+		</Img>
+	</Task>
+	<Task sr="task186">
+		<cdate>1392739152451</cdate>
+		<edate>1393584374895</edate>
+		<id>186</id>
+		<nme>Radio Play R4</nme>
+		<pri>10</pri>
+		<Action sr="act0" ve="3">
+			<code>877</code>
+			<Str sr="arg0" ve="3">org.smblott.intentradio.PLAY</Str>
+			<Int sr="arg1" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3">url: http://www.bbc.co.uk/radio/listen/live/r4_heaacv2.pls</Str>
+			<Str sr="arg5" ve="3">name:BBC Radio 4 (FM)</Str>
+			<Str sr="arg6" ve="3"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+		</Action>
+		<Img sr="icn" ve="2">
+			<nme>hd_av_play_over_video</nme>
+		</Img>
+	</Task>
+	<Task sr="task187">
+		<cdate>1392739152451</cdate>
+		<edate>1394365489336</edate>
+		<id>187</id>
+		<nme>Radio Stop</nme>
+		<pri>10</pri>
+		<Action sr="act0" ve="3">
+			<code>877</code>
+			<Str sr="arg0" ve="3">org.smblott.intentradio.STOP</Str>
+			<Int sr="arg1" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Str sr="arg5" ve="3"/>
+			<Str sr="arg6" ve="3"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+		</Action>
+		<Img sr="icn" ve="2">
+			<nme>hd_av_pause_over_video</nme>
+		</Img>
+	</Task>
+	<Task sr="task188">
+		<cdate>1392739152451</cdate>
+		<edate>1393517374001</edate>
+		<id>188</id>
+		<nme>Radio Play</nme>
+		<pri>10</pri>
+		<Action sr="act0" ve="3">
+			<code>877</code>
+			<Str sr="arg0" ve="3">org.smblott.intentradio.PLAY</Str>
+			<Int sr="arg1" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Str sr="arg5" ve="3"/>
+			<Str sr="arg6" ve="3"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+		</Action>
+		<Img sr="icn" ve="2">
+			<nme>hd_av_play_over_video</nme>
+		</Img>
+	</Task>
+	<Task sr="task189">
+		<cdate>1392739152451</cdate>
+		<edate>1392983356393</edate>
+		<id>189</id>
+		<nme>Radio Play Elsa</nme>
+		<pri>10</pri>
+		<Action sr="act0" ve="3">
+			<code>877</code>
+			<Str sr="arg0" ve="3">org.smblott.intentradio.PLAY</Str>
+			<Int sr="arg1" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3">url:http://192.168.3.3/cgi-bin/sc/wav</Str>
+			<Str sr="arg5" ve="3">name:Elsa/UFM</Str>
+			<Str sr="arg6" ve="3"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+		</Action>
+		<Img sr="icn" ve="2">
+			<nme>hd_av_play_over_video</nme>
+		</Img>
+	</Task>
+	<Task sr="task190">
+		<cdate>1392739152451</cdate>
+		<edate>1392983714500</edate>
+		<id>190</id>
+		<nme>Radio Play R5</nme>
+		<pri>10</pri>
+		<Action sr="act0" ve="3">
+			<code>877</code>
+			<Str sr="arg0" ve="3">org.smblott.intentradio.PLAY</Str>
+			<Int sr="arg1" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3">url: http://www.bbc.co.uk/radio/listen/live/r5l_heaacv2.pls</Str>
+			<Str sr="arg5" ve="3">name:BBC Radio Five Live</Str>
+			<Str sr="arg6" ve="3"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+		</Action>
+		<Img sr="icn" ve="2">
+			<nme>hd_av_play_over_video</nme>
+		</Img>
+	</Task>
+	<Task sr="task191">
+		<cdate>1392822644101</cdate>
+		<edate>1393516908391</edate>
+		<id>191</id>
+		<Action sr="act0" ve="3">
+			<code>548</code>
+			<on>false</on>
+			<Str sr="arg0" ve="3">Headset plugged (radio).</Str>
+			<Int sr="arg1" val="0"/>
+		</Action>
+	</Task>
+	<Task sr="task192">
+		<cdate>1392739152451</cdate>
+		<edate>1393517359705</edate>
+		<id>192</id>
+		<nme>Radio Play Lyric</nme>
+		<pri>10</pri>
+		<Action sr="act0" ve="3">
+			<code>877</code>
+			<Str sr="arg0" ve="3">org.smblott.intentradio.PLAY</Str>
+			<Int sr="arg1" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3">url: http://icecast2.rte.ie/lyric</Str>
+			<Str sr="arg5" ve="3">name:RTÉ Lyric FM</Str>
+			<Str sr="arg6" ve="3"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+		</Action>
+		<Img sr="icn" ve="2">
+			<nme>hd_av_play_over_video</nme>
+		</Img>
+	</Task>
+	<Task sr="task193">
+		<cdate>1392739152451</cdate>
+		<edate>1392984044055</edate>
+		<id>193</id>
+		<nme>Radio Play RR1</nme>
+		<pri>10</pri>
+		<Action sr="act0" ve="3">
+			<code>877</code>
+			<Str sr="arg0" ve="3">org.smblott.intentradio.PLAY</Str>
+			<Int sr="arg1" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3">url: http://icecast2.rte.ie/radio1</Str>
+			<Str sr="arg5" ve="3">name:RTÉ Radio 1</Str>
+			<Str sr="arg6" ve="3"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+		</Action>
+		<Img sr="icn" ve="2">
+			<nme>hd_av_play_over_video</nme>
+		</Img>
+	</Task>
+	<Task sr="task79">
+		<cdate>1392739152451</cdate>
+		<edate>1394365477106</edate>
+		<id>79</id>
+		<nme>Radio Pause</nme>
+		<pri>10</pri>
+		<Action sr="act0" ve="3">
+			<code>877</code>
+			<Str sr="arg0" ve="3">org.smblott.intentradio.PAUSE</Str>
+			<Int sr="arg1" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Str sr="arg5" ve="3"/>
+			<Str sr="arg6" ve="3"/>
+			<Str sr="arg7" ve="3"/>
+			<Int sr="arg8" val="0"/>
+		</Action>
+		<Img sr="icn" ve="2">
+			<nme>hd_av_pause_over_video</nme>
+		</Img>
+	</Task>
+</TaskerData>

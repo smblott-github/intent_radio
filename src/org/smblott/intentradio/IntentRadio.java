@@ -15,11 +15,14 @@ import android.widget.TextView;
 
 public class IntentRadio extends Activity
 {
+   static Context context = null;
+
    @Override
    public void onCreate(Bundle savedInstanceState)
    {
       super.onCreate(savedInstanceState);
-      Context context = getApplicationContext();
+      context = getApplicationContext();
+      Logger.init(context);
 
       setContentView(R.layout.main);
 
@@ -45,5 +48,15 @@ public class IntentRadio extends Activity
    {
       Intent clipper = new Intent(IntentRadio.this, ClipButtons.class);
       startActivity(clipper);
+   }
+
+   /* ********************************************************************
+    * Install sample Tasker project...
+    */
+
+   public void install_tasker(View v)
+   {
+      if ( CopyResource.copy(context,R.raw.tasker, "Tasker/projects/IntentRadio.prj.xml") )
+         Logger.toast_long("Now import this project into Tasker.");
    }
 }
