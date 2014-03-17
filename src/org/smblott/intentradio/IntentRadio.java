@@ -65,11 +65,13 @@ public class IntentRadio extends Activity
    {
       new AsyncTask<Void, Void, String>()
       {
+         @Override
          protected String doInBackground(Void... unused)
          {
             return CopyResource.copy(context,R.raw.tasker, "Tasker/projects/IntentRadio.prj.xml");
          }
 
+         @Override
          protected void onPostExecute(String path)
          {
             path = path != null ? path : "Unknown error.";
