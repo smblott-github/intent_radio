@@ -31,6 +31,8 @@ public class IntentRadio extends Activity
       view.setMovementMethod(LinkMovementMethod.getInstance());
       view.setText("Loading...");
 
+      // Read file contents and build date for main screen asyncronously...
+      //
       new AsyncTask<TextView, Void, Spanned>()
       {
          TextView view = null;
