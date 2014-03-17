@@ -9,23 +9,22 @@ import java.io.InputStream;
 
 public class CopyResource extends Logger
 {
-   // source: http://stackoverflow.com/questions/8664468/copying-raw-file-into-sdcard
-   //
    public static String copy(Context context, int id, String path)
    {
       log("CopyResource id: ", ""+id);
       log("CopyResource path: ", path);
 
-      byte[] buff = new byte[1024];
+      byte[] buffer = new byte[1024];
       int read = 0;
       boolean success = true;
 
-      InputStream in = null;
-      FileOutputStream out = null;
+      InputStream input = null;
+      FileOutputStream output = null;
 
+      log("CopyResource SD card: ", Environment.getExternalStorageState(), ".");
       File sdcard = Environment.getExternalStorageDirectory();
-      if ( sdcard == null )
-         { toast_long("Error: SD card not found."); return null; }
+      if ( sdcard == null || ! Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) )
+         { return "Error: SD card not found or not ready."; }
 
       path = sdcard.getAbsolutePath() + "/" + path;
       log("CopyResource full path: ", path);
@@ -34,34 +33,33 @@ public class CopyResource extends Logger
       File directory = new File(file.getParent());
 
       if ( ! directory.isDirectory() )
-         { toast_long("Parent directory does not exist:\n" + file.getParent()); return null; }
+         { return "Error: Parent directory does not exist:\n" + file.getParent(); }
 
       if ( file.exists() )
-         { toast_long("File already exists, not copied.\n" + path); return null; }
+         { return "Error: File already exists, not copied.\n" + path; }
 
       try
       {
-         in = context.getResources().openRawResource(id);
-         out = new FileOutputStream(path);
+         input = context.getResources().openRawResource(id);
+         output = new FileOutputStream(path);
 
-         while ((read = in.read(buff)) > 0)
-            out.write(buff, 0, read);
+         while ( 0 < (read = input.read(buffer)) )
+            output.write(buffer, 0, read);
       }
       catch ( Exception e)
       {
          success = false;
-         toast_long("Failed to copy file:\n" + path);
       }
       finally
       {
          try
          {
-            if ( in  != null ) in.close();
-            if ( out != null ) out.close();
+            if ( input  != null ) input.close();
+            if ( output != null ) output.close();
          }
          catch ( Exception e) {}
       }
 
-      return success ? path : null;
+      return success ? path : "Unknown error.";
    }
 }

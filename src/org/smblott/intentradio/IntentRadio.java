@@ -1,10 +1,11 @@
 package org.smblott.intentradio;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.app.Activity;
 import android.content.Intent;
-
 import android.content.Context;
+
+import android.os.AsyncTask;;
 
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -56,12 +57,34 @@ public class IntentRadio extends Activity
 
    public void install_tasker(View v)
    {
-      String path = CopyResource.copy(context,R.raw.tasker, "Tasker/projects/IntentRadio.prj.xml");
-
-      if ( path != null )
+      new AsyncTask<Void, Void, String>()
       {
-         Logger.toast_long("Project file installed:\n" + path);
-         Logger.toast_long("Now import this project into Tasker.");
-      }
+         protected String doInBackground(Void... params)
+         {
+            return CopyResource.copy(context,R.raw.tasker, "Tasker/projects/IntentRadio.prj.xml");
+         }
+
+         protected void onPostExecute(String path)
+         {
+            path = path != null ? path : "Unknown error.";
+
+            if ( path.indexOf('/') == 0 )
+            {
+               toast("Project file installed:\n" + path);
+               toast("Now import this project into Tasker.");
+            }
+            else
+               toast(path);
+         }
+
+      }.execute();
    }
+
+   /* ********************************************************************
+    * Toasts...
+    */
+
+   static private void toast(String msg)
+      { Logger.toast_long(msg); }
+
 }
