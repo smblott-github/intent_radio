@@ -2,6 +2,7 @@ package org.smblott.intentradio;
 
 import android.content.Context;
 import android.os.Environment;
+import android.os.Process;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -44,18 +45,19 @@ public class CopyResource extends Logger
       if ( file.exists() )
          { return "Error:\nFile already exists, not copied...\n\n" + path; }
 
+      File tmp = new File(path + "." + "TmpFile." + Process.myTid());
+      log("CopyResource tmp path: ", tmp.toString());
+
       try
       {
          input = context.getResources().openRawResource(id);
-         output = new FileOutputStream(path);
+         output = new FileOutputStream(tmp);
 
          while ( 0 < (count = input.read(buffer)) )
             output.write(buffer, 0, count);
       }
       catch ( Exception e)
-      {
-         success = false;
-      }
+         { success = false; }
       finally
       {
          try
@@ -63,8 +65,12 @@ public class CopyResource extends Logger
             if ( input  != null ) input.close();
             if ( output != null ) output.close();
          }
-         catch ( Exception e) {}
+         catch ( Exception e)
+            { success = false; }
       }
+
+      if ( success )
+         success = tmp.renameTo(file);
 
       return success ? path : "Unknown error.";
    }
