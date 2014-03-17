@@ -15,7 +15,7 @@ public class CopyResource extends Logger
       log("CopyResource path: ", path);
 
       byte[] buffer = new byte[1024];
-      int read = 0;
+      int count = 0;
       boolean success = true;
 
       InputStream input = null;
@@ -43,8 +43,8 @@ public class CopyResource extends Logger
          input = context.getResources().openRawResource(id);
          output = new FileOutputStream(path);
 
-         while ( 0 < (read = input.read(buffer)) )
-            output.write(buffer, 0, read);
+         while ( 0 < (count = input.read(buffer)) )
+            output.write(buffer, 0, count);
       }
       catch ( Exception e)
       {
