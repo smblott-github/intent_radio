@@ -11,9 +11,7 @@ import java.io.InputStream;
 public class CopyResource extends Logger
 {
    /* Install raw file resource id into location path on the SD card.
-    *
-    * Returns the full path on success (so the first character is '/'), or an
-    * error message on failure.
+    * Returns null on success, or an error message on failure.
     */
 
    public static String copy(Context context, int id, String path)
@@ -32,7 +30,7 @@ public class CopyResource extends Logger
       log("CopyResource SD card: ", Environment.getExternalStorageState(), ".");
       File sdcard = Environment.getExternalStorageDirectory();
       if ( sdcard == null || ! Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) )
-         { return "Error:\nSD card not found or not ready."; }
+         { return "Error.\nSD card not found or not ready."; }
 
       path = sdcard.getAbsolutePath() + "/" + path;
       log("CopyResource full path: ", path);
@@ -41,10 +39,10 @@ public class CopyResource extends Logger
       File directory = new File(file.getParent());
 
       if ( ! directory.isDirectory() )
-         { return "Error:\nParent directory does not exist...\n\n" + file.getParent(); }
+         { return "Error.\nDirectory does not exist..."; }
 
       if ( file.exists() && ! overwrite )
-         { return "Error:\nFile already exists, not copied...\n\n" + path; }
+         { return "Error.\nFile already exists, not copied..."; }
 
       try
       {
@@ -82,6 +80,6 @@ public class CopyResource extends Logger
          if ( ! tmp.delete() )
             log("CopyResource failed to delete: ", tmp.toString());
 
-      return success ? path : "Unknown error.";
+      return success ? null : "Unknown error...";
    }
 }

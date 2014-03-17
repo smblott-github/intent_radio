@@ -82,28 +82,29 @@ public class IntentRadio extends Activity
     * asyncronously.
     */
 
+   private static final String project_file = "Tasker/projects/IntentRadio.prj.xml";
+
    public void install_tasker(View v)
    {
+
       new AsyncTask<Void, Void, String>()
       {
          @Override
          protected String doInBackground(Void... unused)
          {
-            return CopyResource.copy(context,R.raw.tasker, "Tasker/projects/IntentRadio.prj.xml");
+            return CopyResource.copy(context,R.raw.tasker, project_file);
          }
 
          @Override
-         protected void onPostExecute(String path)
+         protected void onPostExecute(String error)
          {
-            path = path != null ? path : "Unknown error.";
-
-            if ( path.indexOf('/') == 0 )
+            if ( error == null )
             {
-               toast("Project file installed...\n\n" + path);
+               toast("Project file installed...\n\n/sdcard/" + project_file);
                toast("Now import this project into Tasker.");
             }
             else
-               toast(path);
+               toast(error + "\n\n/sdcard/" + project_file);
          }
 
       }.execute();
