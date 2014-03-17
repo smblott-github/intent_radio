@@ -9,6 +9,12 @@ import java.io.InputStream;
 
 public class CopyResource extends Logger
 {
+   /* Install raw file resource id into location path on the SD card.
+    *
+    * Returns the full path on success (so the first character is '/'), or an
+    * error message on failure.
+    */
+
    public static String copy(Context context, int id, String path)
    {
       log("CopyResource id: ", ""+id);
@@ -24,7 +30,7 @@ public class CopyResource extends Logger
       log("CopyResource SD card: ", Environment.getExternalStorageState(), ".");
       File sdcard = Environment.getExternalStorageDirectory();
       if ( sdcard == null || ! Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) )
-         { return "Error: SD card not found or not ready."; }
+         { return "Error:\nSD card not found or not ready."; }
 
       path = sdcard.getAbsolutePath() + "/" + path;
       log("CopyResource full path: ", path);
@@ -33,10 +39,10 @@ public class CopyResource extends Logger
       File directory = new File(file.getParent());
 
       if ( ! directory.isDirectory() )
-         { return "Error: Parent directory does not exist:\n" + file.getParent(); }
+         { return "Error:\nParent directory does not exist...\n\n" + file.getParent(); }
 
       if ( file.exists() )
-         { return "Error: File already exists, not copied.\n" + path; }
+         { return "Error:\nFile already exists, not copied...\n\n" + path; }
 
       try
       {

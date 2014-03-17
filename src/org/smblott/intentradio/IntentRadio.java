@@ -53,13 +53,19 @@ public class IntentRadio extends Activity
 
    /* ********************************************************************
     * Install sample Tasker project...
+    *
+    * This currently assumes that Tasker *always* stores projects in:
+    *
+    *    - /sdcard/Tasker/projects
+    *
+    * Does it?
     */
 
    public void install_tasker(View v)
    {
       new AsyncTask<Void, Void, String>()
       {
-         protected String doInBackground(Void... params)
+         protected String doInBackground(Void... unused)
          {
             return CopyResource.copy(context,R.raw.tasker, "Tasker/projects/IntentRadio.prj.xml");
          }
@@ -70,7 +76,7 @@ public class IntentRadio extends Activity
 
             if ( path.indexOf('/') == 0 )
             {
-               toast("Project file installed:\n" + path);
+               toast("Project file installed...\n\n" + path);
                toast("Now import this project into Tasker.");
             }
             else
