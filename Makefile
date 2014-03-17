@@ -2,11 +2,14 @@
 build:
 	$(MAKE) debug
 
-debug:
+debug: res/raw/tasker.prj
 	ant debug
 
-release:
+release: res/raw/tasker.prj
 	ant release
+
+res/raw/tasker.prj: misc/Radio.prj.xml
+	install -m 0444 $< $@
 
 clean:
 	ant clean
