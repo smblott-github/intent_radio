@@ -19,6 +19,16 @@
            android:layout_margin="5dp"
            android:layout_alignParentLeft="true" >
        </Button>
+       <Button 
+           android:id="@+id/install_tasker" 
+           android:layout_width="fill_parent" 
+           android:layout_height="wrap_content" 
+           android:text="Install Sample Tasker Project"
+           android:onClick="install_tasker"
+           android:layout_margin="5dp"
+           android:layout_below="@+id/clip_buttons"
+           android:layout_alignParentLeft="true" >
+       </Button>
     </RelativeLayout>
     
     <ScrollView
