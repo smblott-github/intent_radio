@@ -56,7 +56,12 @@ public class IntentRadio extends Activity
 
    public void install_tasker(View v)
    {
-      if ( CopyResource.copy(context,R.raw.tasker, "Tasker/projects/IntentRadio.prj.xml") )
+      String path = CopyResource.copy(context,R.raw.tasker, "Tasker/projects/IntentRadio.prj.xml");
+
+      if ( path != null )
+      {
+         Logger.toast_long("Project file installed:\n" + path);
          Logger.toast_long("Now import this project into Tasker.");
+      }
    }
 }

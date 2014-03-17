@@ -112,7 +112,7 @@ public class Logger
 
    public static void toast(String msg, boolean vlong)
    {
-      if ( msg == null )
+      if ( msg == null || context == null )
          return;
 
       Toast.makeText(context, msg, (vlong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT)).show();

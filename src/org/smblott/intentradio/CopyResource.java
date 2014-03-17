@@ -11,10 +11,10 @@ public class CopyResource extends Logger
 {
    // source: http://stackoverflow.com/questions/8664468/copying-raw-file-into-sdcard
    //
-   public static boolean copy(Context context, int id, String path)
+   public static String copy(Context context, int id, String path)
    {
-      log("CopyResource id:", ""+id);
-      log("CopyResource path:", path);
+      log("CopyResource id: ", ""+id);
+      log("CopyResource path: ", path);
 
       byte[] buff = new byte[1024];
       int read = 0;
@@ -25,27 +25,19 @@ public class CopyResource extends Logger
 
       File sdcard = Environment.getExternalStorageDirectory();
       if ( sdcard == null )
-      {
-         toast("Error: SD card path not found.");
-         return false;
-      }
+         { toast_long("Error: SD card not found."); return null; }
 
       path = sdcard.getAbsolutePath() + "/" + path;
-      log("CopyResource path: ", path);
+      log("CopyResource full path: ", path);
+
       File file = new File(path);
       File directory = new File(file.getParent());
 
       if ( ! directory.isDirectory() )
-      {
-         toast("Parent directory does not exist:\n" + file.getParent());
-         return false;
-      }
+         { toast_long("Parent directory does not exist:\n" + file.getParent()); return null; }
 
       if ( file.exists() )
-      {
-         toast("Error: file exists!\n" + path);
-         return false;
-      }
+         { toast_long("File already exists, not copied.\n" + path); return null; }
 
       try
       {
@@ -56,12 +48,12 @@ public class CopyResource extends Logger
             out.write(buff, 0, read);
       }
       catch ( Exception e)
-         { success = false; toast("Failed to copy file:\n" + path); }
+      {
+         success = false;
+         toast_long("Failed to copy file:\n" + path);
+      }
       finally
       {
-         if ( success )
-            toast_long("File installed:\n" + path);
-
          try
          {
             if ( in  != null ) in.close();
@@ -70,6 +62,6 @@ public class CopyResource extends Logger
          catch ( Exception e) {}
       }
 
-      return success;
+      return success ? path : null;
    }
 }
