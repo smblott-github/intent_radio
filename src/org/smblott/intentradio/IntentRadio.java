@@ -16,7 +16,10 @@ import android.widget.TextView;
 
 public class IntentRadio extends Activity
 {
-   static Context context = null;
+   private static Context context = null;
+
+   private static AsyncTask<TextView, Void, Spanned> draw_task = null;
+   private static AsyncTask<Void, Void, String> install_task = null;
 
    @Override
    public void onCreate(Bundle savedInstanceState)
@@ -33,7 +36,7 @@ public class IntentRadio extends Activity
 
       // Read file contents and build date for main screen asyncronously...
       //
-      new AsyncTask<TextView, Void, Spanned>()
+      draw_task = new AsyncTask<TextView, Void, Spanned>()
       {
          TextView view = null;
 
@@ -55,7 +58,8 @@ public class IntentRadio extends Activity
                view.setText(html);
          }
 
-      }.execute(view);
+      };
+      draw_task.execute(view);
    }
 
    /* ********************************************************************
@@ -85,8 +89,10 @@ public class IntentRadio extends Activity
 
    public void install_tasker(View v)
    {
+      if ( install_task != null )
+         install_task.cancel(true);
 
-      new AsyncTask<Void, Void, String>()
+      install_task = new AsyncTask<Void, Void, String>()
       {
          @Override
          protected String doInBackground(Void... unused)
@@ -113,7 +119,8 @@ public class IntentRadio extends Activity
             }
          }
 
-      }.execute();
+      };
+      install_task.execute();
    }
 
    /* ********************************************************************
