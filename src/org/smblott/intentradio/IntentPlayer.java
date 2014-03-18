@@ -218,22 +218,29 @@ public class IntentPlayer extends Service
       else
          log("Re-using existing player.");
 
-      fresh_launch();
-      return launch(url);
+      on_first_launch();
+      return play_launch(url);
    }
 
-   private static String launch_url = null;
+   /* ********************************************************************
+    * Launch player...
+    */
 
-   private void relaunch()
-      { if ( launch_url != null ) launch(launch_url); }
+   private static String last_launch_url = null;
 
-   private int launch(String url)
+   private void play_relaunch(int now)
    {
-      // /////////////////////////////////////////////////////////////////
-      // Launch...
+      if ( last_launch_url != null && Counter.still(now) ) 
+      {
+         log("Relaunch: ", last_launch_url);
+         play_launch(last_launch_url);
+      }
+   }
 
-      launch_url = url;
-      log("Launching: ", launch_url);
+   private int play_launch(String url)
+   {
+      last_launch_url = url;
+      log("Launching: ", url);
 
       int focus = audio_manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
       if ( focus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
@@ -272,7 +279,7 @@ public class IntentPlayer extends Service
       // Time moves on...
       //
       Counter.time_passes();
-      launch_url = null;
+      last_launch_url = null;
 
       // Cancel any outstanding asynchronous playlist task...
       // 
@@ -413,29 +420,32 @@ public class IntentPlayer extends Service
    /* ********************************************************************
     * On completion listener...
     *
-    * This should only be called if there is an error with the stream.  So
-    * we'll try restarting it, but only a limited number of times.
+    * This should only be called (and matter, because the time counter hasn't
+    * progressed) if there is an error with the stream.  So we'll try
+    * restarting it, but only a limited number of times.
     */
 
-   private static final int restarts_max = 3;
-   private static int restarts_now = 0;
-   private static int restarts_cnt = 0;
+   private static final int restart_max = 3;
+   private static       int restart_cnt = 0;
+   private static       int restart_now = 0;
 
-   private void fresh_launch()
+   private void on_first_launch()
    {
-      restarts_now = Counter.now();
-      restarts_cnt = restarts_max;
-      log("Completion/Fresh start: ", ""+restarts_cnt);
+      restart_cnt = restart_max;
+      restart_now = Counter.now();
+      log("On first launch: ", "now="+restart_now);
    }
 
    public void onCompletion(MediaPlayer a_player)
    {
-      if ( player == a_player && 0 < restarts_cnt && Counter.still(restarts_now) )
+      if ( player != null && player == a_player && 0 < restart_cnt )
       {
-         log("Completion/Restarting: ", ""+restarts_cnt);
-         restarts_cnt -= 1;
-         relaunch();
+         log("Completion attempt restart: ", "now="+restart_now, " cnt="+restart_cnt);
+         restart_cnt -= 1;
+         play_relaunch(restart_now);
       }
+      else
+         log("Completion, not restarting: ", "now="+restart_now, " cnt="+restart_cnt);
    }
 
    /* ********************************************************************

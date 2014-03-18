@@ -2,7 +2,7 @@ package org.smblott.intentradio;
 
 public class Counter extends Logger
 {
-   private static volatile int counter = 0;
+   private static volatile int counter = 1;
 
    public static int now()
       { return counter; }
