@@ -92,7 +92,7 @@ public class IntentRadio extends Activity
          @Override
          protected String doInBackground(Void... unused)
          {
-            return CopyResource.copy(context,R.raw.tasker, project_file);
+            return CopyResource.copy(context, R.raw.tasker, project_file);
          }
 
          @Override
@@ -104,7 +104,7 @@ public class IntentRadio extends Activity
                toast("Now import this project into Tasker.");
             }
             else
-               toast(error + "\n\n/sdcard/" + project_file);
+               toast("Install error:\n" + error + "\n\n/sdcard/" + project_file);
          }
 
       }.execute();

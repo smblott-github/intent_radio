@@ -10,7 +10,7 @@ import java.io.InputStream;
 
 public class CopyResource extends Logger
 {
-   /* Install raw file resource id into location path on the SD card.
+   /* Install raw file resource "id" into location "path" on external storage.
     * Returns null on success, or an error message on failure.
     */
 
@@ -22,27 +22,26 @@ public class CopyResource extends Logger
       log("CopyResource id: ", ""+id);
       log("CopyResource path: ", path);
 
-      boolean success = true;
+      File tmp = null;
       InputStream input = null;
       FileOutputStream output = null;
-      File tmp = null;
+      boolean success = true;
 
       log("CopyResource SD card: ", Environment.getExternalStorageState(), ".");
       File sdcard = Environment.getExternalStorageDirectory();
       if ( sdcard == null || ! Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) )
-         { return "Error.\nSD card not found or not ready."; }
+         { return "SD card not found or not ready."; }
 
       path = sdcard.getAbsolutePath() + "/" + path;
       log("CopyResource full path: ", path);
 
       File file = new File(path);
-      File directory = new File(file.getParent());
-
-      if ( ! directory.isDirectory() )
-         { return "Error.\nDirectory does not exist..."; }
-
       if ( file.exists() && ! overwrite )
-         { return "Error.\nFile already exists, not copied..."; }
+         { return "File already exists, not copied..."; }
+
+      File directory = new File(file.getParent());
+      if ( ! directory.isDirectory() )
+         { return "Directory does not exist..."; }
 
       try
       {
@@ -57,20 +56,15 @@ public class CopyResource extends Logger
 
          while ( 0 < (count = input.read(buffer)) )
             output.write(buffer, 0, count);
-
-         input.close();
-         input = null;
-
-         output.close();
-         output = null;
       }
       catch (Exception e1)
       {
          success = false;
-         try {
-            if ( input  != null ) input.close();
-            if ( output != null ) output.close();
-         } catch (Exception e2) {}
+      }
+      finally
+      {
+         try { if ( output != null ) output.close(); } catch (Exception e2) {}
+         try { if ( input  != null ) input.close();  } catch (Exception e2) {}
       }
 
       if ( success )
