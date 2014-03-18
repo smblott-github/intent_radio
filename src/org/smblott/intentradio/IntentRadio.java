@@ -126,10 +126,6 @@ public class IntentRadio extends Activity
          @Override
          protected void onPostExecute(String error)
          {
-            // TODO: Checking whether the task has been cancelled is not
-            // sufficient.  Must also check whether activity has been
-            // destroyed.
-            //
             if ( ! isCancelled() )
             {
                if ( error == null )
