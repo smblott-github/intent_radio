@@ -12,11 +12,14 @@ import android.content.Context;
 import android.widget.Toast;
 import android.util.Log;
 
+import android.content.pm.ApplicationInfo;
+
 public class Logger
 {
    private static Context context = null;
    private static String name = null;
    private static boolean debugging = false;
+   private static final boolean append = true;
 
    /* ********************************************************************
     * Initialisation...
@@ -26,6 +29,14 @@ public class Logger
    {
       context = a_context;
       name = context.getString(R.string.app_name);
+
+      // Always enable debugging on debug builds...
+      //
+      boolean debug_build = ( ( context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE ) == ApplicationInfo.FLAG_DEBUGGABLE );
+      if ( debug_build )
+         state("debug");
+
+      log("Debug build: ", ""+debug_build);
    }
 
    /* ********************************************************************
@@ -63,7 +74,7 @@ public class Logger
       try
       {
          File log_file = new File(context.getExternalFilesDir(null), context.getString(R.string.intent_log_file));
-         file = new FileOutputStream(log_file);
+         file = new FileOutputStream(log_file, append);
       }
       catch (Exception e)
          { file = null; }

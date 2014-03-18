@@ -239,6 +239,9 @@ public class IntentPlayer extends Service
 
    private int stop(boolean kill_note, String text)
    {
+      if ( text != null )
+         log(text);
+
       // Time moves on...
       //
       Counter.time_passes();

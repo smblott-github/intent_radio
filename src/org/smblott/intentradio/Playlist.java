@@ -67,11 +67,21 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
       List<String> lines = HttpGetter.httpGet(url);
 
       for (int i=0; i<lines.size(); i+= 1)
+         log("Playlist lines: ", lines.get(i));
+
+      for (int i=0; i<lines.size(); i+= 1)
          lines.set(i, filter(lines.get(i).trim()));
+
+      for (int i=0; i<lines.size(); i+= 1)
+         if ( lines.get(i).length() != 0 )
+            log("Playlist filtered: ", lines.get(i));
 
       List<String> links = get_links(TextUtils.join("\n", lines));
       if ( links.size() == 0 )
          return null;
+
+      for (int i=0; i<links.size(); i+= 1)
+         log("Playlist links: ", links.get(i));
 
       if ( random == null )
          random = new Random();
