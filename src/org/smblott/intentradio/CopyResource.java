@@ -10,6 +10,8 @@ import java.io.InputStream;
 
 public class CopyResource extends Logger
 {
+   private static final String prefix = ".IntentRadio.";
+
    /* Install raw file resource "id" into location "path" on external storage.
     * Returns null on success, or an error message on failure.
     */
@@ -27,7 +29,6 @@ public class CopyResource extends Logger
       FileOutputStream output = null;
       boolean success = true;
 
-      log("CopyResource SD card: ", Environment.getExternalStorageState(), ".");
       File sdcard = Environment.getExternalStorageDirectory();
       if ( sdcard == null || ! Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) )
          { return "SD card not found or not ready."; }
@@ -45,7 +46,7 @@ public class CopyResource extends Logger
 
       try
       {
-         tmp = File.createTempFile(".IntentRadio.", null, directory);
+         tmp = File.createTempFile(prefix, null, directory);
          log("CopyResource tmp path: ", tmp.toString());
 
          input = context.getResources().openRawResource(id);
