@@ -63,7 +63,7 @@ public class CopyResource extends Logger
       }
       finally
       {
-         try { if ( output != null ) output.close(); } catch (Exception e2) {}
+         try { if ( output != null ) output.close(); } catch (Exception e2) { success = false; }
          try { if ( input  != null ) input.close();  } catch (Exception e2) {}
       }
 
