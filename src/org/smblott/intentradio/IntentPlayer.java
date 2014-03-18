@@ -222,10 +222,18 @@ public class IntentPlayer extends Service
       return launch(url);
    }
 
+   private static String launch_url = null;
+
+   private void relaunch()
+      { if ( launch_url != null ) launch(launch_url); }
+
    private int launch(String url)
    {
       // /////////////////////////////////////////////////////////////////
       // Launch...
+
+      launch_url = url;
+      log("Launching: ", launch_url);
 
       int focus = audio_manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
       if ( focus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
@@ -264,6 +272,7 @@ public class IntentPlayer extends Service
       // Time moves on...
       //
       Counter.time_passes();
+      launch_url = null;
 
       // Cancel any outstanding asynchronous playlist task...
       // 
@@ -421,12 +430,11 @@ public class IntentPlayer extends Service
 
    public void onCompletion(MediaPlayer a_player)
    {
-      if ( player == a_player && 0 < restarts_cnt && url != null )
+      if ( player == a_player && 0 < restarts_cnt && Counter.still(restarts_now) )
       {
          log("Completion/Restarting: ", ""+restarts_cnt);
-         play(url,restarts_now);
-         restarts_now = Counter.now();
          restarts_cnt -= 1;
+         relaunch();
       }
    }
 
