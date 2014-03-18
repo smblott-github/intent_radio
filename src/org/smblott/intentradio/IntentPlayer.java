@@ -367,9 +367,18 @@ public class IntentPlayer extends Service
 
    public boolean onError(MediaPlayer player, int what, int extra)
    {
-      String msg = "onError...(" + what + ")";
-      toast(msg);
-      stop("Error: " + what + ".");
+      switch ( what )
+      {
+         case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
+            stop("Media server died.");
+            break;
+         case MediaPlayer.MEDIA_ERROR_UNKNOWN:
+            stop("Media error.");
+            break;
+         default:
+            stop("Unknown media-player error.");
+            break;
+      }
       return true;
    }
 
