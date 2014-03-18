@@ -28,6 +28,9 @@ public class IntentRadio extends Activity
       context = getApplicationContext();
       Logger.init(context);
 
+      draw_task = null;
+      install_task = null;
+
       setContentView(R.layout.main);
 
       TextView view = (TextView) findViewById(R.id.text);
@@ -38,7 +41,7 @@ public class IntentRadio extends Activity
       //
       draw_task = new AsyncTask<TextView, Void, Spanned>()
       {
-         TextView view = null;
+         private TextView view = null;
 
          @Override
          protected Spanned doInBackground(TextView... v)
@@ -46,8 +49,10 @@ public class IntentRadio extends Activity
             view = v[0];
             return Html.fromHtml(
                     ReadRawTextFile.read(getApplicationContext(),R.raw.message) 
-                  + "<p>Version: " + getString(R.string.version) + "<br>\n" 
-                  + "Build: " + Build.getBuildDate(context) + "\n</p>\n"
+                  + "<p>\n"
+                  + "Version: " + getString(R.string.version) + "<br>\n" 
+                  + "Build: " + Build.getBuildDate(context) + "\n"
+                  + "</p>\n"
                   );
          }
 
@@ -60,6 +65,24 @@ public class IntentRadio extends Activity
 
       };
       draw_task.execute(view);
+   }
+
+   /* ********************************************************************
+    * Destroy activity: clean up any remaining tasks...
+    */
+
+   public void onDestroy()
+   {
+      if ( draw_task != null && draw_task.getStatus() != AsyncTask.Status.FINISHED )
+         draw_task.cancel(true);
+
+      if ( install_task != null && install_task.getStatus() != AsyncTask.Status.FINISHED )
+         install_task.cancel(true);
+
+      draw_task = null;
+      install_task = null;
+
+      super.onDestroy();
    }
 
    /* ********************************************************************
@@ -89,8 +112,8 @@ public class IntentRadio extends Activity
 
    public void install_tasker(View v)
    {
-      if ( install_task != null )
-         install_task.cancel(true);
+      if ( install_task != null && install_task.getStatus() != AsyncTask.Status.FINISHED )
+         return;
 
       install_task = new AsyncTask<Void, Void, String>()
       {

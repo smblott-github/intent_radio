@@ -100,6 +100,7 @@ public class IntentPlayer extends Service
    {
       stop();
       Logger.state("off");
+      super.onDestroy();
    }
 
    /* ********************************************************************
