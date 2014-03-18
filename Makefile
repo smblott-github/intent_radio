@@ -47,7 +47,7 @@ restart:
 	adb shell am broadcast -a org.smblott.intentradio.RESTART -e debug yes
 
 logcat:
-	adb logcat -s IntentRadio
+	adb logcat -s IntentRadio -s MediaPlayer
 
 log:
 	$(MAKE) logcat
