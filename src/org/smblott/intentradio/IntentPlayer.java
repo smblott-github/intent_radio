@@ -353,6 +353,7 @@ public class IntentPlayer extends Service
     * Listeners...
     */
 
+   @Override
    public void onPrepared(MediaPlayer a_player)
    {
       if ( a_player == player )
@@ -363,12 +364,14 @@ public class IntentPlayer extends Service
       }
    }
 
+   @Override
    public void onBufferingUpdate(MediaPlayer player, int percent)
    {
       if ( 0 <= percent && percent <= 100 )
          log("Buffering: ", ""+percent, "%"); 
    }
 
+   @Override
    public boolean onInfo(MediaPlayer player, int what, int extra)
    {
       log("Info: ", ""+what);
@@ -400,6 +403,7 @@ public class IntentPlayer extends Service
       return true;
    }
 
+   @Override
    public boolean onError(MediaPlayer player, int what, int extra)
    {
       switch ( what )
@@ -436,11 +440,12 @@ public class IntentPlayer extends Service
       log("On first launch: ", "now="+restart_now);
    }
 
+   @Override
    public void onCompletion(MediaPlayer a_player)
    {
       if ( player != null && player == a_player && 0 < restart_cnt )
       {
-         log("Completion attempt restart: ", "now="+restart_now, " cnt="+restart_cnt);
+         log("Completion, attempt restart: ", "now="+restart_now, " cnt="+restart_cnt);
          restart_cnt -= 1;
          play_relaunch(restart_now);
       }
@@ -452,6 +457,7 @@ public class IntentPlayer extends Service
     * Audio focus listeners...
     */
 
+   @Override
    public void onAudioFocusChange(int change)
    {
       log("onAudioFocusChange: ", ""+change);
@@ -526,6 +532,7 @@ public class IntentPlayer extends Service
     * Required abstract method...
     */
 
+   @Override
    public IBinder onBind(Intent intent)
       { return null; }
 }
