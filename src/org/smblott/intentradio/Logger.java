@@ -12,6 +12,7 @@ import android.content.Context;
 import android.widget.Toast;
 import android.util.Log;
 
+import android.os.Process;
 import android.content.pm.ApplicationInfo;
 
 public class Logger
@@ -19,7 +20,10 @@ public class Logger
    private static Context context = null;
    private static String name = null;
    private static boolean debugging = false;
+   private static int pid = 0;
+
    private static final boolean append = true;
+   private static final int DEBUGGABLE = ApplicationInfo.FLAG_DEBUGGABLE;
 
    /* ********************************************************************
     * Initialisation...
@@ -32,16 +36,17 @@ public class Logger
 
       // Always enable debugging on debug builds...
       //
-      boolean debug_build = ( ( context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE ) == ApplicationInfo.FLAG_DEBUGGABLE );
-      if ( debug_build )
-         state("debug");
-
+      boolean debug_build = ( (context.getApplicationInfo().flags & DEBUGGABLE) == DEBUGGABLE );
+      state(debug_build);
       log("Debug build: ", ""+debug_build);
    }
 
    /* ********************************************************************
     * Enable/disable...
     */
+
+   public static void state(boolean enable)
+      { state(enable ? "debug" : "nodebug"); }
 
    public static void state(String s)
    {
@@ -67,6 +72,7 @@ public class Logger
          return;
 
       debugging = true;
+      pid = Process.myPid();
 
       if ( format == null )
          format = new SimpleDateFormat("HH:mm:ss ");
@@ -105,7 +111,7 @@ public class Logger
       if ( ! debugging || msg == null )
          return;
 
-      String text = format.format(new Date()) + TextUtils.join("",msg);
+      String text = format.format(new Date()) + pid + " " + TextUtils.join("",msg);
 
       Log.d(name, text);
       log_file(text);

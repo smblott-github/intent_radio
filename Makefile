@@ -55,6 +55,9 @@ log:
 log_file:
 	adb shell cat /sdcard/Android/data/org.smblott.intentradio/files/intent-radio.log
 
+log_file_tail:
+	$(MAKE) log_file | tail -40
+
 update-project:
 	android update project -p .
 
