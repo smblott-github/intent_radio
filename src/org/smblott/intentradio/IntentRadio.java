@@ -126,16 +126,16 @@ public class IntentRadio extends Activity
          @Override
          protected void onPostExecute(String error)
          {
-            if ( ! isCancelled() )
+            if ( isCancelled() )
+               return;
+
+            if ( error == null /* so, success */ )
             {
-               if ( error == null )
-               {
-                  toast("Project file installed...\n\n/sdcard/" + project_file);
-                  toast("Next, import this project into Tasker.");
-               }
-               else
-                  toast("Install error:\n" + error + "\n\n/sdcard/" + project_file);
+               toast("Project file installed...\n\n/sdcard/" + project_file);
+               toast("Next, import this project into Tasker.");
             }
+            else
+               toast("Install error:\n" + error + "\n\n/sdcard/" + project_file);
          }
 
       };

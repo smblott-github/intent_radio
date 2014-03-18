@@ -53,6 +53,9 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
          player.play(url, then);
    }
 
+   public boolean finished()
+      { return getStatus() == AsyncTask.Status.FINISHED; }
+
    /* ********************************************************************
     * Fetch a single (random) url from a playlist...
     */

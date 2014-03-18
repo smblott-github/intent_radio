@@ -243,13 +243,15 @@ public class IntentPlayer extends Service
       //
       Counter.time_passes();
 
-      // Kill any outstanding asynchronous playlist task...
+      // Cancel any outstanding asynchronous playlist task...
+      // 
+      // Note: We may in fact be calling this from within the onPostExecute
+      // method of the task itself (because onPostExecute calls "play", which
+      // calls "stop").
       //
-      if ( pltask != null )
-      {
+      if ( pltask != null && ! pltask.finished() )
          pltask.cancel(true);
-         pltask = null;
-      }
+      pltask = null;
 
       // Stop player...
       //
