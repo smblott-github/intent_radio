@@ -20,6 +20,7 @@ import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnInfoListener;
 import android.media.MediaPlayer.OnPreparedListener;
+import android.media.MediaPlayer.OnCompletionListener;
 
 import android.net.Uri;
 import android.os.Build.VERSION;
@@ -30,7 +31,8 @@ public class IntentPlayer extends Service
       OnInfoListener,
       OnErrorListener,
       OnPreparedListener,
-      OnAudioFocusChangeListener
+      OnAudioFocusChangeListener,
+      OnCompletionListener
 {
 
    /* ********************************************************************
@@ -99,6 +101,14 @@ public class IntentPlayer extends Service
    public void onDestroy()
    {
       stop();
+
+      if ( player != null )
+      {
+         player.release();
+         player = null;
+      }
+
+      log("Destroyed.");
       Logger.state("off");
       super.onDestroy();
    }
@@ -193,26 +203,35 @@ public class IntentPlayer extends Service
       builder.setOngoing(true).setContentText("Connecting...");
       note = builder.build();
 
+      if ( player == null )
+      {
+         player = new MediaPlayer();
+         player.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
+         player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+         player.setOnPreparedListener(this);
+         player.setOnBufferingUpdateListener(this);
+         player.setOnInfoListener(this);
+         player.setOnErrorListener(this);
+         player.setOnCompletionListener(this);
+      }
+      else
+         log("Re-using existing player.");
+
+      fresh_launch();
+      return launch(url);
+   }
+
+   private int launch(String url)
+   {
+      // /////////////////////////////////////////////////////////////////
+      // Launch...
+
       int focus = audio_manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
       if ( focus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
          return stop("Failed to get audio focus!");
 
       WifiLocker.lock(context, app_name_long);
-      player = new MediaPlayer();
-      player.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
-      player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-
-      // /////////////////////////////////////////////////////////////////
-      // Listeners...
-
-      player.setOnPreparedListener(this);
-      player.setOnBufferingUpdateListener(this);
-      player.setOnInfoListener(this);
-      player.setOnErrorListener(this);
-
-      // /////////////////////////////////////////////////////////////////
-      // Launch...
-
       startForeground(note_id, note);
       log("Connecting...");
 
@@ -261,11 +280,12 @@ public class IntentPlayer extends Service
       if ( player != null )
       {
          log("Stopping player...");
-         player.stop();
-         player.reset();
-         player.release();
-         player = null;
          WifiLocker.unlock();
+         if ( player.isPlaying() )
+            player.stop();
+         player.reset();
+         // player.release();
+         // player = null;
       }
 
       // Kill or keep notification...
@@ -286,8 +306,6 @@ public class IntentPlayer extends Service
 
    private int pause()
    {
-      Counter.time_passes();
-
       if ( player != null && player.isPlaying() )
       {
          player.pause();
@@ -299,8 +317,6 @@ public class IntentPlayer extends Service
 
    private int restart()
    {
-      Counter.time_passes();
-
       if ( player != null && ! player.isPlaying() )
       {
          player.start();
@@ -339,7 +355,7 @@ public class IntentPlayer extends Service
 
    public boolean onInfo(MediaPlayer player, int what, int extra)
    {
-      log("onInfo: ", ""+what);
+      log("Info: ", ""+what);
       String msg = "Buffering: " + what;
       switch (what)
       {
@@ -386,12 +402,40 @@ public class IntentPlayer extends Service
    }
 
    /* ********************************************************************
+    * On completion listener...
+    *
+    * This should only be called if there is an error with the stream.  So
+    * we'll try restarting it, but only a limited number of times.
+    */
+
+   private static final int restarts_max = 3;
+   private static int restarts_now = 0;
+   private static int restarts_cnt = 0;
+
+   private void fresh_launch()
+   {
+      restarts_now = Counter.now();
+      restarts_cnt = restarts_max;
+      log("Completion/Fresh start: ", ""+restarts_cnt);
+   }
+
+   public void onCompletion(MediaPlayer a_player)
+   {
+      if ( player == a_player && 0 < restarts_cnt && url != null )
+      {
+         log("Completion/Restarting: ", ""+restarts_cnt);
+         play(url,restarts_now);
+         restarts_now = Counter.now();
+         restarts_cnt -= 1;
+      }
+   }
+
+   /* ********************************************************************
     * Audio focus listeners...
     */
 
    public void onAudioFocusChange(int change)
    {
-      Counter.time_passes();
       log("onAudioFocusChange: ", ""+change);
 
       if ( player != null )
