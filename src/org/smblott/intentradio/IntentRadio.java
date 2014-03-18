@@ -41,20 +41,19 @@ public class IntentRadio extends Activity
          protected Spanned doInBackground(TextView... v)
          {
             view = v[0];
-            String file = ReadRawTextFile.read(getApplicationContext(),R.raw.message);
-
-            String version = getString(R.string.version);
-            version = "<p>Version: " + version + "<br>\n";
-
-            String build_date = Build.getBuildDate(context);
-            build_date = "Build: " + build_date + "\n</p>\n";
-
-            return Html.fromHtml(file + version + build_date );
+            return Html.fromHtml(
+                    ReadRawTextFile.read(getApplicationContext(),R.raw.message) 
+                  + "<p>Version: " + getString(R.string.version) + "<br>\n" 
+                  + "Build: " + Build.getBuildDate(context) + "\n</p>\n"
+                  );
          }
 
          @Override
          protected void onPostExecute(Spanned html)
-            { view.setText(html); }
+         {
+            if ( ! isCancelled() )
+               view.setText(html);
+         }
 
       }.execute(view);
    }
@@ -98,13 +97,20 @@ public class IntentRadio extends Activity
          @Override
          protected void onPostExecute(String error)
          {
-            if ( error == null )
+            // TODO: Checking whether the task has been cancelled is not
+            // sufficient.  Must also check whether activity has been
+            // destroyed.
+            //
+            if ( ! isCancelled() )
             {
-               toast("Project file installed...\n\n/sdcard/" + project_file);
-               toast("Now import this project into Tasker.");
+               if ( error == null )
+               {
+                  toast("Project file installed...\n\n/sdcard/" + project_file);
+                  toast("Next, import this project into Tasker.");
+               }
+               else
+                  toast("Install error:\n" + error + "\n\n/sdcard/" + project_file);
             }
-            else
-               toast("Install error:\n" + error + "\n\n/sdcard/" + project_file);
          }
 
       }.execute();
