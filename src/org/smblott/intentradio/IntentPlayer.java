@@ -443,7 +443,7 @@ public class IntentPlayer extends Service
    @Override
    public void onCompletion(MediaPlayer a_player)
    {
-      if ( player != null && player == a_player && 0 < restart_cnt )
+      if ( 0 < restart_cnt )
       {
          log("Completion, attempt restart: ", "now="+restart_now, " cnt="+restart_cnt);
          restart_cnt -= 1;
