@@ -218,6 +218,14 @@ public class IntentPlayer extends Service
       else
          log("Re-using existing player.");
 
+      int focus = audio_manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+      if ( focus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
+         return stop("Failed to get audio focus!");
+
+      WifiLocker.lock(context, app_name_long);
+      startForeground(note_id, note);
+      log("Connecting...");
+
       on_first_launch();
       return play_launch(url);
    }
@@ -241,14 +249,6 @@ public class IntentPlayer extends Service
    {
       last_launch_url = url;
       log("Launching: ", url);
-
-      int focus = audio_manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-      if ( focus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
-         return stop("Failed to get audio focus!");
-
-      WifiLocker.lock(context, app_name_long);
-      startForeground(note_id, note);
-      log("Connecting...");
 
       try
       {
@@ -275,6 +275,8 @@ public class IntentPlayer extends Service
    {
       if ( text != null )
          log(text);
+
+      audio_manager.abandonAudioFocus(this);
 
       // Time moves on...
       //
@@ -447,6 +449,7 @@ public class IntentPlayer extends Service
       {
          log("Completion, attempt restart: ", "now="+restart_now, " cnt="+restart_cnt);
          restart_cnt -= 1;
+         notificate("Re-connecting...");
          play_relaunch(restart_now);
       }
       else
