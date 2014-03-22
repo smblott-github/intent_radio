@@ -171,9 +171,21 @@ public class IntentPlayer extends Service
    private int play(String url)
    {
       stop();
+      toast(name);
 
       if ( url == null )
          { toast("No URL."); return done(); }
+
+      int focus = audio_manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+      if ( focus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
+         return stop("Failed to get audio focus!");
+
+      builder.setOngoing(true).setContentText("Connecting...");
+      note = builder.build();
+
+      WifiLocker.lock(context, app_name_long);
+      startForeground(note_id, note);
+      log("Connecting...");
 
       // /////////////////////////////////////////////////////////////////
       // Playlists...
@@ -187,6 +199,7 @@ public class IntentPlayer extends Service
       if ( pltask != null )
       {
          log("Playlist: ", url);
+         notificate("Fetching playlist...");
          pltask.execute(url);
          return done();
       }
@@ -195,13 +208,9 @@ public class IntentPlayer extends Service
       // Set up media player...
 
       log("Play: ", url);
-      toast(name);
 
       if ( play_disabled )
          return stop();
-
-      builder.setOngoing(true).setContentText("Connecting...");
-      note = builder.build();
 
       if ( player == null )
       {
@@ -217,14 +226,6 @@ public class IntentPlayer extends Service
       }
       else
          log("Re-using existing player.");
-
-      int focus = audio_manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-      if ( focus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
-         return stop("Failed to get audio focus!");
-
-      WifiLocker.lock(context, app_name_long);
-      startForeground(note_id, note);
-      log("Connecting...");
 
       on_first_launch();
       return play_launch(url);
@@ -249,6 +250,7 @@ public class IntentPlayer extends Service
    {
       last_launch_url = url;
       log("Launching: ", url);
+      notificate("Connecting...");
 
       try
       {
