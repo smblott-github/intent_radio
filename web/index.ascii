@@ -190,6 +190,7 @@ Finally, _Intent Radio_ is built for Android API level 16, so only for 4.1
 ****
 - Add button to install sample Tasker project.
 - Improved (extended) the sample Tasker project.
+- Re-use media player, and better notifications.
 ****
 
 .Version 1.6:
