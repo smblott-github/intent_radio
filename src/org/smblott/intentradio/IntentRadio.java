@@ -183,18 +183,7 @@ public class IntentRadio extends Activity
     */
 
    public void clip_url(View view)
-      { clip(url); }
-
-   private static void clip(String text)
-   {
-      if ( text != null )
-      {
-         ClipboardManager clip_manager = (ClipboardManager) context.getSystemService(CLIPBOARD_SERVICE);
-         ClipData clip_data = ClipData.newPlainText("text", text);
-         clip_manager.setPrimaryClip(clip_data);
-         toast("Clipboard:\n" + text);
-      }
-   }
+      { Clipper.clip(context,url); }
 
    /* ********************************************************************
     * Toasts...

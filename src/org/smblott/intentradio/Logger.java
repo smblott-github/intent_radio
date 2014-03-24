@@ -31,6 +31,9 @@ public class Logger
 
    public static void init(Context a_context)
    {
+      if ( context != null )
+         return;
+
       context = a_context;
       name = context.getString(R.string.app_name);
 
