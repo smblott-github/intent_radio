@@ -28,6 +28,40 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
          </intent-filter>
+
+         <!-- /////////////////////////////
+              Implicit Intents -->
+
+         <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="http" android:mimeType="audio/*" />
+         </intent-filter>
+         <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="http" android:pathPattern=".*\\.mp3" />
+         </intent-filter>
+         <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="http" android:pathPattern=".*\\.aac" />
+         </intent-filter>
+         <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="http" android:pathPattern=".*\\.pls" />
+         </intent-filter>
+         <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="http" android:pathPattern=".*\\.m3u" />
+         </intent-filter>
       </activity>
 
       <activity android:name=".ClipButtons" />
@@ -47,6 +81,7 @@
             <action android:name="org.smblott.intentradio.PAUSE" />
             <action android:name="org.smblott.intentradio.RESTART" />
          </intent-filter>
+
       </receiver>
 
    <!-- *****************************************************************

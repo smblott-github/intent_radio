@@ -28,6 +28,22 @@ public class IntentRadio extends Activity
       context = getApplicationContext();
       Logger.init(context);
 
+      // Handle implicit intents...
+      //
+      Intent intent = getIntent();
+      String action = intent.getAction();
+      if ( action.equals("android.intent.action.VIEW") )
+      {
+         Intent msg = new Intent(context, IntentPlayer.class);
+         msg.putExtra("action", getString(R.string.intent_play));
+         msg.putExtra("url", intent.getDataString());
+         context.startService(msg);
+         finish();
+         return;
+      }
+
+      // Handle app activity...
+      //
       draw_task = null;
       install_task = null;
 
