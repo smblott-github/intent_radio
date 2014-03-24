@@ -18,7 +18,7 @@ public class IntentRadio extends Activity
 {
    private static Context context = null;
 
-   private static AsyncTask<TextView, Void, Spanned> draw_task = null;
+   private static AsyncTask<Object, Void, Spanned> draw_task = null;
    private static AsyncTask<Void, Void, String> install_task = null;
 
    @Override
@@ -27,20 +27,6 @@ public class IntentRadio extends Activity
       super.onCreate(savedInstanceState);
       context = getApplicationContext();
       Logger.init(context);
-
-      // Handle implicit intents...
-      //
-      Intent intent = getIntent();
-      String action = intent.getAction();
-      if ( action.equals("android.intent.action.VIEW") )
-      {
-         Intent msg = new Intent(context, IntentPlayer.class);
-         msg.putExtra("action", getString(R.string.intent_play));
-         msg.putExtra("url", intent.getDataString());
-         context.startService(msg);
-         finish();
-         return;
-      }
 
       // Handle app activity...
       //
@@ -55,16 +41,25 @@ public class IntentRadio extends Activity
 
       // Read file contents and build date for main screen asyncronously...
       //
-      draw_task = new AsyncTask<TextView, Void, Spanned>()
+      draw_task = new AsyncTask<Object, Void, Spanned>()
       {
          private TextView view = null;
+         private Integer id = null;
+         private String url = null;
 
          @Override
-         protected Spanned doInBackground(TextView... v)
+         protected Spanned doInBackground(Object... args)
          {
-            view = v[0];
+            view = (TextView) args[0];
+            id = (Integer) args[1];
+            url = (String) args[2];
+
+            String text = ReadRawTextFile.read(getApplicationContext(),id.intValue());
+            if ( url != null )
+               text = text.replace("REPLACE_URL", url);
+
             return Html.fromHtml(
-                    ReadRawTextFile.read(getApplicationContext(),R.raw.message) 
+                    text 
                   + "<p>\n"
                   + "Version: " + getString(R.string.version) + "<br>\n" 
                   + "Build: " + Build.getBuildDate(context) + "\n"
@@ -80,7 +75,23 @@ public class IntentRadio extends Activity
          }
 
       };
-      draw_task.execute(view);
+
+      Intent intent = getIntent();
+      String action = intent.getAction();
+      if ( action.equals("android.intent.action.VIEW") )
+      {
+         Intent msg = new Intent(context, IntentPlayer.class);
+         String url = intent.getDataString();
+         msg.putExtra("action", getString(R.string.intent_play));
+         msg.putExtra("url", url);
+         context.startService(msg);
+         draw_task.execute(view, R.raw.playing, url);
+         return;
+      }
+      else
+      {
+         draw_task.execute(view, R.raw.message, null);
+      }
    }
 
    /* ********************************************************************
