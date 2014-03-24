@@ -12,7 +12,7 @@ public class Clipper extends Logger
       if ( text == null || context == null )
          return;
 
-      Logger.init(context);
+      init(context);
 
       ClipboardManager clip_manager = (ClipboardManager) context.getSystemService(context.CLIPBOARD_SERVICE);
       ClipData clip_data = ClipData.newPlainText("text", text);
