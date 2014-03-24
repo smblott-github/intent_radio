@@ -50,7 +50,7 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
    //
    protected void onPostExecute(String url) {
       if ( url != null && ! isCancelled() )
-         player.play(url, then);
+         player.play_launch(url, then);
    }
 
    public boolean finished()

@@ -188,23 +188,6 @@ public class IntentPlayer extends Service
       log("Connecting...");
 
       // /////////////////////////////////////////////////////////////////
-      // Playlists...
-
-      if ( url.endsWith(PlaylistPls.suffix) )
-         pltask = new PlaylistPls(this);
-
-      if ( url.endsWith(PlaylistM3u.suffix) )
-         pltask = new PlaylistM3u(this);
-
-      if ( pltask != null )
-      {
-         log("Playlist: ", url);
-         notificate("Fetching playlist...");
-         pltask.execute(url);
-         return done();
-      }
-
-      // /////////////////////////////////////////////////////////////////
       // Set up media player...
 
       log("Play: ", url);
@@ -228,6 +211,27 @@ public class IntentPlayer extends Service
          log("Re-using existing player.");
 
       on_first_launch();
+
+      // /////////////////////////////////////////////////////////////////
+      // Playlists...
+
+      if ( url.endsWith(PlaylistPls.suffix) )
+         pltask = new PlaylistPls(this);
+
+      if ( url.endsWith(PlaylistM3u.suffix) )
+         pltask = new PlaylistM3u(this);
+
+      if ( pltask != null )
+      {
+         log("Playlist: ", url);
+         notificate("Fetching playlist...");
+         pltask.execute(url);
+         return done();
+      }
+
+      // /////////////////////////////////////////////////////////////////
+      // Ready...
+
       return play_launch(url);
    }
 
@@ -237,16 +241,20 @@ public class IntentPlayer extends Service
 
    private static String last_launch_url = null;
 
-   private void play_relaunch(int now)
+   private void play_relaunch(int then)
    {
-      if ( last_launch_url != null && Counter.still(now) ) 
-      {
-         log("Relaunch: ", last_launch_url);
-         play_launch(last_launch_url);
-      }
+      log("Relaunch.");
+      play_launch(last_launch_url, then);
    }
 
-   private int play_launch(String url)
+   public int play_launch(String url, int then)
+   {
+      if ( url != null && Counter.still(then) )
+         return play_launch(url);
+      return stop();
+   }
+
+   public int play_launch(String url)
    {
       last_launch_url = url;
       log("Launching: ", url);
