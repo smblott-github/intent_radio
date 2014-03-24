@@ -76,12 +76,14 @@ public class IntentRadio extends Activity
 
       };
 
+      // Handle intent...
+      //
       Intent intent = getIntent();
       String action = intent.getAction();
-      if ( action.equals("android.intent.action.VIEW") )
+      if ( action.equals(Intent.ACTION_VIEW) )
       {
-         Intent msg = new Intent(context, IntentPlayer.class);
          String url = intent.getDataString();
+         Intent msg = new Intent(context, IntentPlayer.class);
          msg.putExtra("action", getString(R.string.intent_play));
          msg.putExtra("url", url);
          context.startService(msg);
@@ -89,9 +91,7 @@ public class IntentRadio extends Activity
          return;
       }
       else
-      {
          draw_task.execute(view, R.raw.message, null);
-      }
    }
 
    /* ********************************************************************
