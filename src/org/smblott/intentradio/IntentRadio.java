@@ -14,12 +14,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+
 public class IntentRadio extends Activity
 {
    private static Context context = null;
 
-   private static AsyncTask<Object, Void, Spanned> draw_task = null;
-   private static AsyncTask<Void, Void, String> install_task = null;
+   private AsyncTask<Object, Void, Spanned> draw_task = null;
+   private AsyncTask<Void, Void, String> install_task = null;
+   private String url = null;
 
    @Override
    public void onCreate(Bundle savedInstanceState)
@@ -82,16 +86,21 @@ public class IntentRadio extends Activity
       String action = intent.getAction();
       if ( action.equals(Intent.ACTION_VIEW) )
       {
-         String url = intent.getDataString();
+         url = intent.getDataString();
          Intent msg = new Intent(context, IntentPlayer.class);
          msg.putExtra("action", getString(R.string.intent_play));
          msg.putExtra("url", url);
          context.startService(msg);
+         findViewById(R.id.clip_url).setVisibility(View.VISIBLE);
          draw_task.execute(view, R.raw.playing, url);
          return;
       }
       else
+      {
+         findViewById(R.id.clip_buttons).setVisibility(View.VISIBLE);
+         findViewById(R.id.install_tasker).setVisibility(View.VISIBLE);
          draw_task.execute(view, R.raw.message, null);
+      }
    }
 
    /* ********************************************************************
@@ -167,6 +176,24 @@ public class IntentRadio extends Activity
 
       };
       install_task.execute();
+   }
+
+   /* ********************************************************************
+    * Clip url...
+    */
+
+   public void clip_url(View view)
+      { clip(url); }
+
+   private static void clip(String text)
+   {
+      if ( text != null )
+      {
+         ClipboardManager clip_manager = (ClipboardManager) context.getSystemService(CLIPBOARD_SERVICE);
+         ClipData clip_data = ClipData.newPlainText("text", text);
+         clip_manager.setPrimaryClip(clip_data);
+         toast("Clipboard:\n" + text);
+      }
    }
 
    /* ********************************************************************

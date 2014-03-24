@@ -12,6 +12,7 @@
         android:layout_alignParentBottom="true" >
        <Button 
            android:id="@+id/clip_buttons" 
+           android:visibility="gone"
            android:layout_width="fill_parent" 
            android:layout_height="wrap_content" 
            android:text="Copy Intents to Clipboard"
@@ -20,11 +21,22 @@
        </Button>
        <Button 
            android:id="@+id/install_tasker" 
+           android:visibility="gone"
            android:layout_width="fill_parent" 
            android:layout_height="wrap_content" 
            android:text="Install Sample Tasker Project"
            android:onClick="install_tasker"
            android:layout_below="@+id/clip_buttons"
+           android:layout_alignParentLeft="true" >
+       </Button>
+       <Button 
+           android:id="@+id/clip_url" 
+           android:visibility="gone"
+           android:layout_width="fill_parent" 
+           android:layout_height="wrap_content" 
+           android:text="Clip URL to Clipboard"
+           android:onClick="clip_url"
+           android:layout_below="@+id/install_tasker"
            android:layout_alignParentLeft="true" >
        </Button>
     </RelativeLayout>
