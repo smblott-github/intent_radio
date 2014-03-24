@@ -30,7 +30,6 @@
          </intent-filter>
 
          <!-- /////////////////////////////
-              Implicit Intents -->
 
          <intent-filter>
             <action android:name="android.intent.action.VIEW" />
@@ -62,6 +61,7 @@
             <category android:name="android.intent.category.BROWSABLE" />
             <data android:scheme="http" android:pathPattern=".*\\.m3u" />
          </intent-filter>
+              Implicit Intents -->
       </activity>
 
       <activity android:name=".ClipButtons" />
