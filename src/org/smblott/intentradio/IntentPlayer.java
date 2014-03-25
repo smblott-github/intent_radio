@@ -51,6 +51,8 @@ public class IntentPlayer extends Service
    private static String intent_stop = null;
    private static String intent_pause = null;
    private static String intent_restart = null;
+   private static String default_url = null;
+   private static String default_name = null;
 
    private static String name = null;
    private static String url = null;
@@ -77,6 +79,8 @@ public class IntentPlayer extends Service
       intent_stop = getString(R.string.intent_stop);
       intent_pause = getString(R.string.intent_pause);
       intent_restart = getString(R.string.intent_restart);
+      default_url = getString(R.string.default_url);
+      default_name = getString(R.string.default_name);
 
       note_manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
       pending = PendingIntent.getBroadcast(context, 0, new Intent(intent_stop), 0);
@@ -138,8 +142,8 @@ public class IntentPlayer extends Service
 
       if ( action.equals(intent_play) )
       {
-         url = getString(R.string.default_url);
-         name = getString(R.string.default_name);
+         url =  default_url;
+         name = default_name;
 
          if ( intent.hasExtra("url") )
          {
@@ -242,10 +246,7 @@ public class IntentPlayer extends Service
    private static String last_launch_url = null;
 
    private void play_relaunch(int then)
-   {
-      log("Relaunch.");
-      play_launch(last_launch_url, then);
-   }
+      { log("Relaunch."); play_launch(last_launch_url, then); }
 
    public int play_launch(String url, int then)
    {
@@ -287,6 +288,7 @@ public class IntentPlayer extends Service
          log(text);
 
       audio_manager.abandonAudioFocus(this);
+      WifiLocker.unlock();
 
       // Time moves on...
       //
@@ -308,7 +310,6 @@ public class IntentPlayer extends Service
       if ( player != null )
       {
          log("Stopping player...");
-         WifiLocker.unlock();
          if ( player.isPlaying() )
             player.stop();
          player.reset();
