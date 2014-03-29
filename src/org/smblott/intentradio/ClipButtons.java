@@ -16,6 +16,7 @@ public class ClipButtons extends Activity
    private static String intent_pause = null;
    private static String intent_restart = null;
    private static String intent_state_request = null;
+   private static String intent_state = null;
 
    private static Context context = null;
 
@@ -31,6 +32,7 @@ public class ClipButtons extends Activity
       intent_pause = getString(R.string.intent_pause);
       intent_restart = getString(R.string.intent_restart);
       intent_state_request = getString(R.string.intent_state_request);
+      intent_state = getString(R.string.intent_state);
 
       setContentView(R.layout.buttons);
    }
@@ -44,6 +46,7 @@ public class ClipButtons extends Activity
    public static void clip_pause(View view)         { Clipper.clip(context,intent_pause); }
    public static void clip_restart(View view)       { Clipper.clip(context,intent_restart); }
    public static void clip_state_request(View view) { Clipper.clip(context,intent_state_request); }
+   public static void clip_state(View view)         { Clipper.clip(context,intent_state); }
 
    /* ********************************************************************
     * Utilities...
