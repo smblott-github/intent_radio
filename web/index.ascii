@@ -103,8 +103,6 @@ Both extras are strings, and both are optional.
 If `url` is omitted, then Intent Radio plays the previously-playing
 station.  If there is no such station, then it plays BBC Radio 4 (because,
 well, why not?).
-
-The "previously-plying station" does _not_ survive service or service restarts.
 ****
 
 .`org.smblott.intentradio.STOP`
