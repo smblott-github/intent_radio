@@ -125,13 +125,13 @@ public class IntentPlayer extends Service
    public int onStartCommand(Intent intent, int flags, int startId)
    {
       if ( intent == null || ! intent.hasExtra("action") )
-         return done();
+         return done(null);
 
       if ( intent.hasExtra("debug") )
          Logger.state(intent.getStringExtra("debug"));
 
       if ( ! Counter.still(intent.getIntExtra("counter", Counter.now())) )
-         return done();
+         return done(null);
 
       String action = intent.getStringExtra("action");
       log("Action: ", action);
@@ -159,7 +159,7 @@ public class IntentPlayer extends Service
       }
 
       log("unknown action: ", action);
-      return done();
+      return done(null);
    }
 
    /* ********************************************************************
@@ -178,7 +178,7 @@ public class IntentPlayer extends Service
       toast(name);
 
       if ( url == null )
-         { toast("No URL."); return done(); }
+         { toast("No URL."); return done(null); }
 
       int focus = audio_manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
       if ( focus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
@@ -230,7 +230,7 @@ public class IntentPlayer extends Service
          log("Playlist: ", url);
          notificate("Fetching playlist...");
          pltask.execute(url);
-         return done();
+         return done(State.STATE_BUFFER);
       }
 
       // /////////////////////////////////////////////////////////////////
@@ -269,7 +269,7 @@ public class IntentPlayer extends Service
       catch (Exception e)
          { return stop("Initialisation error."); }
 
-      return done();
+      return done(State.STATE_BUFFER);
    }
 
    /* ********************************************************************
@@ -326,7 +326,7 @@ public class IntentPlayer extends Service
       else
          notificate(text,false);
 
-      return done();
+      return done(State.STATE_STOP);
    }
 
    /* ********************************************************************
@@ -341,7 +341,7 @@ public class IntentPlayer extends Service
          notificate("Paused.");
       }
 
-      return done();
+      return done(State.STATE_PAUSE);
    }
 
    private int restart()
@@ -350,17 +350,21 @@ public class IntentPlayer extends Service
       {
          player.start();
          notificate();
+         return done(State.STATE_PLAY);
       }
 
-      return done();
+      return done(State.STATE_STOP);
    }
 
    /* ********************************************************************
     * All onStartCommand invocations end here...
     */
 
-   int done()
-      { return START_NOT_STICKY; }
+   private int done(String state)
+   {
+      State.set_state(context, state);
+      return START_NOT_STICKY;
+   }
 
    /* ********************************************************************
     * Listeners...
@@ -374,6 +378,7 @@ public class IntentPlayer extends Service
          log("Prepared, starting....");
          player.start();
          notificate();
+         State.set_state(context, State.STATE_PLAY);
       }
    }
 
@@ -387,32 +392,33 @@ public class IntentPlayer extends Service
    @Override
    public boolean onInfo(MediaPlayer player, int what, int extra)
    {
-      log("Info: ", ""+what);
-      String msg = "Buffering: " + what;
       switch (what)
       {
          case MediaPlayer.MEDIA_INFO_BUFFERING_END:
-            log(msg, "/end");
+            log("Buffering/end");
             notificate();
-            return true;
-
-         // not available in API 16...
-         // case MediaPlayer.MEDIA_ERROR_UNSUPPORTED:
-         //    msg += "/media unsupported"; break;
+            State.set_state(context, State.STATE_PLAY);
+            break;
 
          case MediaPlayer.MEDIA_INFO_BUFFERING_START:
-            msg += "/start..."; break;
+            log("Buffering/start");
+            notificate("Buffering...");
+            State.set_state(context, State.STATE_BUFFER);
+            break;
+
          case MediaPlayer.MEDIA_INFO_BAD_INTERLEAVING:
-            msg += "/bad interleaving"; break;
+            log("MEDIA_INFO_BAD_INTERLEAVING");
+            State.set_state(context, State.STATE_ERROR);
+            break;
          case MediaPlayer.MEDIA_INFO_NOT_SEEKABLE:
-            msg += "/media not seekable"; break;
+            log("MEDIA_INFO_NOT_SEEKABLE");
+            // State.set_state(context, State.STATE_ERROR);
+            break;
          case MediaPlayer.MEDIA_INFO_METADATA_UPDATE:
-            msg += "/media info update"; break;
-         default:
-            return true;
+            log("MEDIA_INFO_METADATA_UPDATE");
+            // State.set_state(context, State.STATE_ERROR);
+            break;
       }
-      notificate(msg);
-      toast(msg);
       return true;
    }
 
@@ -484,6 +490,7 @@ public class IntentPlayer extends Service
                restart();
                player.setVolume(1.0f, 1.0f);
                notificate();
+               State.set_state(context, State.STATE_PLAY);
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS:
@@ -495,12 +502,14 @@ public class IntentPlayer extends Service
                log("Audio focus: AUDIOFOCUS_LOSS_TRANSIENT");
                pause();
                notificate("Focus lost, paused...");
+               State.set_state(context, State.STATE_PAUSE);
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
                log("Audio focus: AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
                player.setVolume(0.1f, 0.1f);
                notificate("Focus lost, quiet mode...");
+               State.set_state(context, State.STATE_DIM);
                break;
 
             default:
