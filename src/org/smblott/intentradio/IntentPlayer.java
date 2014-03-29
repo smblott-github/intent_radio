@@ -3,6 +3,8 @@ package org.smblott.intentradio;
 import android.app.Service;
 import android.content.Intent;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.StrictMode;
@@ -39,8 +41,9 @@ public class IntentPlayer extends Service
     * Globals...
     */
 
-   private static final boolean play_disabled = false;
    private static final int note_id = 100;
+   private static final String preference_file = "state";
+   private static SharedPreferences settings = null;
 
    private static Context context = null;
    private static PendingIntent pending = null;
@@ -83,6 +86,10 @@ public class IntentPlayer extends Service
       intent_state_request = context.getString(R.string.intent_state_request);
       default_url = getString(R.string.default_url);
       default_name = getString(R.string.default_name);
+
+      settings = getSharedPreferences(preference_file, context.MODE_PRIVATE);
+      url = settings.getString("url", default_url);
+      name = settings.getString("name", default_name);
 
       note_manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
       pending = PendingIntent.getBroadcast(context, 0, new Intent(intent_stop), 0);
@@ -170,6 +177,11 @@ public class IntentPlayer extends Service
          url = intent.getStringExtra("url");
          name = intent.getStringExtra("name");
 
+         Editor editor = settings.edit();
+         editor.putString("url", url);
+         editor.putString("name", name);
+         editor.commit();
+
          log("Name: ", name);
          log("URL: ", url);
          return play(url);
@@ -215,9 +227,6 @@ public class IntentPlayer extends Service
       // Set up media player...
 
       log("Play: ", url);
-
-      if ( play_disabled )
-         return stop();
 
       if ( player == null )
       {
