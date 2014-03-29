@@ -14,7 +14,7 @@
 
 <p>
    Thereafter, including after reboots, it should not be necessary the run this
-   app at all.
+   app at all.  Its service runs in the background.
 </p>
 
 <h3>Media Player</h3>
@@ -36,7 +36,7 @@
    delay.  Please be patient!
 </p>
 
-<h3>Broadcast Intents</h3>
+<h3>Broadcast Intents Received by IR</h3>
 
 <blockquote>
 <p>
@@ -86,6 +86,47 @@
 <p>
    Restart playback, but only if paused.
    <br>No extras.
+</p>
+</blockquote>
+
+<blockquote>
+<p>
+   <tt>org.smblott.intentradio.STATE_REQUEST</tt>
+</p>
+
+<p>
+   Request that Intent Radio broadcast its state (see below).
+   <br>No extras.
+</p>
+
+<p>
+   This intent is not <i>required</i> to receive state updates.
+   Intent Radio broadcasts its state automatically whenever that state changes.
+</p>
+</blockquote>
+
+<h3>Broadcast Intents Sent by IR</h3>
+
+<blockquote>
+<p>
+   <tt>org.smblott.intentradio.STATE</tt>
+</p>
+
+<p>
+   Informs listeners (possibly Tasker) of changes in state.
+   Extras: <br>
+   <tt>state</tt>: the current state (see below)<br>
+   <tt>url</tt>: the current url<br>
+   <tt>name</tt>: the current name
+</p>
+<p>
+   The state is one
+   <tt>stop</tt>, 
+   <tt>play</tt>, 
+   <tt>play/buffering</tt>, 
+   <tt>play/pause</tt>, 
+   <tt>play/dim</tt> or
+   <tt>error</tt>. 
 </p>
 </blockquote>
 
