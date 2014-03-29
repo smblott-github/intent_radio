@@ -46,7 +46,9 @@ public class IntentPlayer extends Service
    private static SharedPreferences settings = null;
 
    private static Context context = null;
-   private static PendingIntent pending = null;
+   private static PendingIntent pending_stop = null;
+   private static PendingIntent pending_play = null;
+   private static PendingIntent pending_restart = null;
 
    private static String app_name = null;
    private static String app_name_long = null;
@@ -92,7 +94,9 @@ public class IntentPlayer extends Service
       name = settings.getString("name", default_name);
 
       note_manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-      pending = PendingIntent.getBroadcast(context, 0, new Intent(intent_stop), 0);
+      pending_stop = PendingIntent.getBroadcast(context, 0, new Intent(intent_stop), 0);
+      pending_play = PendingIntent.getBroadcast(context, 0, new Intent(intent_play), 0);
+      pending_restart = PendingIntent.getBroadcast(context, 0, new Intent(intent_restart), 0);
 
       audio_manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
@@ -100,7 +104,7 @@ public class IntentPlayer extends Service
          new Notification.Builder(context)
             .setSmallIcon(R.drawable.intent_radio)
             .setPriority(Notification.PRIORITY_HIGH)
-            .setContentIntent(pending)
+            .setContentIntent(pending_stop)
             .setContentTitle(app_name_long)
             // not available in API 16...
             // .setShowWhen(false)
@@ -216,7 +220,10 @@ public class IntentPlayer extends Service
       if ( focus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
          return stop("Failed to get audio focus!");
 
-      builder.setOngoing(true).setContentText("Connecting...");
+      builder
+         .setOngoing(true)
+         .setContentIntent(pending_stop)
+         .setContentText("Connecting...");
       note = builder.build();
 
       WifiLocker.lock(context, app_name_long);
@@ -305,8 +312,8 @@ public class IntentPlayer extends Service
     * Stop...
     */
 
-   private int stop(boolean notify_state)
-      { return stop(true,null,notify_state); }
+   private int stop(boolean send_state)
+      { return stop(true,null,send_state); }
 
    private int stop()
       { return stop(true,null,true); }
@@ -314,10 +321,12 @@ public class IntentPlayer extends Service
    private int stop(String msg)
       { return stop(false,msg,true); }
 
-   private int stop(boolean kill_note, String text, boolean notify_state)
+   private int stop(boolean kill_note, String text, boolean send_state)
    {
+      log("Stopping kill_note: ", ""+kill_note);
+      log("Stopping send_state: ", ""+send_state);
       if ( text != null )
-         log(text);
+         log("Stopping: ", text);
 
       audio_manager.abandonAudioFocus(this);
       WifiLocker.unlock();
@@ -349,16 +358,20 @@ public class IntentPlayer extends Service
          // player = null;
       }
 
-      // Kill or keep notification...
+      // Handle notification...
       //
-      stopForeground(true);
-
       if ( kill_note || text == null || text.length() == 0 )
+      {
+         stopForeground(true);
          note = null;
+      }
       else
+      {
+         log("Keeping (now-)dismissable note: ", text);
          notificate(text,false);
+      }
 
-      return done(notify_state ? State.STATE_STOP : null);
+      return done(send_state ? State.STATE_STOP : null);
    }
 
    /* ********************************************************************
@@ -366,26 +379,60 @@ public class IntentPlayer extends Service
     */
 
    private int pause()
-   {
-      if ( player != null && player.isPlaying() )
-      {
-         player.pause();
-         notificate("Paused.");
-      }
+      { return pause("Paused..."); }
 
+   private int pause(String msg)
+   {
+      if ( player == null )
+         return done(State.STATE_STOP);
+
+      if ( ! player.isPlaying() )
+         return done(null);
+
+      new Later() {
+         @Override
+         public void finish()
+            { stop(false,"Paused. Click to restart.",true); }
+      }.execute();
+
+      notificate(msg);
+      player.pause();
       return done(State.STATE_PAUSE);
    }
 
    private int restart()
    {
-      if ( player != null && ! player.isPlaying() )
+      if ( player == null || State.is(State.STATE_STOP) || State.is(State.STATE_ERROR)  )
       {
-         player.start();
-         notificate();
-         return done(State.STATE_PLAY);
+         try
+            { pending_play.send(); }
+         catch (Exception e)
+            { log("Failed to deliver pending_play from restart()."); }
+         return done(null);
       }
 
-      return done(State.STATE_STOP);
+      if ( player.isPlaying() )
+         return done(null);
+
+      if ( ! State.is(State.STATE_PAUSE) )
+         return done(null);
+
+      int focus = audio_manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+      if ( focus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
+      {
+         toast("Intent Radio:\nFailed to (re-)acquire audio focus.");
+         return done(null);
+      }
+
+      // Time must pass. Because if we were paused, then
+      // there will be a thread out there waiting to stop().
+      //
+      startForeground(note_id, note);
+      notificate();
+      Counter.time_passes();
+      on_first_launch();
+      player.start();
+      return done(State.STATE_PLAY);
    }
 
    /* ********************************************************************
@@ -519,22 +566,18 @@ public class IntentPlayer extends Service
          {
             case AudioManager.AUDIOFOCUS_GAIN:
                log("Audio focus: AUDIOFOCUS_GAIN");
-               restart();
                player.setVolume(1.0f, 1.0f);
-               notificate();
-               State.set_state(context, State.STATE_PLAY);
+               restart();
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS:
                log("Audio focus: AUDIOFOCUS_LOSS");
-               stop("Audio focus lost, streaming stopped.");
+               pause("Audio focus lost, paused...");
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                log("Audio focus: AUDIOFOCUS_LOSS_TRANSIENT");
-               pause();
-               notificate("Focus lost, paused...");
-               State.set_state(context, State.STATE_PAUSE);
+               pause("Audio focus lost, paused...");
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
@@ -566,9 +609,12 @@ public class IntentPlayer extends Service
       {
          note =
             builder
+               .setContentIntent(ongoing ? pending_stop : pending_restart)
                .setOngoing(ongoing)
                .setContentText(msg == null ? name : msg)
                .build();
+         log("Notificate: ", msg == null ? name : msg);
+         log("Notificate click: ", ""+(ongoing ? "stop" : "restart") );
          note_manager.notify(note_id, note);
       }
    }
