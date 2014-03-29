@@ -425,12 +425,16 @@ public class IntentPlayer extends Service
       }
 
       // Time must pass. Because if we were paused, then
-      // there will be a thread out there waiting to stop().
+      // there will be a thread out there waiting to stop() us.
+      //
+      Counter.time_passes();
+      // Because time passes, we better also move forward the relaunch() time
+      // stamp.
+      //
+      on_first_launch();
       //
       startForeground(note_id, note);
       notificate();
-      Counter.time_passes();
-      on_first_launch();
       player.start();
       return done(State.STATE_PLAY);
    }
