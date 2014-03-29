@@ -104,7 +104,7 @@ If `url` is omitted, then Intent Radio plays the previously-playing
 station.  If there is no such station, then it plays BBC Radio 4 (because,
 well, why not?).
 
-The "previously-plying station" does _not_ survive service restarts.
+The "previously-plying station" does _not_ survive service or service restarts.
 ****
 
 .`org.smblott.intentradio.STOP`
@@ -131,6 +131,7 @@ The "previously-plying station" does _not_ survive service restarts.
 - extras: none
 ****
 
+[[state]]
 .`org.smblott.intentradio.STATE`
 ****
 - this is broadcast by Intent Radio itself to inform listeners (such as Tasker) of its state
@@ -142,8 +143,17 @@ The "previously-plying station" does _not_ survive service restarts.
 These are all strings.
 
 The sample Tasker project includes a listener which sets the global Tasker
-variables `IRSTATE`, `IRURL` and `IRNAME` whenever such an intent is
+variables `%IRSTATE`, `%IRURL` and `%IRNAME` whenever such an intent is
 received.
+
+If you are not using the sample project (or have installed it and edited it
+to meet your own needs), then set up Tasker as follows:
+
+- Create a new Tasker profile: `event`/`System`/`Intent Received`.
+- Set `Action` to `org.smblott.intentradio.STATE`.
+- Within the associated task, the local variable `%state` is the current
+  state, `%url` the current URL, and `%name` the current name.  Assign these to
+  global variables of your choice, such as `%IRSTATE`, `%IRURL` and `%IRNAME`.
 ****
 
 .More Information
