@@ -138,13 +138,13 @@ public class IntentPlayer extends Service
    public int onStartCommand(Intent intent, int flags, int startId)
    {
       if ( intent == null || ! intent.hasExtra("action") )
-         return done(null);
+         return done();
 
       if ( intent.hasExtra("debug") )
          Logger.state(intent.getStringExtra("debug"));
 
       if ( ! Counter.still(intent.getIntExtra("counter", Counter.now())) )
-         return done(null);
+         return done();
 
       String action = intent.getStringExtra("action");
       log("Action: ", action);
@@ -194,11 +194,11 @@ public class IntentPlayer extends Service
       if ( action.equals(intent_state_request) )
       {
          State.get_state(context);
-         return done(null);
+         return done();
       }
 
       log("unknown action: ", action);
-      return done(null);
+      return done();
    }
 
    /* ********************************************************************
@@ -387,12 +387,12 @@ public class IntentPlayer extends Service
          return done(State.STATE_STOP);
 
       if ( ! player.isPlaying() )
-         return done(null);
+         return done();
 
       new Later() {
          @Override
          public void finish()
-            { stop(false,"Paused. Click to restart.",true); }
+            { stop(false,"Suspended. Click to restart.",true); }
       }.execute();
 
       notificate(msg);
@@ -408,20 +408,20 @@ public class IntentPlayer extends Service
             { pending_play.send(); }
          catch (Exception e)
             { log("Failed to deliver pending_play from restart()."); }
-         return done(null);
+         return done();
       }
 
       if ( player.isPlaying() )
-         return done(null);
+         return done();
 
       if ( ! State.is(State.STATE_PAUSE) )
-         return done(null);
+         return done();
 
       int focus = audio_manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
       if ( focus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
       {
          toast("Intent Radio:\nFailed to (re-)acquire audio focus.");
-         return done(null);
+         return done();
       }
 
       // Time must pass. Because if we were paused, then
@@ -438,6 +438,9 @@ public class IntentPlayer extends Service
    /* ********************************************************************
     * All onStartCommand invocations end here...
     */
+
+   private int done()
+      { return done(null); }
 
    private int done(String state)
    {
