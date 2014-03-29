@@ -126,8 +126,11 @@ well, why not?).
 [[state-request]]
 .`org.smblott.intentradio.STATE_REQUEST`
 ****
-- restart playback, if paused
+- request that Intent Radio broadcast its state (see below)
 - extras: none
+
+This intent is not _required_ to receive state updates.
+Intent Radio broadcasts its state automatically whenever its state changes.
 ****
 
 [[state]]
@@ -148,7 +151,7 @@ received.
 If you are not using the sample project (or have installed it and edited it
 to meet your own needs), then set up Tasker as follows:
 
-- Create a new Tasker profile: `event`/`System`/`Intent Received`.
+- Create a new Tasker profile: `event/System/Intent Received`.
 - Set `Action` to `org.smblott.intentradio.STATE`.
 - Within the associated task, the local variable `%state` is the current
   state, `%url` the current URL, and `%name` the current name.  Assign these to
