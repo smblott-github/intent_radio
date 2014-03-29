@@ -192,6 +192,9 @@ Finally, _Intent Radio_ is built for Android API level 16, so only for 4.1
 - Improved (extended) the sample Tasker project.
 - Re-use media player, and better notifications.
 - Handle implicit intents.
+- Broadcast state (can be tracked in Tasker).
+- Extend demo project to set Tasker global variables to broadcast state.
+- A PLAY request without a "url" plays last station, if possible.
 ****
 
 .Version 1.6:
