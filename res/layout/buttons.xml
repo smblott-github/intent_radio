@@ -49,5 +49,14 @@
         android:gravity="left"
         android:layout_margin="10dp" >
     </Button>
+    <Button 
+        android:id="@+id/clip_state_request" 
+        android:layout_width="fill_parent" 
+        android:layout_height="wrap_content"
+        android:onClick="clip_state_request"
+        android:text="Copy ...STATE_REQUEST Intent"
+        android:gravity="left"
+        android:layout_margin="10dp" >
+    </Button>
     
 </LinearLayout>
