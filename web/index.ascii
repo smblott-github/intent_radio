@@ -98,9 +98,13 @@ _Intent Radio_ supports the following broadcast intents...
 ** `url` -- the URL to play
 ** `name` -- the display name for the station
 
-Both extras are strings, and both are optional.  If `name` is omitted,
-then the URL is used as the display name.  If `url` is omitted, then
-a built-in URL for BBC Radio 4 is used.
+Both extras are strings, and both are optional.
+
+If `url` is omitted, then Intent Radio plays the previously-playing
+station.  If there is no such station, then it plays BBC Radio 4 (because,
+well, why not?).
+
+The "previously-plying station" does _not_ survive service restarts.
 ****
 
 .`org.smblott.intentradio.STOP`
@@ -119,6 +123,27 @@ a built-in URL for BBC Radio 4 is used.
 ****
 - restart playback, if paused
 - extras: none
+****
+
+.`org.smblott.intentradio.STATE_REQUEST`
+****
+- restart playback, if paused
+- extras: none
+****
+
+.`org.smblott.intentradio.STATE`
+****
+- this is broadcast by Intent Radio itself to inform listeners (such as Tasker) of its state
+- extras:
+** `state`: one of `stop`, `play`, `play/buffering`, `play/pause`, `play/dim` or `error`
+** `url`: the current URL
+** `name`: the current name
+
+These are all strings.
+
+The sample Tasker project includes a listener which sets the global Tasker
+variables `IRSTATE`, `IRURL` and `IRNAME` whenever such an intent is
+received.
 ****
 
 .More Information
@@ -182,7 +207,8 @@ Finally, _Intent Radio_ is built for Android API level 16, so only for 4.1
 .Downloads:
 ****
 - See the https://github.com/smblott-github/intent_radio/releases[Github releases].
-- Also available on https://f-droid.org/repository/browse/?fdid=org.smblott.intentradio[F-Droid].
+- Also available on https://f-droid.org/repository/browse/?fdid=org.smblott.intentradio[F-Droid]. +
+  (Although the F-Droid version may be somewhat behind the one available on GitHub.)
 - Or use the direct download links below.
 ****
 
