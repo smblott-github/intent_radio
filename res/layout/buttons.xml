@@ -18,7 +18,7 @@
         android:layout_width="fill_parent" 
         android:layout_height="wrap_content" 
         android:onClick="clip_play"
-        android:text="Copy ...PLAY Intent"
+        android:text="Copy PLAY Intent"
         android:gravity="left"
         android:layout_margin="10dp" >
     </Button>
@@ -27,7 +27,7 @@
         android:layout_width="fill_parent" 
         android:layout_height="wrap_content"
         android:onClick="clip_stop"
-        android:text="Copy ...STOP Intent"
+        android:text="Copy STOP Intent"
         android:gravity="left"
         android:layout_margin="10dp" >
     </Button>
@@ -36,7 +36,7 @@
         android:layout_width="fill_parent" 
         android:layout_height="wrap_content"
         android:onClick="clip_pause"
-        android:text="Copy ...PAUSE Intent"
+        android:text="Copy PAUSE Intent"
         android:gravity="left"
         android:layout_margin="10dp" >
     </Button>
@@ -45,7 +45,7 @@
         android:layout_width="fill_parent" 
         android:layout_height="wrap_content"
         android:onClick="clip_restart"
-        android:text="Copy ...RESTART Intent"
+        android:text="Copy RESTART Intent"
         android:gravity="left"
         android:layout_margin="10dp" >
     </Button>
@@ -54,7 +54,7 @@
         android:layout_width="fill_parent" 
         android:layout_height="wrap_content"
         android:onClick="clip_state_request"
-        android:text="Copy ...STATE_REQUEST Intent"
+        android:text="Copy STATE_REQUEST Intent"
         android:gravity="left"
         android:layout_margin="10dp" >
     </Button>

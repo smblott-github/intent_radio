@@ -144,16 +144,31 @@ public class IntentPlayer extends Service
 
       if ( action.equals(intent_play) )
       {
-         url =  default_url;
-         name = default_name;
-
-         if ( intent.hasExtra("url") )
+         /* Ensure intent has a "url"...
+          */
+         if ( ! intent.hasExtra("url") || intent.getStringExtra("url").equals("") )
          {
-            url = intent.getStringExtra("url");
-            name = intent.hasExtra("name") ? intent.getStringExtra("name") : url;
+            if ( url == null || url.equals("") )
+            {
+               intent.putExtra("url", default_url);
+               intent.putExtra("name", default_name);
+            }
+            else
+            {
+               intent.putExtra("url", url);
+               intent.putExtra("name", name);
+            }
          }
-         else if ( intent.hasExtra("name") )
-            name = intent.getStringExtra("name");
+
+         /* Ensure intent has a "name"...
+          */
+         if ( ! intent.hasExtra("name") )
+            intent.putExtra("name", intent.getStringExtra("url"));
+
+         /* Extract "url" and "name"...
+          */
+         url = intent.getStringExtra("url");
+         name = intent.getStringExtra("name");
 
          log("Name: ", name);
          log("URL: ", url);
