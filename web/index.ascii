@@ -125,6 +125,7 @@ The "previously-plying station" does _not_ survive service or service restarts.
 - extras: none
 ****
 
+[[state-request]]
 .`org.smblott.intentradio.STATE_REQUEST`
 ****
 - restart playback, if paused
