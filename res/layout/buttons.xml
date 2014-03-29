@@ -13,59 +13,71 @@
         android:textColor="#FFFFFFFF" >
     </TextView>
 
-    <Button 
-        android:id="@+id/clip_play" 
-        android:layout_width="fill_parent" 
-        android:layout_height="wrap_content" 
-        android:onClick="clip_play"
-        android:text="Copy PLAY Intent"
-        android:gravity="left"
-        android:layout_margin="10dp" >
-    </Button>
-    <Button 
-        android:id="@+id/clip_stop" 
-        android:layout_width="fill_parent" 
-        android:layout_height="wrap_content"
-        android:onClick="clip_stop"
-        android:text="Copy STOP Intent"
-        android:gravity="left"
-        android:layout_margin="10dp" >
-    </Button>
-    <Button 
-        android:id="@+id/clip_pause" 
-        android:layout_width="fill_parent" 
-        android:layout_height="wrap_content"
-        android:onClick="clip_pause"
-        android:text="Copy PAUSE Intent"
-        android:gravity="left"
-        android:layout_margin="10dp" >
-    </Button>
-    <Button 
-        android:id="@+id/clip_restart" 
-        android:layout_width="fill_parent" 
-        android:layout_height="wrap_content"
-        android:onClick="clip_restart"
-        android:text="Copy RESTART Intent"
-        android:gravity="left"
-        android:layout_margin="10dp" >
-    </Button>
-    <Button 
-        android:id="@+id/clip_state_request" 
-        android:layout_width="fill_parent" 
-        android:layout_height="wrap_content"
-        android:onClick="clip_state_request"
-        android:text="Copy STATE_REQUEST Intent"
-        android:gravity="left"
-        android:layout_margin="10dp" >
-    </Button>
-    <Button 
-        android:id="@+id/clip_state" 
-        android:layout_width="fill_parent" 
-        android:layout_height="wrap_content"
-        android:onClick="clip_state"
-        android:text="Copy STATE Intent"
-        android:gravity="left"
-        android:layout_margin="10dp" >
-    </Button>
-    
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:fadeScrollbars="true" >
+
+      <LinearLayout
+          android:layout_width="fill_parent"
+          android:layout_height="fill_parent"
+          android:orientation="vertical" >
+
+          <Button 
+              android:id="@+id/clip_play" 
+              android:layout_width="fill_parent" 
+              android:layout_height="wrap_content" 
+              android:onClick="clip_play"
+              android:text="Copy PLAY Intent"
+              android:gravity="left"
+              android:layout_margin="10dp" >
+          </Button>
+          <Button 
+              android:id="@+id/clip_stop" 
+              android:layout_width="fill_parent" 
+              android:layout_height="wrap_content"
+              android:onClick="clip_stop"
+              android:text="Copy STOP Intent"
+              android:gravity="left"
+              android:layout_margin="10dp" >
+          </Button>
+          <Button 
+              android:id="@+id/clip_pause" 
+              android:layout_width="fill_parent" 
+              android:layout_height="wrap_content"
+              android:onClick="clip_pause"
+              android:text="Copy PAUSE Intent"
+              android:gravity="left"
+              android:layout_margin="10dp" >
+          </Button>
+          <Button 
+              android:id="@+id/clip_restart" 
+              android:layout_width="fill_parent" 
+              android:layout_height="wrap_content"
+              android:onClick="clip_restart"
+              android:text="Copy RESTART Intent"
+              android:gravity="left"
+              android:layout_margin="10dp" >
+          </Button>
+          <Button 
+              android:id="@+id/clip_state_request" 
+              android:layout_width="fill_parent" 
+              android:layout_height="wrap_content"
+              android:onClick="clip_state_request"
+              android:text="Copy STATE_REQUEST Intent"
+              android:gravity="left"
+              android:layout_margin="10dp" >
+          </Button>
+          <Button 
+              android:id="@+id/clip_state" 
+              android:layout_width="fill_parent" 
+              android:layout_height="wrap_content"
+              android:onClick="clip_state"
+              android:text="Copy STATE Intent"
+              android:gravity="left"
+              android:layout_margin="10dp" >
+          </Button>
+
+      </LinearLayout>
+    </ScrollView>
 </LinearLayout>
