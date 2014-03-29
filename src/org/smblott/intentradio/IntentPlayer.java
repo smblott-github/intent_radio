@@ -55,8 +55,8 @@ public class IntentPlayer extends Service
    private static String default_url = null;
    private static String default_name = null;
 
-   private static String name = null;
-   private static String url = null;
+   public  static String name = "";
+   public  static String url = "";
 
    private static Playlist pltask = null;
    private static MediaPlayer player = null;
@@ -182,11 +182,8 @@ public class IntentPlayer extends Service
 
    private int play(String url)
    {
-      stop();
+      stop(false);
       toast(name);
-
-      if ( url == null )
-         { toast("No URL."); return done(null); }
 
       int focus = audio_manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
       if ( focus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
@@ -284,13 +281,16 @@ public class IntentPlayer extends Service
     * Stop...
     */
 
+   private int stop(boolean notify_state)
+      { return stop(true,null,notify_state); }
+
    private int stop()
-      { return stop(true,null); }
+      { return stop(true,null,true); }
 
    private int stop(String msg)
-      { return stop(false,msg); }
+      { return stop(false,msg,true); }
 
-   private int stop(boolean kill_note, String text)
+   private int stop(boolean kill_note, String text, boolean notify_state)
    {
       if ( text != null )
          log(text);
@@ -334,7 +334,7 @@ public class IntentPlayer extends Service
       else
          notificate(text,false);
 
-      return done(State.STATE_STOP);
+      return done(notify_state ? State.STATE_STOP : null);
    }
 
    /* ********************************************************************

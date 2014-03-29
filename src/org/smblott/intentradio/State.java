@@ -7,7 +7,6 @@ public class State extends Logger
 {
    private static Context context = null;
    private static String intent_state = null;
-   private static String intent_state_request = null;
 
    public  static final String STATE_STOP   = "stop";
    public  static final String STATE_PLAY   = "play";
@@ -24,8 +23,6 @@ public class State extends Logger
       {
          if ( intent_state == null )
             intent_state = context.getString(R.string.intent_state);
-         if ( intent_state_request == null )
-            intent_state_request = context.getString(R.string.intent_state_request);
          log("State.init_strings(): ok.");
       }
       else
@@ -44,6 +41,9 @@ public class State extends Logger
 
       Intent intent = new Intent(intent_state);
       intent.putExtra("state", current_state);
+      intent.putExtra("url", IntentPlayer.url);
+      intent.putExtra("name", IntentPlayer.name);
+
       log("Broadcast: ", intent_state);
       log("Broadcast: state=", current_state);
       context.sendBroadcast(intent);
