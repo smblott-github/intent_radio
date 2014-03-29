@@ -51,6 +51,7 @@ public class IntentPlayer extends Service
    private static String intent_stop = null;
    private static String intent_pause = null;
    private static String intent_restart = null;
+   private static String intent_state_request = null;
    private static String default_url = null;
    private static String default_name = null;
 
@@ -79,6 +80,7 @@ public class IntentPlayer extends Service
       intent_stop = getString(R.string.intent_stop);
       intent_pause = getString(R.string.intent_pause);
       intent_restart = getString(R.string.intent_restart);
+      intent_state_request = context.getString(R.string.intent_state_request);
       default_url = getString(R.string.default_url);
       default_name = getString(R.string.default_name);
 
@@ -156,6 +158,12 @@ public class IntentPlayer extends Service
          log("Name: ", name);
          log("URL: ", url);
          return play(url);
+      }
+
+      if ( action.equals(intent_state_request) )
+      {
+         State.get_state(context);
+         return done(null);
       }
 
       log("unknown action: ", action);

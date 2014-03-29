@@ -60,6 +60,7 @@
             <action android:name="org.smblott.intentradio.STOP" />
             <action android:name="org.smblott.intentradio.PAUSE" />
             <action android:name="org.smblott.intentradio.RESTART" />
+            <action android:name="org.smblott.intentradio.STATE_REQUEST" />
          </intent-filter>
 
       </receiver>
