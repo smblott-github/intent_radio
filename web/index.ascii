@@ -222,15 +222,22 @@ Finally, _Intent Radio_ is built for Android API level 16, so only for 4.1
 - Or use the direct download links below.
 ****
 
-.Github/master:
+.Version 1.7:
 ****
 - Add button to install sample Tasker project.
 - Improved (extended) the sample Tasker project.
-- Re-use media player, and better notifications.
-- Handle implicit intents.
 - Broadcast state (can be tracked in Tasker).
-- Extend demo project to set Tasker global variables to broadcast state.
+- Sample project sets Tasker global variables `%IRSTATE`, `IRURL` and `IRNAME` to broadcast state.
+- Handle implicit intents.
 - A PLAY request without a "url" plays last station, if possible.
+- Re-use `MediaPlayer` instance.
+- Better notifications.
+
+Direct download (from GitHub):
+
+- Coming shortly.
+// - https://github.com/smblott-github/intent_radio/releases/download/v1.6/IntentRadio-release.apk[v1.6/IntentRadio-release.apk]
+
 ****
 
 .Version 1.6:
