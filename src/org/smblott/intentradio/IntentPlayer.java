@@ -253,7 +253,7 @@ public class IntentPlayer extends Service
       {
          log("Playlist: ", url);
          notificate("Fetching playlist...");
-         notificate_stop();
+         notificate_click_to_stop();
          pltask.execute(url);
          return done(State.STATE_BUFFER);
       }
@@ -280,7 +280,7 @@ public class IntentPlayer extends Service
       last_launch_url = url;
       log("Launching: ", url);
       notificate("Connecting...");
-      notificate_stop();
+      notificate_click_to_stop();
 
       try
       {
@@ -355,7 +355,7 @@ public class IntentPlayer extends Service
       {
          log("Keeping (now-)dismissable note: ", text);
          notificate(text,false);
-         notificate_restart();
+         notificate_click_to_restart();
       }
 
       if ( real_stop )
@@ -401,7 +401,7 @@ public class IntentPlayer extends Service
 
       player.pause();
       notificate(msg);
-      notificate_restart();
+      notificate_click_to_restart();
       return done(State.STATE_PAUSE);
    }
 
@@ -426,15 +426,12 @@ public class IntentPlayer extends Service
       // there will be a thread out there waiting to stop() us.
       //
       Counter.time_passes();
-      // Because time passes, we better also move forward the relaunch() time
-      // stamp.
-      //
       on_first_launch();
-      //
+
       player.setVolume(1.0f, 1.0f);
       player.start();
       notificate();
-      notificate_stop();
+      notificate_click_to_stop();
       return done(State.STATE_PLAY);
    }
 
@@ -467,7 +464,7 @@ public class IntentPlayer extends Service
          player.start();
          State.set_state(context, State.STATE_PLAY);
          notificate();
-         notificate_stop();
+         notificate_click_to_stop();
       }
    }
 
@@ -610,7 +607,6 @@ public class IntentPlayer extends Service
       if ( note != null )
       {
          log("Notificate: ", msg == null ? name : msg);
-         log("Notificate click: ", ""+(ongoing ? "stop" : "restart") );
          note =
             builder
                .setOngoing(ongoing)
@@ -620,13 +616,13 @@ public class IntentPlayer extends Service
       }
    }
 
-   private void notificate_stop()
+   private void notificate_click_to_stop()
    {
       note = builder.setContentIntent(pending_stop).build();
       note_manager.notify(note_id, note);
    }
 
-   private void notificate_restart()
+   private void notificate_click_to_restart()
    {
       note = builder.setContentIntent(pending_restart).build();
       note_manager.notify(note_id, note);
