@@ -21,8 +21,6 @@ public class HttpGetter
 
       try
       {
-         // audio/x-scpls
-         // audio/x-mpegurl
          URL url = new URL(str);
          connection = (HttpURLConnection) url.openConnection();
 

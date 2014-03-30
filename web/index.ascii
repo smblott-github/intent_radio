@@ -229,15 +229,19 @@ Finally, _Intent Radio_ is built for Android API level 16, so only for 4.1
   (Although the F-Droid version may be somewhat behind the one available on GitHub.)
 - Or use the direct links to the GitHub downloads below.
 
-Or, if you're feeling brave, you can use the bleeding-edge release, which is
+Or, you can use the bleeding-edge release, which is
 https://dl.dropboxusercontent.com/u/41898306/IntentRadio-release.apk[here],
 on Dropbox.
 ****
 
-.GitHub/master:
+.GitHub/master and bleeding-edge release:
 ****
 - When stopped or paused, clicking on the notification now restarts.
-- Substantial reworking of the state/audio focus/thread model.
+- Substantial reworking of the state/audio-focus/thread model.
+- Recursive playlist fetch.  +
+  Post a playlist of your favourite stations online somewhere, even containing
+  playlists itself, point Intent Radio towards it, and listen to a random
+  favourite station.
 ****
 
 .Version 1.7:
