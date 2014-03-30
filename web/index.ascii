@@ -221,12 +221,17 @@ Finally, _Intent Radio_ is built for Android API level 16, so only for 4.1
 - See the https://github.com/smblott-github/intent_radio/releases[Github releases].
 - Also available on https://f-droid.org/repository/browse/?fdid=org.smblott.intentradio[F-Droid]. +
   (Although the F-Droid version may be somewhat behind the one available on GitHub.)
-- Or use the direct download links below.
+- Or use the direct links to the GitHub downloads below.
+
+Or, if you're feeling brave, you can use the bleeding-edge release, which is
+https://dl.dropboxusercontent.com/u/41898306/IntentRadio-release.apk[here],
+on Dropbox.
 ****
 
 .GitHub/master:
 ****
 - When stopped or paused, clicking on the notification now restarts.
+- Substantial reworking of the state/audio focus/thread model.
 ****
 
 .Version 1.7:

@@ -7,6 +7,7 @@ debug: res/raw/tasker.prj
 
 release: res/raw/tasker.prj
 	ant release
+	cp bin/IntentRadio-release.apk $(HOME)/storage/Dropbox/Public/IntentRadio-release.apk
 
 res/raw/tasker.prj: misc/Radio.prj.xml
 	install -m 0444 $< $@
