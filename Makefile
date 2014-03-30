@@ -29,6 +29,9 @@ play:
 stop:
 	adb shell am broadcast -a org.smblott.intentradio.STOP -e debug yes
 
+r4:
+	adb shell am broadcast -a org.smblott.intentradio.PLAY -e url http://www.bbc.co.uk/radio/listen/live/r4_heaacv2.pls -e name "Elsa Sound Card" -e debug yes
+
 ufm:
 	adb shell am broadcast -a org.smblott.intentradio.PLAY -e url http://192.168.3.3/cgi-bin/sc/wav -e name "Elsa Sound Card" -e debug yes
 

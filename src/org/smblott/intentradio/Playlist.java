@@ -10,8 +10,10 @@ import android.os.AsyncTask;
 
 public abstract class Playlist extends AsyncTask<String, Void, String>
 {
-   private IntentPlayer player;
-   private int then;
+   private static int max_ttl = 10;
+
+   private IntentPlayer player = null;
+   private int then = 0;
 
    Playlist(IntentPlayer a_player)
    {
@@ -25,27 +27,36 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
 
    protected String doInBackground(String... args)
    {
-      String url = fetch_url(args[0]);
+      String url = args[0];
+      int ttl = max_ttl;
+
+      while ( 0 < ttl && url != null && is_playlist(url) )
+      {
+         log("Playlist url: ", url);
+         url = fetch_url(url);
+      }
+
+      if ( ttl == 0 && is_playlist(url) )
+      {
+         log("Playlist: too many playlists.");
+         url = null;
+      }
 
       if ( url == null )
-      {
          log("Playlist: failed to extract URL from playlist.");
-         return null;
-      }
-
-      if ( url.endsWith(PlaylistPls.suffix) || url.endsWith(PlaylistM3u.suffix) )
-      {
-         log("Playlist: another playlist!");
-         return null;
-      }
+      else
+         log("Playlist final url: ", url);
 
       return url;
    }
 
+   public static boolean is_playlist(String url)
+      { return url.endsWith(PlaylistPls.suffix) || url.endsWith(PlaylistM3u.suffix); }
+
    // This runs on the main thread...
    //
    protected void onPostExecute(String url) {
-      if ( url != null && ! isCancelled() && Counter.still(then) )
+      if ( url != null && player != null && ! isCancelled() && Counter.still(then) )
          player.play_launch(url);
    }
 
