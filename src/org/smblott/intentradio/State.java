@@ -17,24 +17,13 @@ public class State extends Logger
 
    private static String current_state = STATE_STOP;
 
-   private static boolean init_strings(Context context)
-   {
-      if ( context != null )
-      {
-         if ( intent_state == null )
-            intent_state = context.getString(R.string.intent_state);
-         log("State.init_strings(): ok.");
-      }
-      else
-         log("State.init_strings(): error: context not set,");
-
-      return context != null;
-   }
-
    public static void set_state(Context context, String s)
    {
-      if ( s == null || ! init_strings(context) )
+      if ( s == null )
          return;
+
+      if ( intent_state == null )
+         intent_state = context.getString(R.string.intent_state);
 
       log("State.set_state(): ", s);
       current_state = s;

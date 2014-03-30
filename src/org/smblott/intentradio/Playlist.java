@@ -49,12 +49,9 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
    // This runs on the main thread...
    //
    protected void onPostExecute(String url) {
-      if ( url != null && ! isCancelled() )
-         player.play_launch(url, then);
+      if ( url != null && ! isCancelled() && Counter.still(then) )
+         player.play_launch(url);
    }
-
-   public boolean finished()
-      { return getStatus() == AsyncTask.Status.FINISHED; }
 
    /* ********************************************************************
     * Fetch a single (random) url from a playlist...
