@@ -12,6 +12,7 @@ play: play
 stop: stop
 pause: pause
 restart: restart
+release: release
 
 %:
 	cd ../../../.. && $(MAKE) $@

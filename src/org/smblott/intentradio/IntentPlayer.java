@@ -27,6 +27,7 @@ import android.media.MediaPlayer.OnCompletionListener;
 
 import android.net.Uri;
 import android.os.Build.VERSION;
+import android.webkit.URLUtil;
 
 public class IntentPlayer extends Service
    implements
@@ -210,6 +211,14 @@ public class IntentPlayer extends Service
       startForeground(note_id, note);
 
       // /////////////////////////////////////////////////////////////////
+      // Check URL...
+
+      if ( ! URLUtil.isValidUrl(url) )
+      {
+         toast("Invalid URL.");
+         return stop("Invalid URL.");
+      }
+      // /////////////////////////////////////////////////////////////////
       // Audio focus...
 
       int focus = audio_manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
@@ -281,6 +290,14 @@ public class IntentPlayer extends Service
       log("Launching: ", url);
       notificate("Connecting...");
       notificate_click_to_stop();
+
+      if ( ! URLUtil.isValidUrl(url) )
+      {
+         previous_launch_url = null;
+         previous_launch_successful = false;
+         toast("Invalid URL.");
+         return stop("Invalid URL.");
+      }
 
       previous_launch_url = url;
       previous_launch_successful = false;
@@ -597,7 +614,10 @@ public class IntentPlayer extends Service
    {
       log("Completion.");
 
-      if ( player != null && previous_launch_successful )
+      if ( player != null
+            && previous_launch_successful
+            && previous_launch_url != null
+            && URLUtil.isNetworkUrl(previous_launch_url))
       {
          player.reset();
          play_launch();

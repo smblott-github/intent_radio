@@ -44,8 +44,9 @@ lyric:
 file:
 	adb shell am broadcast -a org.smblott.intentradio.PLAY -e url file:///sdcard/x.mp3 -e name "Files" -e debug yes
 
-view:
-	adb shell am broadcast -a android.intent.action.VIEW -d http://icecast2.rte.ie/lyric
+# Doesn't work:
+# view:
+# 	adb shell am broadcast -a android.intent.action.VIEW -d http://icecast2.rte.ie/lyric
 
 pause:
 	adb shell am broadcast -a org.smblott.intentradio.PAUSE -e debug yes
