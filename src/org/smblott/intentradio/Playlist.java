@@ -34,6 +34,7 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
       {
          log("Playlist url: ", url);
          url = fetch_url(url);
+         ttl -= 1;
       }
 
       if ( ttl == 0 && is_playlist(url) )
