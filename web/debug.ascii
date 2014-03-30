@@ -12,6 +12,8 @@ Stephen Blott <smblott+ir@gmail.com>
 
 - Debugging is disabled whenever an intent is received with a string extra
   `debug` with the value `off`.
+
+Debugging is _always_ enabled on builds that are signed with a debug key.
 ****
 
 // /////////////////////////////////////////////////////
@@ -40,8 +42,9 @@ isn't for you.
 
 .File logging
 ****
-Additionally, the same messages are written to a log file in the app's
-private file space on the SD card.  For me, that's:
+Additionally, whenever debugging is enabled, the same messages are written
+to a log file in the app's private file space on the SD card.  For me,
+that's:
 
 - `/sdcard/Android/data/org.smblott.intentradio/files/intent-radio.log`
 

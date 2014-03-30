@@ -22,7 +22,7 @@ public class Logger
    private static boolean debugging = false;
    private static int pid = 0;
 
-   private static final boolean append = true;
+   private static final boolean append = false;
    private static final int DEBUGGABLE = ApplicationInfo.FLAG_DEBUGGABLE;
 
    /* ********************************************************************
