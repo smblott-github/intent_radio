@@ -9,11 +9,12 @@ public class State extends Logger
    private static String intent_state = null;
 
    public static final String STATE_STOP   = "stop";
+   public static final String STATE_ERROR  = "error";
+   public static final String STATE_PAUSE  = "play/pause";
+
    public static final String STATE_PLAY   = "play";
    public static final String STATE_BUFFER = "play/buffering";
-   public static final String STATE_PAUSE  = "play/pause";
    public static final String STATE_DIM    = "play/dim";
-   public static final String STATE_ERROR  = "error";
 
    private static String current_state = STATE_STOP;
 
@@ -41,7 +42,13 @@ public class State extends Logger
    public static void get_state(Context context)
       { set_state(context, current_state); }
 
+   public static String current()
+      { return current_state; }
+
    public static boolean is(String s)
       { return current_state.equals(s); }
+
+   public static boolean is_playing()
+      { return is(State.STATE_PLAY) || is(State.STATE_BUFFER) || is(State.STATE_DIM); }
 }
 

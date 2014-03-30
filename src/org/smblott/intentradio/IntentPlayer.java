@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.AsyncTask;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.StrictMode;
@@ -68,7 +69,9 @@ public class IntentPlayer extends Service
    private static MediaPlayer player = null;
    private static Builder builder = null;
    private static AudioManager audio_manager = null;
-   private static Playlist pltask = null;
+
+   private static Playlist playlist_task = null;
+   private static AsyncTask<Integer,Void,Void> pause_task = null;
 
    /* ********************************************************************
     * Create service...
@@ -117,6 +120,7 @@ public class IntentPlayer extends Service
 
    public void onDestroy()
    {
+      log("Destroyed.");
       stop();
 
       if ( player != null )
@@ -125,9 +129,7 @@ public class IntentPlayer extends Service
          player = null;
       }
 
-      log("Destroyed.");
       Logger.state("off");
-
       super.onDestroy();
    }
 
@@ -187,19 +189,14 @@ public class IntentPlayer extends Service
     */
 
    private int play()
-   {
-      return play(url);
-   }
+      { return play(url); }
 
    private int play(String url)
    {
       stop(false);
+
       toast(name);
       log("Play: ", url);
-
-      int focus = audio_manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-      if ( focus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
-         return stop("Failed to obtain audio focus!");
 
       // /////////////////////////////////////////////////////////////////
       // Notification...
@@ -211,6 +208,13 @@ public class IntentPlayer extends Service
       note = builder.build();
 
       startForeground(note_id, note);
+
+      // /////////////////////////////////////////////////////////////////
+      // Audio focus...
+
+      int focus = audio_manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+      if ( focus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
+         return stop("Failed to obtain audio focus!");
 
       // /////////////////////////////////////////////////////////////////
       // Set up media player...
@@ -232,7 +236,6 @@ public class IntentPlayer extends Service
          log("Re-using existing player.");
 
       WifiLocker.lock(context, app_name_long);
-      on_first_launch();
       log("Connecting...");
 
       // /////////////////////////////////////////////////////////////////
@@ -241,20 +244,19 @@ public class IntentPlayer extends Service
       /* Is there a better way to test whether a URL is a playlist?
        */
 
-      pltask = null;
+      playlist_task = null;
 
       if ( url.endsWith(PlaylistPls.suffix) )
-         pltask = new PlaylistPls(this);
+         playlist_task = new PlaylistPls(this);
 
       if ( url.endsWith(PlaylistM3u.suffix) )
-         pltask = new PlaylistM3u(this);
+         playlist_task = new PlaylistM3u(this);
 
-      if ( pltask != null )
+      if ( playlist_task != null )
       {
-         log("Playlist: ", url);
+         playlist_task.execute(url);
          notificate("Fetching playlist...");
          notificate_click_to_stop();
-         pltask.execute(url);
          return done(State.STATE_BUFFER);
       }
 
@@ -268,19 +270,20 @@ public class IntentPlayer extends Service
     * Launch player...
     */
 
-   private static String last_launch_url = null;
+   private static String previous_launch_url = null;
+   private static boolean previous_launch_successful = false;
 
    public int play_launch()
-   {
-      return play_launch(last_launch_url);
-   }
+      { return play_launch(previous_launch_url); }
 
    public int play_launch(String url)
    {
-      last_launch_url = url;
       log("Launching: ", url);
       notificate("Connecting...");
       notificate_click_to_stop();
+
+      previous_launch_url = url;
+      previous_launch_successful = false;
 
       try
       {
@@ -332,7 +335,7 @@ public class IntentPlayer extends Service
       // Time moves on...
       //
       Counter.time_passes();
-      last_launch_url = null;
+      previous_launch_url = null;
 
       // Stop player...
       //
@@ -361,19 +364,23 @@ public class IntentPlayer extends Service
       if ( real_stop )
          // We're still holding resources, including the player itself.
          // Spin off a task to clean up, soon.
+         //
+         // No need to cancel this.  Because the state is now STATE_STOP, all
+         // events effecting the relevance of this thread move time on.
+         // 
          new Later()
          {
             @Override
             public void later()
+            {
+               if ( player != null )
                {
-                  if ( player != null )
-                  {
-                     log("Releasing player.");
-                     player.release();
-                     player = null;
-                  }
+                  log("Releasing player.");
+                  player.release();
+                  player = null;
                }
-         }.execute();
+            }
+         }.start();
 
       return done(real_stop ? State.STATE_STOP : null);
    }
@@ -387,17 +394,37 @@ public class IntentPlayer extends Service
 
    private int pause(String msg)
    {
-      if ( player == null || ! player.isPlaying() )
+      log("Pause: ", State.current());
+
+      if ( player == null )
          return done();
 
+      // if ( ! player.isPlaying() )
+      //    return done();
+
+      if ( State.is(State.STATE_PAUSE) || ! State.is_playing() )
+         return done();
+
+      if ( pause_task != null )
+         pause_task.cancel(true);
+      pause_task = null;
+
       // We're still holding resources, including a Wifi Wakelock and the player
-      // itself.  Spin off a task to convert this "pause" into a stop, soon.
-      new Later()
-      {
-         @Override
-         public void later()
-            { stop("Suspended, click to restart..."); }
-      }.execute();
+      // itself.  Spin off a task to convert this "pause" into a stop, soon, if
+      // necessary.  This will be cacelled if we restart(), or become
+      // irrelevant if another action such as stop() or play() occurs, because
+      // then time will have passed.
+      //
+      pause_task =
+         new Later()
+         {
+            @Override
+            public void later()
+            {
+               pause_task = null;
+               stop("Suspended, click to restart...");
+            }
+         }.start();
 
       player.pause();
       notificate(msg);
@@ -405,16 +432,37 @@ public class IntentPlayer extends Service
       return done(State.STATE_PAUSE);
    }
 
-   private int restart()
+   private int duck(String msg)
    {
-      if ( player == null || State.is(State.STATE_STOP) || State.is(State.STATE_ERROR)  )
-         return play();
+      log("Duck: ", State.current());
 
-      if ( player.isPlaying() || ! State.is(State.STATE_PAUSE) )
+      if ( State.is(State.STATE_DIM) || ! State.is_playing() )
          return done();
 
-      // We may have lost the audio focus; we'll ask for it again.
-      //
+      player.setVolume(0.1f, 0.1f);
+      notificate(msg);
+      notificate_click_to_stop();
+      return done(State.STATE_DIM);
+   }
+
+   private int restart()
+   {
+      log("Restart: ", State.current());
+
+      if ( player == null || State.is(State.STATE_STOP) || State.is(State.STATE_ERROR) )
+         return play();
+
+      if ( State.is(State.STATE_PLAY) || State.is(State.STATE_BUFFER) )
+         return done();
+
+      if ( State.is(State.STATE_DIM) )
+      {
+         player.setVolume(0.1f, 0.1f);
+         notificate();
+         notificate_click_to_stop();
+         return done(State.STATE_PLAY);
+      }
+
       int focus = audio_manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
       if ( focus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
       {
@@ -422,11 +470,11 @@ public class IntentPlayer extends Service
          return done();
       }
 
-      // Time must pass. Because if we were paused, then
-      // there will be a thread out there waiting to stop() us.
-      //
-      Counter.time_passes();
-      on_first_launch();
+      if ( pause_task != null )
+      {
+         pause_task.cancel(true);
+         pause_task = null;
+      }
 
       player.setVolume(1.0f, 1.0f);
       player.start();
@@ -436,7 +484,7 @@ public class IntentPlayer extends Service
    }
 
    /* ********************************************************************
-    * All onStartCommand invocations end here...
+    * All onStartCommand() invocations end here...
     */
 
    private int done(String state)
@@ -465,6 +513,25 @@ public class IntentPlayer extends Service
          State.set_state(context, State.STATE_PLAY);
          notificate();
          notificate_click_to_stop();
+
+         // A launch is successful if there is no error within the first minute.
+         // If a launch is successful then later the stream fails, then the
+         // launch will be repeated.  If it fails before it is considered
+         // successful, then it will not be repeated.  This is intented to
+         // prevent thrashing.
+         //
+         // No need to cancel this.  All events effecting the relevance of this
+         // thread move time on.
+         // 
+         new Later(60)
+         {
+            @Override
+            public void later()
+            {
+               log("Launch successful.");
+               previous_launch_successful = true;
+            }
+         }.start();
       }
    }
 
@@ -485,11 +552,13 @@ public class IntentPlayer extends Service
          case MediaPlayer.MEDIA_INFO_BUFFERING_START:
             State.set_state(context, State.STATE_BUFFER);
             notificate("Buffering...");
+            notificate_click_to_stop();
             break;
 
          case MediaPlayer.MEDIA_INFO_BUFFERING_END:
             State.set_state(context, State.STATE_PLAY);
             notificate();
+            notificate_click_to_stop();
             break;
       }
       return true;
@@ -498,49 +567,38 @@ public class IntentPlayer extends Service
    @Override
    public boolean onError(MediaPlayer player, int what, int extra)
    {
-      switch ( what )
-      {
-         case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
-            stop("Media server died.");
-            break;
-         case MediaPlayer.MEDIA_ERROR_UNKNOWN:
-            stop("Media error.");
-            break;
-         default:
-            stop("Unknown error.");
-            break;
-      }
+      log("Error: ", ""+what);
+
+      if ( previous_launch_successful )
+         play_launch();
+      else
+         switch ( what )
+         {
+            case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
+               stop("Media server died.");
+               break;
+            case MediaPlayer.MEDIA_ERROR_UNKNOWN:
+               stop("Media error.");
+               break;
+            default:
+               stop("Unknown error.");
+               break;
+         }
+
       return true;
    }
 
    /* ********************************************************************
     * On completion listener...
-    *
-    * TODO: It would be better to restart the stream, then check if it's healthy;
-    * if it is, then we'll restart it if it fails, otherwise we won;t.
     */
-
-   private static final int restart_max = 3;
-   private static int restart_cnt = 0;
-   private static int restart_then = 0;
-
-   private void on_first_launch()
-   {
-      restart_cnt = restart_max;
-      restart_then = Counter.now();
-      log("On first launch: ", "now="+restart_then);
-   }
 
    @Override
    public void onCompletion(MediaPlayer mp)
    {
-      log("Completion: ", "now="+restart_then, " cnt="+restart_cnt);
+      log("Completion.");
 
-      if ( 0 < restart_cnt && Counter.still(restart_then) )
-      {
-         restart_cnt -= 1;
+      if ( previous_launch_successful )
          play_launch();
-      }
       else
          stop("Completed. Click to restart.");
    }
@@ -558,38 +616,25 @@ public class IntentPlayer extends Service
          switch (change)
          {
             case AudioManager.AUDIOFOCUS_GAIN:
-               log("AUDIOFOCUS_GAIN");
-               player.setVolume(1.0f, 1.0f);
-               if ( State.is(State.STATE_DIM) )
-               {
-                  State.set_state(context, State.STATE_PLAY);
-                  notificate();
-               }
-               else
-                  restart();
+               log("audiofocus_gain");
+               restart();
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS:
-               log("AUDIOFOCUS_LOSS");
+               log("audiofocus_loss");
                stop("Audio focus lost, stopped...");
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-               log("AUDIOFOCUS_LOSS_TRANSIENT");
+               log("audiofocus_loss_transient");
                pause("Audio focus lost, paused...");
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-               log("AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
-               player.setVolume(0.1f, 0.1f);
-               State.set_state(context, State.STATE_DIM);
-               notificate("Audio focus lost, dimmed...");
+               log("audiofocus_loss_transient_can_duck");
+               duck("Audio focus lost, ducking...");
                break;
-
-            default:
-               log("Audio focus: unhandled");
-               break;
-      }
+         }
    }
 
    /* ****************************************************************

@@ -19,6 +19,10 @@ public class Intents extends BroadcastReceiver {
    private static void passExtra(String key, Intent intent, Intent msg)
    {
       if ( intent.hasExtra(key) )
-         msg.putExtra(key, intent.getStringExtra(key));
+      {
+         String str = intent.getStringExtra(key);
+         if ( str != null )
+            msg.putExtra(key, str);
+      }
    }
 }

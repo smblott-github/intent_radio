@@ -13,19 +13,15 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
    private IntentPlayer player;
    private int then;
 
-   Playlist(IntentPlayer the_player)
+   Playlist(IntentPlayer a_player)
    {
       super();
-      player = the_player;
+      player = a_player;
       then = Counter.now();
       log("Playlist: then=" + then);
    }
 
    abstract String filter(String line);
-
-   /* ********************************************************************
-    * Asynchronous task to fetch playlist...
-    */
 
    protected String doInBackground(String... args)
    {

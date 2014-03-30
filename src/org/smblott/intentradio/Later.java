@@ -6,21 +6,12 @@ import java.lang.Thread;
 public abstract class Later extends AsyncTask<Integer, Void, Void>
 {
    private static final int default_seconds = 120;
-   private static Later other = null;
-
    private int seconds = default_seconds;
    private int then;
 
-   /* ********************************************************************
-    * Constructors...
-    */
-
    Later(int secs)
    {
-      if ( other != null )
-         other.cancel(true);
-      other = this;
-
+      super();
       seconds = 0 < secs ? secs : default_seconds;
       then = Counter.now();
    }
@@ -28,9 +19,7 @@ public abstract class Later extends AsyncTask<Integer, Void, Void>
    Later()
       { this(default_seconds); }
 
-   /* ********************************************************************
-    * Background job...
-    */
+   public abstract void later();
 
    protected Void doInBackground(Integer... args)
    {
@@ -39,13 +28,12 @@ public abstract class Later extends AsyncTask<Integer, Void, Void>
       return null;
    }
 
-   // This runs on the main thread...
-   //
    protected void onPostExecute(Void ignored)
    {
       if ( ! isCancelled() && Counter.still(then) )
          later();
    }
 
-   public abstract void later();
+   public AsyncTask<Integer,Void,Void> start()
+      { return executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR); }
 }
