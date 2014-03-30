@@ -41,6 +41,9 @@ newstalk:
 lyric:
 	adb shell am broadcast -a org.smblott.intentradio.PLAY -e url http://icecast2.rte.ie/lyric -e name "RTE Lyric FM" -e debug yes
 
+file:
+	adb shell am broadcast -a org.smblott.intentradio.PLAY -e url file:///sdcard/x.mp3 -e name "Files" -e debug yes
+
 view:
 	adb shell am broadcast -a android.intent.action.VIEW -d http://icecast2.rte.ie/lyric
 

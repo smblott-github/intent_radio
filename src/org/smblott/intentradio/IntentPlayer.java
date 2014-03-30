@@ -514,16 +514,16 @@ public class IntentPlayer extends Service
          notificate();
          notificate_click_to_stop();
 
-         // A launch is successful if there is no error within the first minute.
-         // If a launch is successful then later the stream fails, then the
-         // launch will be repeated.  If it fails before it is considered
-         // successful, then it will not be repeated.  This is intented to
-         // prevent thrashing.
+         // A launch is successful if there is no error within the first few
+         // seconds.  If a launch is successful then later the stream fails,
+         // then the launch will be repeated.  If it fails before it is
+         // considered successful, then it will not be repeated.  This is
+         // intented to prevent thrashing.
          //
          // No need to cancel this.  All events effecting the relevance of this
          // thread move time on.
          // 
-         new Later(60)
+         new Later(20)
          {
             @Override
             public void later()
@@ -597,8 +597,11 @@ public class IntentPlayer extends Service
    {
       log("Completion.");
 
-      if ( previous_launch_successful )
+      if ( player != null && previous_launch_successful )
+      {
+         player.reset();
          play_launch();
+      }
       else
          stop("Completed. Click to restart.");
    }
