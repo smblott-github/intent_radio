@@ -7,10 +7,11 @@ import java.util.regex.Matcher;
 import android.text.TextUtils;
 import java.util.List;
 import android.os.AsyncTask;
+import android.webkit.URLUtil;
 
 public abstract class Playlist extends AsyncTask<String, Void, String>
 {
-   private static int max_ttl = 10;
+   private static final int max_ttl = 10;
 
    private IntentPlayer player = null;
    private int then = 0;
@@ -33,6 +34,14 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
       while ( 0 < ttl && url != null && is_playlist(url) )
       {
          log("Playlist url: ", url);
+
+         if ( ! URLUtil.isValidUrl(url) )
+         {
+            log("Invalid URL.");
+            url = null;
+            break;
+         }
+
          url = fetch_url(url);
          ttl -= 1;
       }
