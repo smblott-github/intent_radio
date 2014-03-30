@@ -133,6 +133,28 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
    }
 
    /* ********************************************************************
+    * MIME types...
+    */
+
+   public static boolean is_playlist_mime_type(String mime)
+   {
+      if ( mime == null )
+         return false;
+
+      if ( mime.equals("audio/x-scpls")                 ) return true;
+      if ( mime.equals("audio/scpls")                   ) return true;
+      if ( mime.equals("audio/x-mpegurl")               ) return true;
+      if ( mime.equals("audio/mpegurl")                 ) return true;
+      if ( mime.equals("audio/mpeg-url")                ) return true;
+      if ( mime.equals("application/x-winamp-playlist") ) return true;
+      if ( mime.equals("application/music")             ) return true;
+      if ( mime.indexOf("text/") == 0                   ) return true;
+
+      Logger.log("Playlist - not a valid MIME type: ", mime);
+      return false;
+   }
+
+   /* ********************************************************************
     * Logging...
     */
 
