@@ -588,9 +588,16 @@ public class IntentPlayer extends Service
    {
       log("Error: ", ""+what);
 
-      if ( previous_launch_successful )
+      if ( player != null
+            && previous_launch_url != null
+            && previous_launch_successful
+            && URLUtil.isNetworkUrl(previous_launch_url))
+      {
+         player.reset();
          play_launch();
+      }
       else
+      {
          switch ( what )
          {
             case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
@@ -603,6 +610,7 @@ public class IntentPlayer extends Service
                stop("Unknown error.");
                break;
          }
+      }
 
       return true;
    }
@@ -616,16 +624,22 @@ public class IntentPlayer extends Service
    {
       log("Completion.");
 
-      if ( player != null
-            && previous_launch_successful
-            && previous_launch_url != null
-            && URLUtil.isNetworkUrl(previous_launch_url))
-      {
-         player.reset();
-         play_launch();
-      }
-      else
-         stop("Completed. Click to restart.");
+      stop("Completed. Click to restart.");
+      done(State.STATE_COMPLETE);
+
+      // if ( player != null
+      //       && previous_launch_url != null
+      //       && previous_launch_successful
+      //       && URLUtil.isNetworkUrl(previous_launch_url))
+      // {
+      //    player.reset();
+      //    play_launch();
+      // }
+      // else
+      // {
+      //    stop("Completed. Click to restart.");
+      //    done(State.STATE_COMPLETE);
+      // }
    }
 
    /* ********************************************************************

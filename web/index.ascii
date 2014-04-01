@@ -141,7 +141,7 @@ Intent Radio broadcasts its state automatically whenever its state changes.
 ****
 - this is broadcast by Intent Radio itself to inform listeners (such as Tasker) of its state
 - extras:
-** `state`: one of `stop`, `play`, `play/buffering`, `play/pause`, `play/duck` or `error`
+** `state`: one of `stop`, `play`, `play/buffering`, `play/pause`, `play/duck`, `complete`, or `error`
 ** `url`: the current URL
 ** `name`: the current name
 
