@@ -242,7 +242,8 @@ on Dropbox.
   Post a playlist of your favourite stations online somewhere, even containing
   playlists itself, point Intent Radio towards it, and listen to a random
   favourite station.
-- Changed name of state `play/dim` to `play/duck`.
+- Changed name of state `play/dim` to `play/duck`; added state
+  `complete`.
 ****
 
 .Version 1.7:
