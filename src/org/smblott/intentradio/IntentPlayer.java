@@ -427,22 +427,23 @@ public class IntentPlayer extends Service
          pause_task.cancel(true);
       pause_task = null;
 
-      // We're still holding resources, including a Wifi Wakelock and the player
-      // itself.  Spin off a task to convert this "pause" into a stop, soon, if
-      // necessary.  This will be cacelled if we restart(), or become
-      // irrelevant if another action such as stop() or play() occurs, because
-      // then time will have passed.
-      //
-      pause_task =
-         new Later()
-         {
-            @Override
-            public void later()
+      if ( URLUtil.isNetworkUrl(previous_launch_url) )
+         // We're still holding resources, including a Wifi Wakelock and the player
+         // itself.  Spin off a task to convert this "pause" into a stop, soon, if
+         // necessary.  This will be cacelled if we restart(), or become
+         // irrelevant if another action such as stop() or play() occurs, because
+         // then time will have passed.
+         //
+         pause_task =
+            new Later()
             {
-               pause_task = null;
-               stop("Suspended, click to restart...");
-            }
-         }.start();
+               @Override
+               public void later()
+               {
+                  pause_task = null;
+                  stop("Suspended, click to restart...");
+               }
+            }.start();
 
       player.pause();
       notificate(msg);
@@ -454,13 +455,13 @@ public class IntentPlayer extends Service
    {
       log("Duck: ", State.current());
 
-      if ( State.is(State.STATE_DIM) || ! State.is_playing() )
+      if ( State.is(State.STATE_DUCK) || ! State.is_playing() )
          return done();
 
       player.setVolume(0.1f, 0.1f);
       notificate(msg);
       notificate_click_to_stop();
-      return done(State.STATE_DIM);
+      return done(State.STATE_DUCK);
    }
 
    private int restart()
@@ -473,7 +474,7 @@ public class IntentPlayer extends Service
       if ( State.is(State.STATE_PLAY) || State.is(State.STATE_BUFFER) )
          return done();
 
-      if ( State.is(State.STATE_DIM) )
+      if ( State.is(State.STATE_DUCK) )
       {
          player.setVolume(0.1f, 0.1f);
          notificate();
