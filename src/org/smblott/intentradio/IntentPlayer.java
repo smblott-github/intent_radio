@@ -283,14 +283,18 @@ public class IntentPlayer extends Service
    private static String previous_launch_url = null;
    private static boolean previous_launch_successful = false;
 
-   public int play_launch()
-      { return play_launch(previous_launch_url); }
+   public void play_relaunch()
+   {
+      if ( previous_launch_successful && previous_launch_url != null )
+         play_launch(previous_launch_url);
+   }
 
    public int play_launch(String url)
    {
       log("Launching: ", url);
       notificate("Connecting...");
       notificate_click_to_stop();
+      previous_launch_successful = false;
 
       if ( ! URLUtil.isValidUrl(url) )
       {
@@ -301,7 +305,6 @@ public class IntentPlayer extends Service
       }
 
       previous_launch_url = url;
-      previous_launch_successful = false;
 
       try
       {
@@ -541,6 +544,7 @@ public class IntentPlayer extends Service
          //
          // No need to cancel this.  All events effecting the relevance of this
          // thread move time on.
+         // TODO: Is that really true?
          // 
          new Later(20)
          {
@@ -594,7 +598,7 @@ public class IntentPlayer extends Service
             && URLUtil.isNetworkUrl(previous_launch_url))
       {
          player.reset();
-         play_launch();
+         play_relaunch();
       }
       else
       {
@@ -633,7 +637,7 @@ public class IntentPlayer extends Service
       //       && URLUtil.isNetworkUrl(previous_launch_url))
       // {
       //    player.reset();
-      //    play_launch();
+      //    play_relaunch();
       // }
       // else
       // {
