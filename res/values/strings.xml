@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="version">1.7a</string>
+    <string name="version">1.7b</string>
     <string name="app_name">IntentRadio</string>
     <string name="app_name_long">Intent Radio</string>
     <string name="default_url">http://www.bbc.co.uk/radio/listen/live/r4_heaacv2.pls</string>

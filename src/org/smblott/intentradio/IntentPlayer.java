@@ -252,6 +252,7 @@ public class IntentPlayer extends Service
       // Playlists...
 
       /* Is there a better way to test whether a URL is a playlist?
+       * Can we check the mime type?
        */
 
       playlist_task = null;
@@ -265,8 +266,8 @@ public class IntentPlayer extends Service
       if ( playlist_task != null )
       {
          playlist_task.execute(url);
-         notificate("Fetching playlist...");
          notificate_click_to_stop();
+         notificate("Fetching playlist...");
          return done(State.STATE_BUFFER);
       }
 
@@ -292,8 +293,8 @@ public class IntentPlayer extends Service
    public int play_launch(String url)
    {
       log("Launching: ", url);
-      notificate("Connecting...");
       notificate_click_to_stop();
+      notificate("Connecting...");
 
       previous_launch_url = null;
       previous_launch_successful = false;
@@ -378,8 +379,8 @@ public class IntentPlayer extends Service
       else
       {
          log("Keeping (now-)dismissable note: ", text);
-         notificate(text,false);
          notificate_click_to_restart();
+         notificate(text,false);
       }
 
       if ( real_stop )
@@ -449,8 +450,8 @@ public class IntentPlayer extends Service
             }.start();
 
       player.pause();
-      notificate(msg);
       notificate_click_to_restart();
+      notificate(msg);
       return done(State.STATE_PAUSE);
    }
 
@@ -462,8 +463,8 @@ public class IntentPlayer extends Service
          return done();
 
       player.setVolume(0.1f, 0.1f);
-      notificate(msg);
       notificate_click_to_stop();
+      notificate(msg);
       return done(State.STATE_DUCK);
    }
 
@@ -480,8 +481,8 @@ public class IntentPlayer extends Service
       if ( State.is(State.STATE_DUCK) )
       {
          player.setVolume(0.1f, 0.1f);
-         notificate();
          notificate_click_to_stop();
+         notificate();
          return done(State.STATE_PLAY);
       }
 
@@ -500,8 +501,8 @@ public class IntentPlayer extends Service
 
       player.setVolume(1.0f, 1.0f);
       player.start();
-      notificate();
       notificate_click_to_stop();
+      notificate();
       return done(State.STATE_PLAY);
    }
 
@@ -533,8 +534,8 @@ public class IntentPlayer extends Service
          log("Starting....");
          player.start();
          State.set_state(context, State.STATE_PLAY);
-         notificate();
          notificate_click_to_stop();
+         notificate();
 
          // A launch is successful if there is no error within the first few
          // seconds.  If a launch is successful then later the stream fails,
@@ -574,14 +575,14 @@ public class IntentPlayer extends Service
       {
          case MediaPlayer.MEDIA_INFO_BUFFERING_START:
             State.set_state(context, State.STATE_BUFFER);
-            notificate("Buffering...");
             notificate_click_to_stop();
+            notificate("Buffering...");
             break;
 
          case MediaPlayer.MEDIA_INFO_BUFFERING_END:
             State.set_state(context, State.STATE_PLAY);
-            notificate();
             notificate_click_to_stop();
+            notificate();
             break;
       }
       return true;
@@ -599,21 +600,20 @@ public class IntentPlayer extends Service
       {
          player.reset();
          play_relaunch();
+         return true;
       }
-      else
+
+      switch ( what )
       {
-         switch ( what )
-         {
-            case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
-               stop("Media server died.");
-               break;
-            case MediaPlayer.MEDIA_ERROR_UNKNOWN:
-               stop("Media error.");
-               break;
-            default:
-               stop("Unknown error.");
-               break;
-         }
+         case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
+            stop("Media server died.");
+            break;
+         case MediaPlayer.MEDIA_ERROR_UNKNOWN:
+            stop("Media error.");
+            break;
+         default:
+            stop("Unknown error.");
+            break;
       }
 
       return true;
