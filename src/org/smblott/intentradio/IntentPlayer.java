@@ -266,7 +266,6 @@ public class IntentPlayer extends Service
       if ( playlist_task != null )
       {
          playlist_task.execute(url);
-         notificate_click_to_stop();
          notificate("Fetching playlist...");
          return done(State.STATE_BUFFER);
       }
@@ -293,7 +292,6 @@ public class IntentPlayer extends Service
    public int play_launch(String url)
    {
       log("Launching: ", url);
-      notificate_click_to_stop();
       notificate("Connecting...");
 
       previous_launch_url = null;
@@ -379,8 +377,7 @@ public class IntentPlayer extends Service
       else
       {
          log("Keeping (now-)dismissable note: ", text);
-         notificate_click_to_restart();
-         notificate(text,false);
+         notificate_click_to_restart(text);
       }
 
       if ( real_stop )
@@ -450,8 +447,7 @@ public class IntentPlayer extends Service
             }.start();
 
       player.pause();
-      notificate_click_to_restart();
-      notificate(msg);
+      notificate_click_to_restart(msg);
       return done(State.STATE_PAUSE);
    }
 
@@ -463,7 +459,6 @@ public class IntentPlayer extends Service
          return done();
 
       player.setVolume(0.1f, 0.1f);
-      notificate_click_to_stop();
       notificate(msg);
       return done(State.STATE_DUCK);
    }
@@ -481,7 +476,6 @@ public class IntentPlayer extends Service
       if ( State.is(State.STATE_DUCK) )
       {
          player.setVolume(0.1f, 0.1f);
-         notificate_click_to_stop();
          notificate();
          return done(State.STATE_PLAY);
       }
@@ -501,7 +495,6 @@ public class IntentPlayer extends Service
 
       player.setVolume(1.0f, 1.0f);
       player.start();
-      notificate_click_to_stop();
       notificate();
       return done(State.STATE_PLAY);
    }
@@ -534,7 +527,6 @@ public class IntentPlayer extends Service
          log("Starting....");
          player.start();
          State.set_state(context, State.STATE_PLAY);
-         notificate_click_to_stop();
          notificate();
 
          // A launch is successful if there is no error within the first few
@@ -575,13 +567,11 @@ public class IntentPlayer extends Service
       {
          case MediaPlayer.MEDIA_INFO_BUFFERING_START:
             State.set_state(context, State.STATE_BUFFER);
-            notificate_click_to_stop();
             notificate("Buffering...");
             break;
 
          case MediaPlayer.MEDIA_INFO_BUFFERING_END:
             State.set_state(context, State.STATE_PLAY);
-            notificate_click_to_stop();
             notificate();
             break;
       }
@@ -685,10 +675,22 @@ public class IntentPlayer extends Service
     */
 
    private void notificate()
-      { notificate(null); }
+      { notificate_click_to_stop(null); }
 
    private void notificate(String msg)
-      { notificate(msg,true); }
+      { notificate_click_to_stop(msg); }
+
+   private void notificate_click_to_stop(String msg)
+   {
+      builder.setContentIntent(pending_stop);
+      notificate(msg,true);
+   }
+
+   private void notificate_click_to_restart(String msg)
+   {
+      builder.setContentIntent(pending_restart);
+      notificate(msg,false);
+   }
 
    private void notificate(String msg, boolean ongoing)
    {
@@ -702,18 +704,6 @@ public class IntentPlayer extends Service
                .build();
          note_manager.notify(note_id, note);
       }
-   }
-
-   private void notificate_click_to_stop()
-   {
-      note = builder.setContentIntent(pending_stop).build();
-      note_manager.notify(note_id, note);
-   }
-
-   private void notificate_click_to_restart()
-   {
-      note = builder.setContentIntent(pending_restart).build();
-      note_manager.notify(note_id, note);
    }
 
    /* ********************************************************************
