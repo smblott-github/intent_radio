@@ -294,12 +294,12 @@ public class IntentPlayer extends Service
       log("Launching: ", url);
       notificate("Connecting...");
       notificate_click_to_stop();
+
+      previous_launch_url = null;
       previous_launch_successful = false;
 
       if ( ! URLUtil.isValidUrl(url) )
       {
-         previous_launch_url = null;
-         previous_launch_successful = false;
          toast("Invalid URL.");
          return stop("Invalid URL.");
       }
