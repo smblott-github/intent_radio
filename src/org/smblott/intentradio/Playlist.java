@@ -151,10 +151,11 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
       if ( mime.equals("application/music")             ) return true;
       if ( mime.indexOf("text/") == 0                   ) return true;
 
-      // Catch all...
+      // Catch alls...
       //
-      if ( mime.indexOf("mpegurl") != -1 )
-         return true;
+      if ( mime.indexOf("mpegurl")  != -1 ) return true;
+      if ( mime.indexOf("mpeg-url") != -1 ) return true;
+      if ( mime.indexOf("scpls")    != -1 ) return true;
 
       Logger.log("Playlist - not a valid MIME type: ", mime);
       return false;
