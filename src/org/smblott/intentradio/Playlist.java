@@ -61,7 +61,7 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
    }
 
    public static boolean is_playlist(String url)
-      { return url.endsWith(PlaylistPls.suffix) || url.endsWith(PlaylistM3u.suffix); }
+      { return PlaylistPls.is_playlist(url) || PlaylistM3u.is_playlist(url); }
 
    // This runs on the main thread...
    //
@@ -146,9 +146,15 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
       if ( mime.equals("audio/x-mpegurl")               ) return true;
       if ( mime.equals("audio/mpegurl")                 ) return true;
       if ( mime.equals("audio/mpeg-url")                ) return true;
+      if ( mime.equals("application/vnd.apple.mpegurl") ) return true;
       if ( mime.equals("application/x-winamp-playlist") ) return true;
       if ( mime.equals("application/music")             ) return true;
       if ( mime.indexOf("text/") == 0                   ) return true;
+
+      // Catch all...
+      //
+      if ( mime.indexOf("mpegurl") != -1 )
+         return true;
 
       Logger.log("Playlist - not a valid MIME type: ", mime);
       return false;

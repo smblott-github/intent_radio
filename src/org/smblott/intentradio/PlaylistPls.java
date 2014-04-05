@@ -5,10 +5,11 @@ import android.content.Context;
 
 public class PlaylistPls extends Playlist
 {
-   public static String suffix = ".pls";
-
    PlaylistPls(IntentPlayer player)
       { super(player); }
+
+   public static boolean is_playlist(String url)
+      { return url.endsWith(".pls"); }
 
    String filter(String line)
    {

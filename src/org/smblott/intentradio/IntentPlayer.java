@@ -257,14 +257,11 @@ public class IntentPlayer extends Service
 
       playlist_task = null;
 
-      if ( url.endsWith(PlaylistPls.suffix) )
+      if ( PlaylistPls.is_playlist(url) )
          playlist_task = new PlaylistPls(this);
 
-      if ( url.endsWith(PlaylistM3u.suffix) )
+      if ( PlaylistM3u.is_playlist(url) )
          playlist_task = new PlaylistM3u(this);
-
-      if ( url.endsWith(PlaylistM3u8.suffix) )
-         playlist_task = new PlaylistM3u8(this);
 
       if ( playlist_task != null )
       {
