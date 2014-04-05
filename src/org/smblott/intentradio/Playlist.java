@@ -141,6 +141,11 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
       if ( mime == null )
          return false;
 
+      // Is this (likely to be) a valid MIME type?
+      //
+      // We can be quite loose, here.  We're really just trying to avoid downloading
+      // a media URL as a playlist.
+      //
       if ( mime.equals("audio/x-scpls")                 ) return true;
       if ( mime.equals("audio/scpls")                   ) return true;
       if ( mime.equals("audio/x-mpegurl")               ) return true;
