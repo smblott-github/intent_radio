@@ -136,16 +136,16 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
     * MIME types...
     */
 
+   // Is this (likely to be) a playlist MIME type?
+   //
+   // We can be quite loose here.  We're just avoiding downloading
+   // a media URL as a playlist.
+   //
    public static boolean is_playlist_mime_type(String mime)
    {
       if ( mime == null )
          return false;
 
-      // Is this (likely to be) a valid MIME type?
-      //
-      // We can be quite loose, here.  We're really just trying to avoid downloading
-      // a media URL as a playlist.
-      //
       if ( mime.equals("audio/x-scpls")                 ) return true;
       if ( mime.equals("audio/scpls")                   ) return true;
       if ( mime.equals("audio/x-mpegurl")               ) return true;
@@ -154,13 +154,13 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
       if ( mime.equals("application/vnd.apple.mpegurl") ) return true;
       if ( mime.equals("application/x-winamp-playlist") ) return true;
       if ( mime.equals("application/music")             ) return true;
-      if ( mime.indexOf("text/") == 0                   ) return true;
 
       // Catch alls...
       //
       if ( mime.indexOf("mpegurl")  != -1 ) return true;
       if ( mime.indexOf("mpeg-url") != -1 ) return true;
       if ( mime.indexOf("scpls")    != -1 ) return true;
+      if ( mime.indexOf("text/")    ==  0 ) return true;
 
       Logger.log("Playlist - not a valid MIME type: ", mime);
       return false;
