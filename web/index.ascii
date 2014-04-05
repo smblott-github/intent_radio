@@ -244,6 +244,7 @@ on Dropbox.
   favourite station.
 - Changed name of state `play/dim` to `play/duck`; added state `complete`.
 - Fix systematic bug with almost all notification click actions being wrong!
+- Add .M3u8 playlist type (for BBC Media Selector).
 ****
 
 .Version 1.7:
