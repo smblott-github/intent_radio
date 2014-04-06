@@ -236,14 +236,15 @@ on Dropbox.
 
 .GitHub/master and bleeding-edge release:
 ****
-- When stopped or paused, clicking on the notification now restarts.
+- Major reworking of notifications, including look and click behaviour. +
+  When stopped or paused, clicking on the notification now restarts.
 - Substantial reworking of the state/audio-focus/thread model.
 - Recursive playlist fetch.  +
+  If a playlist contains a playlist, then fetch that too. +
   Post a playlist of your favourite stations online somewhere, even containing
   playlists itself, point Intent Radio towards it, and listen to a random
   favourite station.
 - Changed name of state `play/dim` to `play/duck`; added state `complete`.
-- Fix systematic bug with almost all notification click actions being wrong!
 - Add .M3u8 playlist type (for BBC Media Selector).
 ****
 
