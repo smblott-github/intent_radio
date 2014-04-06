@@ -234,7 +234,9 @@ https://dl.dropboxusercontent.com/u/41898306/IntentRadio-release.apk[here],
 on Dropbox.
 ****
 
-.GitHub/master and bleeding-edge release:
+// .GitHub/master and bleeding-edge release:
+
+.Version 1.8.0:
 ****
 - Major reworking of notifications, including look and click behaviour. +
   When stopped or paused, clicking on the notification now restarts.
