@@ -20,7 +20,7 @@ Stephen Blott <smblott+ir@gmail.com>
    +
    `url: INSERT-YOUR-URL-HERE` +
    +
-   and, in the second _Extra_, insert: +
+   and, under the second _Extra_, insert: +
    +
    `name: INSERT-YOUR-NAME-HERE` +
 - Leave everything else empty, except ensure that the _Target_ is

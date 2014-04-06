@@ -7,13 +7,14 @@ Stephen Blott <smblott+ir@gmail.com>
 
 .Enable/disable
 ****
+- Debugging is disabled, by default, on all signed release builds.
+- Debugging is enabled, by default, on builds that are signed with a debug key.
+
 - Debugging is enabled whenever an intent is received with a string extra
   `debug` with the value `on`.
 
 - Debugging is disabled whenever an intent is received with a string extra
   `debug` with the value `off`.
-
-Debugging is _always_ enabled on builds that are signed with a debug key.
 ****
 
 // /////////////////////////////////////////////////////
@@ -50,8 +51,9 @@ that's:
 
 [NOTE]
 ====
-This file is truncated each time the _Intent Radio_ service starts.
-However, it is never removed by the app itself.
+This file is truncated each time the _Intent Radio_ service starts, and
+each time debugging is enabled after previously being disabled.
+However, the file is never removed by the app itself.
 ====
 ****
 
