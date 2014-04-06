@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="org.smblott.intentradio"
-      android:versionCode="7"
+      android:versionCode="9"
       android:versionName="@string/version">
 
    <uses-sdk android:minSdkVersion="16" />
@@ -36,11 +36,12 @@
             <action android:name="android.intent.action.VIEW" />
             <category android:name="android.intent.category.DEFAULT" />
             <category android:name="android.intent.category.BROWSABLE" />
-            <data android:mimeType="audio/*"     android:scheme="http" />
-            <data android:pathPattern=".*\\.mp3" android:scheme="http" />
-            <data android:pathPattern=".*\\.aac" android:scheme="http" />
-            <data android:pathPattern=".*\\.pls" android:scheme="http" />
-            <data android:pathPattern=".*\\.m3u" android:scheme="http" />
+            <data android:mimeType="audio/*"      android:scheme="http" />
+            <data android:pathPattern=".*\\.mp3"  android:scheme="http" />
+            <data android:pathPattern=".*\\.aac"  android:scheme="http" />
+            <data android:pathPattern=".*\\.pls"  android:scheme="http" />
+            <data android:pathPattern=".*\\.m3u"  android:scheme="http" />
+            <data android:pathPattern=".*\\.m3u8" android:scheme="http" />
          </intent-filter>
       </activity>
 

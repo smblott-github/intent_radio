@@ -29,6 +29,7 @@ public class State extends Logger
 
       log("State.set_state(): ", s);
       current_state = s;
+      Notify.note();
 
       Intent intent = new Intent(intent_state);
       intent.putExtra("state", current_state);
@@ -49,7 +50,33 @@ public class State extends Logger
    public static boolean is(String s)
       { return current_state.equals(s); }
 
+   public static String text()
+   {
+      // is_stopped states.
+      if ( is(STATE_STOP)     ) return "Stopped";
+      if ( is(STATE_ERROR)    ) return "Error";
+      if ( is(STATE_COMPLETE) ) return "Complete";
+
+      // is_playing states.
+      if ( is(STATE_PLAY)     ) return "Playing";
+      if ( is(STATE_BUFFER)   ) return "Buffering";
+      if ( is(STATE_DUCK)     ) return "Ducked";
+
+      // paused.
+      if ( is(STATE_PAUSE)    ) return "Paused";
+
+      // Should not happen.
+      //
+      return "Unknown";
+   }
+
+   // These two predicates cover all states
+   // except "pause".
+   //
    public static boolean is_playing()
       { return is(State.STATE_PLAY) || is(State.STATE_BUFFER) || is(State.STATE_DUCK); }
+
+   public static boolean is_stopped()
+      { return State.is(State.STATE_STOP) || State.is(State.STATE_ERROR) || State.is(State.STATE_COMPLETE); }
 }
 

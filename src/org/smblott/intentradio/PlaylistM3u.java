@@ -5,10 +5,11 @@ import android.content.Context;
 
 public class PlaylistM3u extends Playlist
 {
-   public static String suffix = ".m3u";
-
    PlaylistM3u(IntentPlayer player)
       { super(player); }
+
+   public static boolean is_playlist(String url)
+      { return url.endsWith(".m3u") || url.endsWith(".m3u8"); }
 
    String filter(String line)
       { return line.indexOf('#') == 0 ? "" : line; }
