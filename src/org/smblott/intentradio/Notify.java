@@ -80,6 +80,10 @@ public class Notify
          else
          {
             log("Stopping foreground.");
+            // It would be nice to use "false", below.  However, while that
+            // gives nice smooth notification transitions, the resulting
+            // notification is *always* "ongoing", so it cannot be dismissed.
+            //
             service.stopForeground(true);
             Notification note =
                builder
