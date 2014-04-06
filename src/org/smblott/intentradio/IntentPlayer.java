@@ -208,6 +208,7 @@ public class IntentPlayer extends Service
          .setContentText("Connecting...");
       note = builder.build();
 
+      log("Starting foreground.");
       startForeground(note_id, note);
 
       // /////////////////////////////////////////////////////////////////
@@ -382,11 +383,11 @@ public class IntentPlayer extends Service
       //
       kill_note = kill_note || text == null || text.length() == 0;
 
+      log("Stopping foreground.");
+      stopForeground(true);
+
       if ( kill_note )
-      {
-         stopForeground(true);
          note = null;
-      }
       else
       {
          log("Keeping (now-)dismissable note: ", text);
@@ -458,8 +459,11 @@ public class IntentPlayer extends Service
                }
             }.start();
 
-      player.pause();
+      log("Stopping foreground.");
+      stopForeground(true);
       notificate(msg);
+
+      player.pause();
       return done(State.STATE_PAUSE);
    }
 
@@ -505,9 +509,12 @@ public class IntentPlayer extends Service
          pause_task = null;
       }
 
+      log("Starting foreground.");
+      startForeground(note_id, note);
+      notificate();
+
       player.setVolume(1.0f, 1.0f);
       player.start();
-      notificate();
       return done(State.STATE_PLAY);
    }
 
@@ -659,12 +666,12 @@ public class IntentPlayer extends Service
       // STATE_STOP broadcast.
       //
       State.set_state(context, State.STATE_COMPLETE);
-      notificate("Completed. Click to restart.");
+      notificate("Completed. Click to restart...");
       new Later()
       {
          @Override
          public void later()
-            { stop("Completed, stopped. Click to restart."); }
+            { stop("Completed, stopped. Click to restart..."); }
       }.start();
    }
 
