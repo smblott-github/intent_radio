@@ -280,6 +280,8 @@ public class IntentPlayer extends Service
       catch (Exception e)
          { return stop(); }
 
+      // The following is not working.
+      // new Metadata(context,url).start();
       return done(State.STATE_BUFFER);
    }
 
@@ -547,12 +549,15 @@ public class IntentPlayer extends Service
       {
          case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
             stop();
+            State.set_state(context,State.STATE_ERROR);
             break;
          case MediaPlayer.MEDIA_ERROR_UNKNOWN:
             stop();
+            State.set_state(context,State.STATE_ERROR);
             break;
          default:
             stop();
+            State.set_state(context,State.STATE_ERROR);
             break;
       }
 

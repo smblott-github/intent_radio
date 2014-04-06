@@ -73,7 +73,7 @@ public class Notify
          if ( current_foreground )
          {
             log("Starting foreground.");
-            builder.setContentInfo("(Touch to stop)");
+            builder.setContentInfo("(touch to stop)");
             Notification note = builder.setPriority(Notification.PRIORITY_HIGH).build();
             service.startForeground(note_id, note);
          }
@@ -81,7 +81,7 @@ public class Notify
          {
             log("Stopping foreground.");
             service.stopForeground(true);
-            builder.setContentInfo("(Touch to restart)");
+            builder.setContentInfo("(touch to restart)");
             Notification note = builder.setPriority(Notification.PRIORITY_DEFAULT).build();
             note_manager.notify(note_id, note);
          }
