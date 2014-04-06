@@ -248,6 +248,10 @@ on Dropbox.
   favourite station.
 - Changed name of state `play/dim` to `play/duck`; added state `complete`.
 - Add .M3u8 playlist type (for BBC Media Selector).
+
+Direct download (from GitHub):
+
+- https://github.com/smblott-github/intent_radio/releases/download/v1.8.0/IntentRadio-release.apk[v1.8.0/IntentRadio-release.apk]
 ****
 
 .Version 1.7:
