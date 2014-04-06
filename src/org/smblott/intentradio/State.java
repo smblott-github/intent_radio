@@ -50,6 +50,21 @@ public class State extends Logger
    public static boolean is(String s)
       { return current_state.equals(s); }
 
+   public static String text()
+   {
+      if ( is(STATE_STOP)     ) return "Stopped";
+      if ( is(STATE_ERROR)    ) return "Error";
+      if ( is(STATE_COMPLETE) ) return "Complete";
+      if ( is(STATE_PAUSE)    ) return "Paused";
+      if ( is(STATE_PLAY)     ) return "Playing";
+      if ( is(STATE_BUFFER)   ) return "Buffering";
+      if ( is(STATE_DUCK)     ) return "Ducked";
+
+      // Should not happen.
+      //
+      return "Unknown";
+   }
+
    // These two predicates cover all states
    // except "pause".
    //

@@ -42,12 +42,9 @@ public class Notify
             ;
    }
 
-   private static String previous_msg = null;
+   private static String previous_state = null;
    private static String previous_name = null;
    private static boolean previous_foreground = false;
-
-   public static void note()
-      { note(previous_msg); }
 
    public static void name(String name)
    {
@@ -58,19 +55,19 @@ public class Notify
       }
    }
 
-   public static void note(String msg)
+   public static void note()
    {
       builder.setWhen(System.currentTimeMillis());
 
-      if ( previous_msg == null || ! msg.equals(previous_msg) )
+      String state = State.text();
+      if ( previous_state == null || ! state.equals(previous_state) )
       {
-         Notification note = builder.setSubText(msg).build();
+         Notification note = builder.setSubText(state+".").build();
          note_manager.notify(note_id, note);
-         previous_msg = msg;
+         previous_state = state;
       }
 
       boolean current_foreground = State.is_playing();
-
       if ( current_foreground != previous_foreground )
       {
          if ( current_foreground )

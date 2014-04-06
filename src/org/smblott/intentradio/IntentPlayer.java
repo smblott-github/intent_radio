@@ -177,7 +177,6 @@ public class IntentPlayer extends Service
 
       toast(name);
       log("Play: ", url);
-      Notify.note("Connecting...");
 
       // /////////////////////////////////////////////////////////////////
       // Check URL...
@@ -185,7 +184,7 @@ public class IntentPlayer extends Service
       if ( ! URLUtil.isValidUrl(url) )
       {
          toast("Invalid URL.");
-         return stop("Invalid URL.");
+         return stop();
       }
 
       // /////////////////////////////////////////////////////////////////
@@ -193,7 +192,7 @@ public class IntentPlayer extends Service
 
       int focus = audio_manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
       if ( focus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
-         return stop("Failed to obtain audio focus!");
+         return stop();
 
       // /////////////////////////////////////////////////////////////////
       // Set up media player...
@@ -235,7 +234,6 @@ public class IntentPlayer extends Service
       if ( playlist_task != null )
       {
          playlist_task.execute(url);
-         Notify.note("Fetching playlist...");
          return done(State.STATE_BUFFER);
       }
 
@@ -261,7 +259,6 @@ public class IntentPlayer extends Service
    public int play_launch(String url)
    {
       log("Launching: ", url);
-      Notify.note("Connecting...");
 
       previous_launch_url = null;
       previous_launch_successful = false;
@@ -269,7 +266,7 @@ public class IntentPlayer extends Service
       if ( ! URLUtil.isValidUrl(url) )
       {
          toast("Invalid URL.");
-         return stop("Invalid URL.");
+         return stop();
       }
 
       previous_launch_url = url;
@@ -281,7 +278,7 @@ public class IntentPlayer extends Service
          player.prepareAsync();
       }
       catch (Exception e)
-         { return stop("Initialisation error."); }
+         { return stop(); }
 
       return done(State.STATE_BUFFER);
    }
@@ -291,13 +288,7 @@ public class IntentPlayer extends Service
     */
 
    private int stop()
-      { return stop(null,true); }
-
-   private int stop(boolean real_stop)
-      { return stop(null,real_stop); }
-
-   private int stop(String msg)
-      { return stop(msg,true); }
+      { return stop(true); }
 
    // Parameters:
    //   text: text to put in notification (if it is not dismissed).
@@ -305,10 +296,9 @@ public class IntentPlayer extends Service
    //              that is, when we're about to start playback, and we are only
    //              stopping to clean up state and move time on.
    //
-   private int stop(String text, boolean real_stop)
+   private int stop(boolean real_stop)
    {
       log("Stopping real_stop: ", ""+real_stop);
-      log("Stopping text: ", text == null ? "null" : text);
 
       audio_manager.abandonAudioFocus(this);
       WifiLocker.unlock();
@@ -352,7 +342,6 @@ public class IntentPlayer extends Service
          }
       }.start();
 
-      Notify.note(text == null ? "Stopped. Click to restart..." : text);
       return done(State.STATE_STOP);
    }
 
@@ -394,12 +383,11 @@ public class IntentPlayer extends Service
                public void later()
                {
                   pause_task = null;
-                  stop("Suspended, click to restart...");
+                  stop();
                }
             }.start();
 
       player.pause();
-      Notify.note(msg);
       return done(State.STATE_PAUSE);
    }
 
@@ -411,7 +399,6 @@ public class IntentPlayer extends Service
          return done();
 
       player.setVolume(0.1f, 0.1f);
-      Notify.note(msg);
       return done(State.STATE_DUCK);
    }
 
@@ -428,7 +415,6 @@ public class IntentPlayer extends Service
       if ( State.is(State.STATE_DUCK) )
       {
          player.setVolume(0.1f, 0.1f);
-         Notify.note("Playing.");
          return done(State.STATE_PLAY);
       }
 
@@ -447,7 +433,6 @@ public class IntentPlayer extends Service
 
       player.setVolume(1.0f, 1.0f);
       player.start();
-      Notify.note("Playing.");
       return done(State.STATE_PLAY);
    }
 
@@ -495,7 +480,6 @@ public class IntentPlayer extends Service
          log("Starting....");
          player.start();
          State.set_state(context, State.STATE_PLAY);
-         Notify.note("Playing.");
 
          // A launch is successful if there is no error within the first few
          // seconds.  If a launch is successful then later the stream fails,
@@ -535,12 +519,10 @@ public class IntentPlayer extends Service
       {
          case MediaPlayer.MEDIA_INFO_BUFFERING_START:
             State.set_state(context, State.STATE_BUFFER);
-            Notify.note("Buffering...");
             break;
 
          case MediaPlayer.MEDIA_INFO_BUFFERING_END:
             State.set_state(context, State.STATE_PLAY);
-            Notify.note("Playing.");
             break;
       }
       return true;
@@ -564,13 +546,13 @@ public class IntentPlayer extends Service
       switch ( what )
       {
          case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
-            stop("Media server died.");
+            stop();
             break;
          case MediaPlayer.MEDIA_ERROR_UNKNOWN:
-            stop("Media error.");
+            stop();
             break;
          default:
-            stop("Unknown error.");
+            stop();
             break;
       }
 
@@ -591,12 +573,11 @@ public class IntentPlayer extends Service
       // STATE_STOP broadcast.
       //
       State.set_state(context, State.STATE_COMPLETE);
-      Notify.note("Completed. Click to restart...");
       new Later()
       {
          @Override
          public void later()
-            { stop("Completed, stopped. Click to restart..."); }
+            { stop(); }
       }.start();
    }
 
@@ -619,7 +600,7 @@ public class IntentPlayer extends Service
 
             case AudioManager.AUDIOFOCUS_LOSS:
                log("audiofocus_loss");
-               stop("Audio focus lost, stopped...");
+               stop();
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
