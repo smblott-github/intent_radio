@@ -42,19 +42,29 @@ public class Notify
             ;
    }
 
-   private static String previous_msg = "No message.";
+   private static String previous_msg = null;
+   private static String previous_name = null;
    private static boolean previous_foreground = false;
 
    public static void note()
       { note(previous_msg); }
 
+   public static void name(String name)
+   {
+      if ( previous_name == null || ! name.equals(previous_name) )
+      {
+         builder.setContentText(name);
+         previous_name = name;
+      }
+   }
+
    public static void note(String msg)
    {
       builder.setWhen(System.currentTimeMillis());
 
-      if ( ! msg.equals(previous_msg) )
+      if ( previous_msg == null || ! msg.equals(previous_msg) )
       {
-         Notification note = builder.setContentText(msg).build();
+         Notification note = builder.setSubText(msg).build();
          note_manager.notify(note_id, note);
          previous_msg = msg;
       }
@@ -66,6 +76,7 @@ public class Notify
          if ( current_foreground )
          {
             log("Starting foreground.");
+            builder.setContentInfo("(Touch to stop)");
             Notification note = builder.setPriority(Notification.PRIORITY_HIGH).build();
             service.startForeground(note_id, note);
          }
@@ -73,6 +84,7 @@ public class Notify
          {
             log("Stopping foreground.");
             service.stopForeground(true);
+            builder.setContentInfo("(Touch to restart)");
             Notification note = builder.setPriority(Notification.PRIORITY_DEFAULT).build();
             note_manager.notify(note_id, note);
          }

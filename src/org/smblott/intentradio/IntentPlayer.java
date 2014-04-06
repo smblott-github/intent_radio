@@ -156,6 +156,7 @@ public class IntentPlayer extends Service
 
          log("Name: ", name);
          log("URL: ", url);
+         Notify.name(name);
          return play(url);
       }
 
@@ -360,7 +361,7 @@ public class IntentPlayer extends Service
     */
 
    private int pause()
-      { return pause("Paused..."); }
+      { return pause("Paused."); }
 
    private int pause(String msg)
    {
@@ -427,7 +428,7 @@ public class IntentPlayer extends Service
       if ( State.is(State.STATE_DUCK) )
       {
          player.setVolume(0.1f, 0.1f);
-         Notify.note(name);
+         Notify.note("Playing.");
          return done(State.STATE_PLAY);
       }
 
@@ -446,7 +447,7 @@ public class IntentPlayer extends Service
 
       player.setVolume(1.0f, 1.0f);
       player.start();
-      Notify.note(name);
+      Notify.note("Playing.");
       return done(State.STATE_PLAY);
    }
 
@@ -494,7 +495,7 @@ public class IntentPlayer extends Service
          log("Starting....");
          player.start();
          State.set_state(context, State.STATE_PLAY);
-         Notify.note(name);
+         Notify.note("Playing.");
 
          // A launch is successful if there is no error within the first few
          // seconds.  If a launch is successful then later the stream fails,
@@ -539,7 +540,7 @@ public class IntentPlayer extends Service
 
          case MediaPlayer.MEDIA_INFO_BUFFERING_END:
             State.set_state(context, State.STATE_PLAY);
-            Notify.note(name);
+            Notify.note("Playing.");
             break;
       }
       return true;
