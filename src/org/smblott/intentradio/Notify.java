@@ -45,6 +45,7 @@ public class Notify
    private static String previous_state = null;
    private static String previous_name = null;
    private static boolean previous_foreground = false;
+   private static boolean notification_created = false;
 
    public static void name(String name)
    {
@@ -57,42 +58,60 @@ public class Notify
 
    public static void note()
    {
-      builder.setWhen(System.currentTimeMillis());
-
+      // Note:
+      // STATE_PAUSED is *not* in the foreground.
+      //
       boolean current_foreground = State.is_playing();
-      if ( current_foreground != previous_foreground )
+
+      if ( current_foreground != previous_foreground || ! notification_created )
       {
          if ( current_foreground )
          {
             log("Starting foreground.");
-            builder.setContentInfo("(touch to stop)");
-            builder.setOngoing(true);
-            Notification note = builder.setPriority(Notification.PRIORITY_HIGH).build();
+            Notification note =
+               builder
+                  .setContentInfo("(touch to stop)")
+                  .setOngoing(true)
+                  .setPriority(Notification.PRIORITY_HIGH)
+                  .setWhen(System.currentTimeMillis())
+                  .build();
             service.startForeground(note_id, note);
          }
          else
          {
             log("Stopping foreground.");
             service.stopForeground(true);
-            builder.setContentInfo("(touch to restart)");
-            builder.setOngoing(false);
-            Notification note = builder.setPriority(Notification.PRIORITY_DEFAULT).build();
+            Notification note =
+               builder
+                  .setContentInfo("(touch to restart)")
+                  .setOngoing(false)
+                  .setPriority(Notification.PRIORITY_DEFAULT)
+                  .setWhen(System.currentTimeMillis())
+                  .build();
             note_manager.notify(note_id, note);
          }
          previous_foreground = current_foreground;
+         notification_created = true;
       }
 
       String state = State.text();
       if ( previous_state == null || ! state.equals(previous_state) )
       {
-         Notification note = builder.setSubText(state+".").build();
+         log("Notify state: ", state);
+         Notification note =
+            builder.setSubText(state+".")
+            .setWhen(System.currentTimeMillis())
+            .build();
          note_manager.notify(note_id, note);
          previous_state = state;
       }
    }
 
    public static void cancel()
-      { note_manager.cancel(note_id); }
+   {
+      log("Notify cancel().");
+      note_manager.cancelAll();
+   }
 
    /* ********************************************************************
     * Logging...

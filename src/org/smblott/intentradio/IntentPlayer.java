@@ -448,7 +448,9 @@ public class IntentPlayer extends Service
       if ( State.is_playing() )
       {
          stop();
+         log("Click: cancel notification");
          Notify.cancel();
+         return done();
       }
 
       if ( State.is(State.STATE_PAUSE) )
