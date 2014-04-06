@@ -5,7 +5,7 @@ import java.lang.Thread;
 
 public abstract class Later extends AsyncTask<Integer, Void, Void>
 {
-   private static final int default_seconds = 5;
+   private static final int default_seconds = 120;
    private int seconds = default_seconds;
    private int then;
 
