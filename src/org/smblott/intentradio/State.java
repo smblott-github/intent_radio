@@ -29,6 +29,7 @@ public class State extends Logger
 
       log("State.set_state(): ", s);
       current_state = s;
+      Notify.note();
 
       Intent intent = new Intent(intent_state);
       intent.putExtra("state", current_state);
