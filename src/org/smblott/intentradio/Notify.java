@@ -59,14 +59,6 @@ public class Notify
    {
       builder.setWhen(System.currentTimeMillis());
 
-      String state = State.text();
-      if ( previous_state == null || ! state.equals(previous_state) )
-      {
-         Notification note = builder.setSubText(state+".").build();
-         note_manager.notify(note_id, note);
-         previous_state = state;
-      }
-
       boolean current_foreground = State.is_playing();
       if ( current_foreground != previous_foreground )
       {
@@ -74,6 +66,7 @@ public class Notify
          {
             log("Starting foreground.");
             builder.setContentInfo("(touch to stop)");
+            builder.setOngoing(true);
             Notification note = builder.setPriority(Notification.PRIORITY_HIGH).build();
             service.startForeground(note_id, note);
          }
@@ -82,14 +75,23 @@ public class Notify
             log("Stopping foreground.");
             service.stopForeground(true);
             builder.setContentInfo("(touch to restart)");
+            builder.setOngoing(false);
             Notification note = builder.setPriority(Notification.PRIORITY_DEFAULT).build();
             note_manager.notify(note_id, note);
          }
          previous_foreground = current_foreground;
       }
+
+      String state = State.text();
+      if ( previous_state == null || ! state.equals(previous_state) )
+      {
+         Notification note = builder.setSubText(state+".").build();
+         note_manager.notify(note_id, note);
+         previous_state = state;
+      }
    }
 
-   public static void hide()
+   public static void cancel()
       { note_manager.cancel(note_id); }
 
    /* ********************************************************************

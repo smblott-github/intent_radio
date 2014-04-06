@@ -52,13 +52,18 @@ public class State extends Logger
 
    public static String text()
    {
+      // is_stopped states.
       if ( is(STATE_STOP)     ) return "Stopped";
       if ( is(STATE_ERROR)    ) return "Error";
       if ( is(STATE_COMPLETE) ) return "Complete";
-      if ( is(STATE_PAUSE)    ) return "Paused";
+
+      // is_playing states.
       if ( is(STATE_PLAY)     ) return "Playing";
       if ( is(STATE_BUFFER)   ) return "Buffering";
       if ( is(STATE_DUCK)     ) return "Ducked";
+
+      // paused.
+      if ( is(STATE_PAUSE)    ) return "Paused";
 
       // Should not happen.
       //
