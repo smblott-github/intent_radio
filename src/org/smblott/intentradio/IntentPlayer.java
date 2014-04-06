@@ -363,6 +363,7 @@ public class IntentPlayer extends Service
       //
       Counter.time_passes();
       previous_launch_url = null;
+      previous_launch_successful = false;
 
       // Stop player...
       //
@@ -374,9 +375,14 @@ public class IntentPlayer extends Service
          player.reset();
       }
 
+      if ( ! real_stop )
+         return done();
+
       // Handle notification...
       //
-      if ( kill_note || text == null || text.length() == 0 )
+      kill_note = kill_note || text == null || text.length() == 0;
+
+      if ( kill_note )
       {
          stopForeground(true);
          note = null;
@@ -387,28 +393,27 @@ public class IntentPlayer extends Service
          notificate(text);
       }
 
-      if ( real_stop )
-         // We're still holding resources, including the player itself.
-         // Spin off a task to clean up, soon.
-         //
-         // No need to cancel this task.  The state is now STATE_STOP, all
-         // events affecting the relevance of this thread move time on.
-         // 
-         new Later()
+      // We're still holding resources, including the player itself.
+      // Spin off a task to clean up, soon.
+      //
+      // No need to cancel this task.  The state is now STATE_STOP, all
+      // events affecting the relevance of this thread move time on.
+      // 
+      new Later()
+      {
+         @Override
+         public void later()
          {
-            @Override
-            public void later()
+            if ( player != null )
             {
-               if ( player != null )
-               {
-                  log("Releasing player.");
-                  player.release();
-                  player = null;
-               }
+               log("Releasing player.");
+               player.release();
+               player = null;
             }
-         }.start();
+         }
+      }.start();
 
-      return done(real_stop ? State.STATE_STOP : null);
+      return done(State.STATE_STOP);
    }
 
    /* ********************************************************************
@@ -530,11 +535,14 @@ public class IntentPlayer extends Service
    private int done(String state)
    {
       if ( state != null )
-      {
          State.set_state(context, state);
+
+      if ( note != null )
+      {
          note = builder.setOngoing(State.is_playing()).build();
          note_manager.notify(note_id, note);
       }
+
       return done();
    }
 
@@ -567,7 +575,7 @@ public class IntentPlayer extends Service
          // thread move time on.
          // TODO: Is that really true?
          // 
-         new Later(20)
+         new Later(30)
          {
             @Override
             public void later()
@@ -646,22 +654,18 @@ public class IntentPlayer extends Service
    {
       log("Completion.");
 
-      stop("Completed. Click to restart.");
-      done(State.STATE_COMPLETE);
-
-      // if ( player != null
-      //       && previous_launch_url != null
-      //       && previous_launch_successful
-      //       && URLUtil.isNetworkUrl(previous_launch_url))
-      // {
-      //    player.reset();
-      //    play_relaunch();
-      // }
-      // else
-      // {
-      //    stop("Completed. Click to restart.");
-      //    done(State.STATE_COMPLETE);
-      // }
+      // Listeners will receive a STATE_COMPLETE broadcast, then (if there is
+      // no further state change) shortly later (the Later default timeout) a
+      // STATE_STOP broadcast.
+      //
+      State.set_state(context, State.STATE_COMPLETE);
+      notificate("Completed. Click to restart.");
+      new Later()
+      {
+         @Override
+         public void later()
+            { stop("Completed, stopped. Click to restart."); }
+      }.start();
    }
 
    /* ********************************************************************
