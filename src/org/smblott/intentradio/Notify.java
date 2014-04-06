@@ -1,5 +1,6 @@
 package org.smblott.intentradio;
 
+import java.lang.System;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -41,7 +42,7 @@ public class Notify
             ;
    }
 
-   private static String previous_msg = "None";
+   private static String previous_msg = "No message.";
    private static boolean previous_foreground = false;
 
    public static void note()
@@ -49,6 +50,8 @@ public class Notify
 
    public static void note(String msg)
    {
+      builder.setWhen(System.currentTimeMillis());
+
       if ( ! msg.equals(previous_msg) )
       {
          Notification note = builder.setContentText(msg).build();
@@ -60,16 +63,17 @@ public class Notify
 
       if ( current_foreground != previous_foreground )
       {
-         Notification note = builder.build();
          if ( current_foreground )
          {
             log("Starting foreground.");
+            Notification note = builder.setPriority(Notification.PRIORITY_HIGH).build();
             service.startForeground(note_id, note);
          }
          else
          {
             log("Stopping foreground.");
             service.stopForeground(true);
+            Notification note = builder.setPriority(Notification.PRIORITY_DEFAULT).build();
             note_manager.notify(note_id, note);
          }
          previous_foreground = current_foreground;
