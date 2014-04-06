@@ -10,11 +10,6 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.StrictMode;
 
-import android.app.PendingIntent;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.Notification.Builder;
-
 import android.media.AudioManager;
 import android.media.AudioManager.OnAudioFocusChangeListener;
 
@@ -48,7 +43,6 @@ public class IntentPlayer extends Service
    private static SharedPreferences settings = null;
 
    private static Context context = null;
-   private static PendingIntent pending_click = null;
 
    private static String app_name = null;
    private static String app_name_long = null;
@@ -64,10 +58,7 @@ public class IntentPlayer extends Service
    public  static String name = null;
    public  static String url = null;
 
-   private static NotificationManager note_manager = null;
-   private static Notification note = null;
    private static MediaPlayer player = null;
-   private static Builder builder = null;
    private static AudioManager audio_manager = null;
 
    private static Playlist playlist_task = null;
@@ -81,6 +72,7 @@ public class IntentPlayer extends Service
    public void onCreate() {
       context = getApplicationContext();
       Logger.init(context);
+      Notify.init(this,context);
 
       app_name = getString(R.string.app_name);
       app_name_long = getString(R.string.app_name_long);
@@ -97,22 +89,7 @@ public class IntentPlayer extends Service
       url = settings.getString("url", default_url);
       name = settings.getString("name", default_name);
 
-      note_manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-      Intent click = new Intent(context, IntentPlayer.class).putExtra("action", intent_click);
-      pending_click = PendingIntent.getService(context, 0, click, 0);
-
       audio_manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-
-      builder =
-         new Notification.Builder(context)
-            .setSmallIcon(R.drawable.intent_radio)
-            .setPriority(Notification.PRIORITY_HIGH)
-            .setContentIntent(pending_click)
-            .setContentTitle(app_name_long)
-            // not available in API 16...
-            // .setShowWhen(false)
-            ;
    }
 
    /* ********************************************************************
@@ -199,17 +176,7 @@ public class IntentPlayer extends Service
 
       toast(name);
       log("Play: ", url);
-
-      // /////////////////////////////////////////////////////////////////
-      // Notification...
-
-      builder
-         .setOngoing(true)
-         .setContentText("Connecting...");
-      note = builder.build();
-
-      log("Starting foreground.");
-      startForeground(note_id, note);
+      Notify.note("Connecting...");
 
       // /////////////////////////////////////////////////////////////////
       // Check URL...
@@ -267,7 +234,7 @@ public class IntentPlayer extends Service
       if ( playlist_task != null )
       {
          playlist_task.execute(url);
-         notificate("Fetching playlist...");
+         Notify.note("Fetching playlist...");
          return done(State.STATE_BUFFER);
       }
 
@@ -293,7 +260,7 @@ public class IntentPlayer extends Service
    public int play_launch(String url)
    {
       log("Launching: ", url);
-      notificate("Connecting...");
+      Notify.note("Connecting...");
 
       previous_launch_url = null;
       previous_launch_successful = false;
@@ -323,37 +290,22 @@ public class IntentPlayer extends Service
     */
 
    private int stop()
-   {
-      // Stop, kill notification and send state.
-      // This is a real and final stop().
-      //
-      return stop(true,null,true);
-   }
+      { return stop(null,true); }
 
    private int stop(boolean real_stop)
-   {
-      // Stop, kill notification and possibly send state.
-      //
-      return stop(true,null,real_stop);
-   }
+      { return stop(null,real_stop); }
 
    private int stop(String msg)
-   {
-      // Stop, keep notification and send state.
-      //
-      return stop(false,msg,true);
-   }
+      { return stop(msg,true); }
 
    // Parameters:
-   //   kill_note: should the notification be dismissed?
    //   text: text to put in notification (if it is not dismissed).
    //   real_stop: usually true; only false when stop() is called from play();
    //              that is, when we're about to start playback, and we are only
    //              stopping to clean up state and move time on.
    //
-   private int stop(boolean kill_note, String text, boolean real_stop)
+   private int stop(String text, boolean real_stop)
    {
-      log("Stopping kill_note: ", ""+kill_note);
       log("Stopping real_stop: ", ""+real_stop);
       log("Stopping text: ", text == null ? "null" : text);
 
@@ -379,21 +331,6 @@ public class IntentPlayer extends Service
       if ( ! real_stop )
          return done();
 
-      // Handle notification...
-      //
-      kill_note = kill_note || text == null || text.length() == 0;
-
-      log("Stopping foreground.");
-      stopForeground(true);
-
-      if ( kill_note )
-         note = null;
-      else
-      {
-         log("Keeping (now-)dismissable note: ", text);
-         notificate(text);
-      }
-
       // We're still holding resources, including the player itself.
       // Spin off a task to clean up, soon.
       //
@@ -414,6 +351,7 @@ public class IntentPlayer extends Service
          }
       }.start();
 
+      Notify.note(text == null ? "Stopped. Click to restart..." : text);
       return done(State.STATE_STOP);
    }
 
@@ -459,11 +397,8 @@ public class IntentPlayer extends Service
                }
             }.start();
 
-      log("Stopping foreground.");
-      stopForeground(true);
-      notificate(msg);
-
       player.pause();
+      Notify.note(msg);
       return done(State.STATE_PAUSE);
    }
 
@@ -475,7 +410,7 @@ public class IntentPlayer extends Service
          return done();
 
       player.setVolume(0.1f, 0.1f);
-      notificate(msg);
+      Notify.note(msg);
       return done(State.STATE_DUCK);
    }
 
@@ -492,7 +427,7 @@ public class IntentPlayer extends Service
       if ( State.is(State.STATE_DUCK) )
       {
          player.setVolume(0.1f, 0.1f);
-         notificate();
+         Notify.note(name);
          return done(State.STATE_PLAY);
       }
 
@@ -509,12 +444,9 @@ public class IntentPlayer extends Service
          pause_task = null;
       }
 
-      log("Starting foreground.");
-      startForeground(note_id, note);
-      notificate();
-
       player.setVolume(1.0f, 1.0f);
       player.start();
+      Notify.note(name);
       return done(State.STATE_PLAY);
    }
 
@@ -544,19 +476,11 @@ public class IntentPlayer extends Service
       if ( state != null )
          State.set_state(context, state);
 
-      if ( note != null )
-      {
-         note = builder.setOngoing(State.is_playing()).build();
-         note_manager.notify(note_id, note);
-      }
-
       return done();
    }
 
    private int done()
-   {
-      return START_NOT_STICKY;
-   }
+      { return START_NOT_STICKY; }
 
    /* ********************************************************************
     * Listeners...
@@ -570,7 +494,7 @@ public class IntentPlayer extends Service
          log("Starting....");
          player.start();
          State.set_state(context, State.STATE_PLAY);
-         notificate();
+         Notify.note(name);
 
          // A launch is successful if there is no error within the first few
          // seconds.  If a launch is successful then later the stream fails,
@@ -610,12 +534,12 @@ public class IntentPlayer extends Service
       {
          case MediaPlayer.MEDIA_INFO_BUFFERING_START:
             State.set_state(context, State.STATE_BUFFER);
-            notificate("Buffering...");
+            Notify.note("Buffering...");
             break;
 
          case MediaPlayer.MEDIA_INFO_BUFFERING_END:
             State.set_state(context, State.STATE_PLAY);
-            notificate();
+            Notify.note(name);
             break;
       }
       return true;
@@ -666,7 +590,7 @@ public class IntentPlayer extends Service
       // STATE_STOP broadcast.
       //
       State.set_state(context, State.STATE_COMPLETE);
-      notificate("Completed. Click to restart...");
+      Notify.note("Completed. Click to restart...");
       new Later()
       {
          @Override
@@ -707,27 +631,6 @@ public class IntentPlayer extends Service
                duck("Audio focus lost, ducking...");
                break;
          }
-   }
-
-   /* ****************************************************************
-    * Notifications...
-    */
-
-   private void notificate()
-      { notificate(name); }
-
-   private void notificate(String msg)
-   {
-      if ( note != null && msg != null )
-      {
-         log("Notificate: ", msg);
-         note =
-            builder
-               .setContentText(msg)
-               .setOngoing(State.is_playing())
-               .build();
-         note_manager.notify(note_id, note);
-      }
    }
 
    /* ********************************************************************

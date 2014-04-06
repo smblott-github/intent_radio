@@ -21,7 +21,7 @@ public class Notify
    private static Builder builder = null;
    private static Notification note = null;
 
-   public void init(Service a_service, Context a_context)
+   public static void init(Service a_service, Context a_context)
    {
       service = a_service;
       context = a_context;
