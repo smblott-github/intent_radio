@@ -13,8 +13,10 @@ public class Counter extends Logger
    public static boolean still(int then)
    {
       boolean ok = (then == now());
-      if ( ! ok )
-         log("Counter: too late: then=", ""+then, " now=", ""+now());
+      if ( ok )
+         log("Counter on time: now=", ""+now());
+      else
+         log("Counter too late: then=", ""+then, " now=", ""+now());
       return ok;
    }
 }

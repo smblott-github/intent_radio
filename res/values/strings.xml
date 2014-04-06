@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="version">1.7b</string>
+    <string name="version">1.7c</string>
     <string name="app_name">IntentRadio</string>
     <string name="app_name_long">Intent Radio</string>
     <string name="default_url">http://www.bbc.co.uk/mediaselector/playlists/hls/radio/nonuk/lo/ak/bbc_radio_fourfm.m3u8</string>
@@ -11,5 +11,6 @@
     <string name="intent_restart">org.smblott.intentradio.RESTART</string>
     <string name="intent_state">org.smblott.intentradio.STATE</string>
     <string name="intent_state_request">org.smblott.intentradio.STATE_REQUEST</string>
+    <string name="intent_click">org.smblott.intentradio.CLICK</string>
     <string name="intent_log_file">intent-radio.log</string>
 </resources>
