@@ -446,7 +446,10 @@ public class IntentPlayer extends Service
          return play();
 
       if ( State.is_playing() )
-         return stop();
+      {
+         stop();
+         Notify.hide();
+      }
 
       if ( State.is(State.STATE_PAUSE) )
          return restart();

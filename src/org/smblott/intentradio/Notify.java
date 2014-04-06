@@ -89,6 +89,9 @@ public class Notify
       }
    }
 
+   public static void hide()
+      { note_manager.cancel(note_id); }
+
    /* ********************************************************************
     * Logging...
     */
