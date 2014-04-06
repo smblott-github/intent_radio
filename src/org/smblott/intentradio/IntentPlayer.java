@@ -48,9 +48,7 @@ public class IntentPlayer extends Service
    private static SharedPreferences settings = null;
 
    private static Context context = null;
-   private static PendingIntent pending_stop = null;
-   private static PendingIntent pending_play = null;
-   private static PendingIntent pending_restart = null;
+   private static PendingIntent pending_click = null;
 
    private static String app_name = null;
    private static String app_name_long = null;
@@ -59,6 +57,7 @@ public class IntentPlayer extends Service
    private static String intent_pause = null;
    private static String intent_restart = null;
    private static String intent_state_request = null;
+   private static String intent_click = null;
 
    private static String default_url = null;
    private static String default_name = null;
@@ -90,6 +89,7 @@ public class IntentPlayer extends Service
       intent_pause = getString(R.string.intent_pause);
       intent_restart = getString(R.string.intent_restart);
       intent_state_request = context.getString(R.string.intent_state_request);
+      intent_click = getString(R.string.intent_click);
       default_url = getString(R.string.default_url);
       default_name = getString(R.string.default_name);
 
@@ -98,9 +98,9 @@ public class IntentPlayer extends Service
       name = settings.getString("name", default_name);
 
       note_manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-      pending_stop = PendingIntent.getBroadcast(context, 0, new Intent(intent_stop), 0);
-      pending_play = PendingIntent.getBroadcast(context, 0, new Intent(intent_play), 0);
-      pending_restart = PendingIntent.getBroadcast(context, 0, new Intent(intent_restart), 0);
+
+      Intent click = new Intent(context, IntentPlayer.class).putExtra("action", intent_click);
+      pending_click = PendingIntent.getService(context, 0, click, 0);
 
       audio_manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
@@ -108,7 +108,7 @@ public class IntentPlayer extends Service
          new Notification.Builder(context)
             .setSmallIcon(R.drawable.intent_radio)
             .setPriority(Notification.PRIORITY_HIGH)
-            .setContentIntent(pending_stop)
+            .setContentIntent(pending_click)
             .setContentTitle(app_name_long)
             // not available in API 16...
             // .setShowWhen(false)
@@ -156,6 +156,7 @@ public class IntentPlayer extends Service
       if ( action.equals(intent_stop)    ) return stop();
       if ( action.equals(intent_pause)   ) return pause();
       if ( action.equals(intent_restart) ) return restart();
+      if ( action.equals(intent_click)   ) return click();
 
       if ( action.equals(intent_state_request) )
       {
@@ -204,7 +205,6 @@ public class IntentPlayer extends Service
 
       builder
          .setOngoing(true)
-         .setContentIntent(pending_stop)
          .setContentText("Connecting...");
       note = builder.build();
 
@@ -323,7 +323,7 @@ public class IntentPlayer extends Service
 
    private int stop()
    {
-      // Stop, kill notification an send state.
+      // Stop, kill notification and send state.
       // This is a real and final stop().
       //
       return stop(true,null,true);
@@ -338,11 +338,18 @@ public class IntentPlayer extends Service
 
    private int stop(String msg)
    {
-      // Stop, keep notification and do send state.
+      // Stop, keep notification and send state.
       //
       return stop(false,msg,true);
    }
 
+   // Parameters:
+   //   kill_note: should the notification be dismissed?
+   //   text: text to put in notification (if it is not dismissed).
+   //   real_stop: usually true; only false when stop() is called from play();
+   //              that is, when we're about to start playback, and we are only
+   //              stopping to clean up state and move time on.
+   //
    private int stop(boolean kill_note, String text, boolean real_stop)
    {
       log("Stopping kill_note: ", ""+kill_note);
@@ -377,15 +384,15 @@ public class IntentPlayer extends Service
       else
       {
          log("Keeping (now-)dismissable note: ", text);
-         notificate_click_to_restart(text);
+         notificate(text);
       }
 
       if ( real_stop )
          // We're still holding resources, including the player itself.
          // Spin off a task to clean up, soon.
          //
-         // No need to cancel this.  Because the state is now STATE_STOP, all
-         // events effecting the relevance of this thread move time on.
+         // No need to cancel this task.  The state is now STATE_STOP, all
+         // events affecting the relevance of this thread move time on.
          // 
          new Later()
          {
@@ -447,7 +454,7 @@ public class IntentPlayer extends Service
             }.start();
 
       player.pause();
-      notificate_click_to_restart(msg);
+      notificate(msg);
       return done(State.STATE_PAUSE);
    }
 
@@ -467,7 +474,7 @@ public class IntentPlayer extends Service
    {
       log("Restart: ", State.current());
 
-      if ( player == null || State.is(State.STATE_STOP) || State.is(State.STATE_ERROR) )
+      if ( player == null || State.is_stopped() )
          return play();
 
       if ( State.is(State.STATE_PLAY) || State.is(State.STATE_BUFFER) )
@@ -499,6 +506,23 @@ public class IntentPlayer extends Service
       return done(State.STATE_PLAY);
    }
 
+   private int click()
+   {
+      log("Click: ", State.current());
+
+      if ( player == null || State.is_stopped() )
+         return play();
+
+      if ( State.is_playing() )
+         return stop();
+
+      if ( State.is(State.STATE_PAUSE) )
+         return restart();
+
+      log("Unhandled click: ", State.current());
+      return done();
+   }
+
    /* ********************************************************************
     * All onStartCommand() invocations end here...
     */
@@ -506,7 +530,11 @@ public class IntentPlayer extends Service
    private int done(String state)
    {
       if ( state != null )
+      {
          State.set_state(context, state);
+         note = builder.setOngoing(State.is_playing()).build();
+         note_manager.notify(note_id, note);
+      }
       return done();
    }
 
@@ -675,32 +703,17 @@ public class IntentPlayer extends Service
     */
 
    private void notificate()
-      { notificate_click_to_stop(null); }
+      { notificate(name); }
 
    private void notificate(String msg)
-      { notificate_click_to_stop(msg); }
-
-   private void notificate_click_to_stop(String msg)
    {
-      builder.setContentIntent(pending_stop);
-      notificate(msg,true);
-   }
-
-   private void notificate_click_to_restart(String msg)
-   {
-      builder.setContentIntent(pending_restart);
-      notificate(msg,false);
-   }
-
-   private void notificate(String msg, boolean ongoing)
-   {
-      if ( note != null )
+      if ( note != null && msg != null )
       {
-         log("Notificate: ", msg == null ? name : msg);
+         log("Notificate: ", msg);
          note =
             builder
-               .setOngoing(ongoing)
-               .setContentText(msg == null ? name : msg)
+               .setContentText(msg)
+               .setOngoing(State.is_playing())
                .build();
          note_manager.notify(note_id, note);
       }

@@ -11,5 +11,6 @@
     <string name="intent_restart">org.smblott.intentradio.RESTART</string>
     <string name="intent_state">org.smblott.intentradio.STATE</string>
     <string name="intent_state_request">org.smblott.intentradio.STATE_REQUEST</string>
+    <string name="intent_click">org.smblott.intentradio.CLICK</string>
     <string name="intent_log_file">intent-radio.log</string>
 </resources>

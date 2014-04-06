@@ -49,7 +49,13 @@ public class State extends Logger
    public static boolean is(String s)
       { return current_state.equals(s); }
 
+   // These two predicates cover all states
+   // except "pause".
+   //
    public static boolean is_playing()
       { return is(State.STATE_PLAY) || is(State.STATE_BUFFER) || is(State.STATE_DUCK); }
+
+   public static boolean is_stopped()
+      { return State.is(State.STATE_STOP) || State.is(State.STATE_ERROR) || State.is(State.STATE_COMPLETE); }
 }
 
