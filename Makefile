@@ -5,9 +5,14 @@ build:
 debug: res/raw/tasker.prj
 	ant debug
 
+srv = smblott.org
+www = public_html/intent_radio/
+
 release: res/raw/tasker.prj
+	$(MAKE) clean
 	ant release
 	cp bin/IntentRadio-release.apk $(HOME)/storage/Dropbox/Public/IntentRadio-release.apk
+	rsync bin/IntentRadio-release.apk $(srv):$(www)
 
 res/raw/tasker.prj: misc/Radio.prj.xml
 	install -m 0444 $< $@

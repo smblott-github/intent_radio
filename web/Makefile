@@ -16,7 +16,7 @@ www = public_html/intent_radio/
 
 install:
 	$(MAKE) build
-	rsync -av --delete $(target) $(srv):$(www)
+	rsync -av $(target) $(srv):$(www)
 
 Radio.prj.xml: ../misc/Radio.prj.xml
 	install -m 0444 $< $@
