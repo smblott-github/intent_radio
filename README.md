@@ -18,6 +18,11 @@ Despite the name, *Intent Radio* will happily play local audio media too.
 Where?
 ------
 
-More information, downloads and a sample Tasker project are available on
-the project [home page](http://intent-radio.smblott.org/).
+More information, downloads and a sample Tasker project are available on:
+
+- the project [home page](http://intent-radio.smblott.org/)
+
+The download is also available on:
+
+- [F-Droid](https://f-droid.org/repository/browse/?fdid=org.smblott.intentradio)
 

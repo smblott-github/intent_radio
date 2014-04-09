@@ -156,8 +156,8 @@ The sample Tasker project includes a listener which sets the global Tasker
 variables `%IRSTATE`, `%IRURL` and `%IRNAME` whenever such an intent is
 received.
 
-If you are not using the sample project (or have installed it and edited it
-to meet your own needs), then set up Tasker as follows:
+If you are not using the sample project (or have installed an earlier
+version and edited it to meet your own needs), then set up Tasker as follows:
 
 - Create a new Tasker profile: `event/System/Intent Received`.
 - Set _Action_ to `org.smblott.intentradio.STATE`.
