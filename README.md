@@ -1,15 +1,6 @@
 Intent Radio
 ============
 
-Who?
-----
-
-You might be interested in *Intent Radio* if:
-
-- you use Android,
-- you use [Tasker](http://tasker.dinglisch.net/), and
-- you listen to internet radio.
-
 What?
 ----
 
@@ -22,10 +13,13 @@ app for you.
 *Intent Radio* was written primarily to be driven by shortcuts, tasks and
 events triggered from [Tasker](http://tasker.dinglisch.net/).
 
+Despite the name, *Intent Radio* will happily play local audio media too.
+
 Where?
 ------
 
-More information -- including details of broadcast intents and a sample [Tasker
-project](http://smblott.org/intent_radio/Radio.prj.xml) -- are available on the
-project [home page](http://intent-radio.smblott.org/).
+More information:
+
+- the project [home page](http://intent-radio.smblott.org/)
+- a sample [Tasker project](http://intent-radio.smblott.org/Radio.prj.xml)
 
