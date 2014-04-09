@@ -27,5 +27,5 @@ Where?
 
 More information -- including details of broadcast intents and a sample [Tasker
 project](http://smblott.org/intent_radio/Radio.prj.xml) -- are available on the
-project [home page](http://smblott.org/intent_radio/).
+project [home page](http://intent-radio.smblott.org/).
 
