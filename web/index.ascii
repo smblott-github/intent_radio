@@ -194,8 +194,8 @@ version and edited it to meet your own needs), then set up Tasker as follows:
 - Although _IR_ has no graphical user interface, you must
   nevertheless _launch the app at least once_.  Otherwise, Android will
   not deliver broadcast intents to the app's background service.  This is
-  an Android security feature.  _Thereafter, it should not be necessary to
-  launch the app at all_, even after a reboot.
+  an Android security feature. +
+  _Thereafter, it should not be necessary to launch the app at all_, even after a reboot or an upgrade.
 
 - _IR_ is built for Android API level 16, so only for 4.1 (Jelly Bean)
   devices and above.
@@ -222,25 +222,36 @@ version and edited it to meet your own needs), then set up Tasker as follows:
 ****
 
 // /////////////////////////////////////////////////////
-[[notes]]
-== Release Notes ==
-
 [[downloads]]
+== Downloads ==
+
 .Downloads:
 ****
-- See the https://github.com/smblott-github/intent_radio/releases[Github releases].
-- Also available on https://f-droid.org/repository/browse/?fdid=org.smblott.intentradio[F-Droid]. +
-  (Although the F-Droid version is sometimes behind the one on GitHub.)
-- Or, use the direct links to the GitHub downloads below.
-- Or, use the bleeding-edge
-  https://dl.dropboxusercontent.com/u/41898306/IntentRadio-release.apk[Dropbox
-  release].
+The _IR_ app is available on
+https://f-droid.org/repository/browse/?fdid=org.smblott.intentradio[F-Droid]. +
+If you use that version (which is recommended) and install the https://f-droid.org/[F-Droid app] (which is also recommended), then you will
+receive notifications of new releases.
+
+Alternatively:
+
+- There is a direct link to the most recent GitHub release in the release
+  notes, below.
+- Or, you can use the
+  https://dl.dropboxusercontent.com/u/41898306/IntentRadio-release.apk[bleeding
+  edge release].  +
+  (This is the version I use myself, although it may be unstable.)
 ****
+
+// /////////////////////////////////////////////////////
+[[notes]]
+== Release Notes ==
 
 // .GitHub/master and bleeding-edge release:
 
 .Version 1.8:
 ****
+- Direct download: +
+  https://github.com/smblott-github/intent_radio/releases/download/v1.8.1/IntentRadio-release.apk[v1.8.1/IntentRadio-release.apk].
 - Major reworking of notifications, including look and click behaviour. +
   When stopped or paused, clicking on the notification now restarts.
 - Substantial reworking of the state/audio-focus/thread model.
@@ -251,14 +262,14 @@ version and edited it to meet your own needs), then set up Tasker as follows:
   favourite station.
 - Changed name of state `play/dim` to `play/duck`; added state `complete`.
 - Add .M3u8 playlist type (for BBC Media Selector).
-
-Direct download (from GitHub):
-
-- https://github.com/smblott-github/intent_radio/releases/download/v1.8.1/IntentRadio-release.apk[v1.8.1/IntentRadio-release.apk]
 ****
+
+// /////////////////////////////////////////////////////
+=== Old Stuff ===
 
 .Version 1.7:
 ****
+// - https://github.com/smblott-github/intent_radio/releases/download/v1.7/IntentRadio-release.apk[v1.7/IntentRadio-release.apk]
 - Add button to install sample Tasker project.
 - Improved (extended) the sample Tasker project.
 - Broadcast state (can be tracked in Tasker).
@@ -267,14 +278,7 @@ Direct download (from GitHub):
 - A PLAY request without a "url" plays last station, if possible.
 - Re-use `MediaPlayer` instance.
 - Better notifications.
-
-Direct download (from GitHub):
-
-- https://github.com/smblott-github/intent_radio/releases/download/v1.7/IntentRadio-release.apk[v1.7/IntentRadio-release.apk]
 ****
-
-// /////////////////////////////////////////////////////
-=== Old Stuff ===
 
 .Version 1.6:
 ****
@@ -300,7 +304,7 @@ Direct download (from GitHub):
 
 .Version 1.2:
 ****
-- Obtain Wifi lock when on Wifi.
+- Obtain WiFi lock when on WiFi.
 - Handle audio focus events.
 ****
 
