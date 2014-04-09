@@ -18,8 +18,6 @@ Despite the name, *Intent Radio* will happily play local audio media too.
 Where?
 ------
 
-More information:
-
-- the project [home page](http://intent-radio.smblott.org/)
-- a sample [Tasker project](http://intent-radio.smblott.org/Radio.prj.xml)
+More information, downloads and a sample Tasker project are available on
+the project [home page](http://intent-radio.smblott.org/).
 
