@@ -11,7 +11,7 @@ target += tasker.html
 build: $(target)
 	@true
 
-srv = godaddy
+srv = smblott.org
 www = public_html/intent_radio/
 
 install:
