@@ -248,6 +248,16 @@ Alternatively:
 
 // .GitHub/master and bleeding-edge release:
 
+.Version 1.9:
+****
+- Direct download: +
+  https://github.com/smblott-github/intent_radio/releases/download/v1.9.0/IntentRadio-release.apk[v1.9.0/IntentRadio-release.apk].
+- Better playlist detection.
+****
+
+// /////////////////////////////////////////////////////
+=== Old Stuff ===
+
 .Version 1.8:
 ****
 - Direct download: +
@@ -263,9 +273,6 @@ Alternatively:
 - Changed name of state `play/dim` to `play/duck`; added state `complete`.
 - Add .M3u8 playlist type (for BBC Media Selector).
 ****
-
-// /////////////////////////////////////////////////////
-=== Old Stuff ===
 
 .Version 1.7:
 ****
