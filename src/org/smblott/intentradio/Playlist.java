@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import java.util.List;
 import android.os.AsyncTask;
 import android.webkit.URLUtil;
+import android.net.Uri;
 
 public abstract class Playlist extends AsyncTask<String, Void, String>
 {
@@ -130,6 +131,28 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
       }
 
       return links;
+   }
+
+   /* ********************************************************************
+    * Suffix utilities...
+    */
+
+   public static Uri parse_uri(String url)
+      { return Uri.parse(url); }
+
+   public static boolean check_suffix(String text, String suffix)
+      { return text != null && text.endsWith(suffix) ; }
+
+   public static boolean is_playlist_suffix(String url, String suffix)
+   {
+      if ( check_suffix(url, suffix) )
+         return true;
+
+      Uri uri = parse_uri(url);
+      if ( uri == null )
+         return false;
+
+      return check_suffix(uri.getPath(), suffix);
    }
 
    /* ********************************************************************
