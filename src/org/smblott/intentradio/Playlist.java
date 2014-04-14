@@ -27,6 +27,22 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
 
    abstract String filter(String line);
 
+   // FIXME:
+   // The logic here is broken.
+   // We could start with an M3U playlist, and end with a PLS playlist, in
+   // which case the wrong handler will be used to extract URLs.
+   // 
+   // The separation of playlist types into separate classes isn't helping.
+   // Probably move all playlist handling into the class.
+   //
+   // TODO:
+   // Initially, only issue a HEAD request, to check the MIME type.
+   //
+   // TODO:
+   // Send *all* requests through this handler (and base decision as to what to
+   // do on type returned by HEAD request for MIME type).  That way, we're not
+   // dependent at all on the form of the URL.
+   //
    protected String doInBackground(String... args)
    {
       String url = args[0];
