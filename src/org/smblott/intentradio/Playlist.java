@@ -9,8 +9,9 @@ import java.util.List;
 import android.os.AsyncTask;
 import android.webkit.URLUtil;
 import android.net.Uri;
+// import java.util.concurrent.ThreadPoolExecutor;
 
-public class Playlist extends AsyncTask<String, Void, String>
+public class Playlist extends AsyncTask<Void, Void, String>
 {
    private static final int max_ttl = 10;
 
@@ -21,21 +22,29 @@ public class Playlist extends AsyncTask<String, Void, String>
    private static final int PLS     = 2;
 
    private IntentPlayer player = null;
+   private String start_url = null;
    private int then = 0;
 
-   Playlist(IntentPlayer a_player)
+   Playlist(IntentPlayer a_player, String a_url)
    {
       super();
       player = a_player;
+      start_url = a_url;
       then = Counter.now();
       log("Playlist: then=" + then);
    }
 
-   protected String doInBackground(String... args)
+   public void start()
    {
-      int ttl = max_ttl;
+      // log("ThreadPoolExecutor cores: ", ""+((ThreadPoolExecutor)AsyncTask.THREAD_POOL_EXECUTOR).getCorePoolSize());
+      // log("ThreadPoolExecutor max: ", ""+((ThreadPoolExecutor)AsyncTask.THREAD_POOL_EXECUTOR).getMaximumPoolSize());
+      executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+   }
 
-      String url = args[0];
+   protected String doInBackground(Void... args)
+   {
+      String url = start_url;
+      int ttl = max_ttl;
       int type = NONE;
 
       if ( url != null && URLUtil.isValidUrl(url) )

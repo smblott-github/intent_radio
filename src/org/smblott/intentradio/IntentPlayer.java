@@ -219,8 +219,8 @@ public class IntentPlayer extends Service
       // All requests (including non-playlists), now go through the Playlist
       // class.  This simplifies the logic of deciding what is what.
       //
-      playlist_task = new Playlist(this);
-      playlist_task.execute(url);
+      playlist_task = new Playlist(this,url);
+      playlist_task.start();
 
       return done(State.STATE_BUFFER);
    }
