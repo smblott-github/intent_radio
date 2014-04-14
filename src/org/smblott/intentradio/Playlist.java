@@ -10,12 +10,18 @@ import android.os.AsyncTask;
 import android.webkit.URLUtil;
 import android.net.Uri;
 
-public abstract class Playlist extends AsyncTask<String, Void, String>
+public class Playlist extends AsyncTask<String, Void, String>
 {
    private static final int max_ttl = 10;
 
    private IntentPlayer player = null;
    private int then = 0;
+
+   // Enumeration for playlist types.
+   //
+   private static final int NONE = 0;
+   private static final int M3U  = 1;
+   private static final int PLS  = 2;
 
    Playlist(IntentPlayer a_player)
    {
@@ -25,32 +31,17 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
       log("Playlist: then=" + then);
    }
 
-   abstract String filter(String line);
-
-   // FIXME:
-   // The logic here is broken.
-   // We could start with an M3U playlist, and end with a PLS playlist, in
-   // which case the wrong handler will be used to extract URLs.
-   // 
-   // The separation of playlist types into separate classes isn't helping.
-   // Probably move all playlist handling into the class.
-   //
-   // TODO:
-   // Initially, only issue a HEAD request, to check the MIME type.
-   //
-   // TODO:
-   // Send *all* requests through this handler (and base decision as to what to
-   // do on type returned by HEAD request for MIME type).  That way, we're not
-   // dependent at all on the form of the URL.
-   //
    protected String doInBackground(String... args)
    {
-      String url = args[0];
       int ttl = max_ttl;
 
-      while ( 0 < ttl && url != null && is_playlist(url) )
+      String url = args[0];
+      int type = playlist_type(url);
+
+      while ( 0 < ttl && url != null && type != NONE )
       {
          log("Playlist url: ", url);
+         log("Playlist type: ", ""+type);
 
          if ( ! URLUtil.isValidUrl(url) )
          {
@@ -59,11 +50,13 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
             break;
          }
 
-         url = fetch_url(url);
+         url = fetch_url(url,type);
+         type = playlist_type(url);
+
          ttl -= 1;
       }
 
-      if ( ttl == 0 && is_playlist(url) )
+      if ( ttl == 0 && type != NONE )
       {
          log("Playlist: too many playlists.");
          url = null;
@@ -78,7 +71,7 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
    }
 
    public static boolean is_playlist(String url)
-      { return PlaylistPls.is_playlist(url) || PlaylistM3u.is_playlist(url); }
+      { return playlist_type(url) != NONE; }
 
    // This runs on the main thread...
    //
@@ -88,12 +81,36 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
    }
 
    /* ********************************************************************
+    * Filter lines of a playlist...
+    */
+
+   static String filter(String line, int type)
+   {
+      switch (type)
+      {
+         //
+         case M3U:
+            return line.indexOf('#') == 0 ? "" : line;
+         //
+         case PLS:
+            if ( line.startsWith("File") && 0 < line.indexOf('=') )
+               return line;
+            return "";
+         //
+         default:
+            // Should not happen.
+            log("Playlist invalid filter line: ", line);
+            return line;
+      }
+   }
+
+   /* ********************************************************************
     * Fetch a single (random) url from a playlist...
     */
 
    private static Random random = null;
 
-   private String fetch_url(String url)
+   private String fetch_url(String url, int type)
    {
       List<String> lines = HttpGetter.httpGet(url);
 
@@ -101,7 +118,7 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
          log("Playlist lines: ", lines.get(i));
 
       for (int i=0; i<lines.size(); i+= 1)
-         lines.set(i, filter(lines.get(i).trim()));
+         lines.set(i, filter(lines.get(i).trim(),type));
 
       for (int i=0; i<lines.size(); i+= 1)
          if ( lines.get(i).length() != 0 )
@@ -153,13 +170,13 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
     * Suffix utilities...
     */
 
-   public static Uri parse_uri(String url)
+   private static Uri parse_uri(String url)
       { return Uri.parse(url); }
 
-   public static boolean check_suffix(String text, String suffix)
+   private static boolean check_suffix(String text, String suffix)
       { return text != null && text.endsWith(suffix) ; }
 
-   public static boolean is_playlist_suffix(String url, String suffix)
+   private static boolean is_playlist_suffix(String url, String suffix)
    {
       if ( check_suffix(url, suffix) )
          return true;
@@ -169,6 +186,18 @@ public abstract class Playlist extends AsyncTask<String, Void, String>
          return false;
 
       return check_suffix(uri.getPath(), suffix);
+   }
+
+   private static int playlist_type(String url)
+   {
+      url = url.toLowerCase();
+      if ( is_playlist_suffix(url,".m3u" ) )
+         return M3U;
+      if ( is_playlist_suffix(url,".m3u8" ) )
+         return M3U;
+      if ( is_playlist_suffix(url,".pls" ) )
+         return PLS;
+      return NONE;
    }
 
    /* ********************************************************************

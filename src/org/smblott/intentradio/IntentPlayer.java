@@ -216,31 +216,10 @@ public class IntentPlayer extends Service
       WifiLocker.lock(context, app_name_long);
       log("Connecting...");
 
-      // /////////////////////////////////////////////////////////////////
-      // Playlists...
+      playlist_task = new Playlist(this);
+      playlist_task.execute(url);
 
-      /* Is there a better way to test whether a URL is a playlist?
-       * Can we check the mime type?
-       */
-
-      playlist_task = null;
-
-      if ( PlaylistPls.is_playlist(url) )
-         playlist_task = new PlaylistPls(this);
-
-      if ( PlaylistM3u.is_playlist(url) )
-         playlist_task = new PlaylistM3u(this);
-
-      if ( playlist_task != null )
-      {
-         playlist_task.execute(url);
-         return done(State.STATE_BUFFER);
-      }
-
-      // /////////////////////////////////////////////////////////////////
-      // Ready...
-
-      return play_launch(url);
+      return done(State.STATE_BUFFER);
    }
 
    /* ********************************************************************
@@ -319,6 +298,12 @@ public class IntentPlayer extends Service
          if ( player.isPlaying() )
             player.stop();
          player.reset();
+      }
+
+      if ( playlist_task != null )
+      {
+         playlist_task.cancel(true);
+         playlist_task = null;
       }
 
       if ( ! real_stop )
