@@ -12,6 +12,12 @@ import java.util.List;
 import java.util.ArrayList;
 import android.text.TextUtils;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpHead;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.Header;
+
 public class HttpGetter
 {
    public static List<String> httpGet(String str)
@@ -24,17 +30,6 @@ public class HttpGetter
          URL url = new URL(str);
          connection = (HttpURLConnection) url.openConnection();
 
-         // String mime = connection.getContentType();
-         // if ( mime == null )
-         //    return lines;
-
-         // Logger.log("HttpGetter mime type: ", mime);
-         // if ( ! Playlist.is_playlist_mime_type(mime) )
-         // {
-         //    Logger.log("HttpGetter: invalid mime type");
-         //    return lines;
-         // }
-
          InputStream stream = new BufferedInputStream(connection.getInputStream());
          readStream(stream, lines);
       }
@@ -43,6 +38,53 @@ public class HttpGetter
 
       return lines;
    }
+
+   /*
+    * Not being used.
+    *
+    * It seems that the MIME type delivered in response to a HEAD request is
+    * not a reliable way of determining the actual content type, in practice.
+    *
+   public static String httpMime(String str)
+   {
+      HttpClient httpclient = new DefaultHttpClient();
+      HttpHead httphead = new HttpHead(str);
+
+      try
+      {
+         HttpResponse response = httpclient.execute(httphead);
+
+         if ( response.containsHeader("Content-Type") )
+            return response.getHeaders("Content-Type")[0].getValue();
+         // TODO:
+         // How to we clean up/close this connection?
+      }
+      catch ( Exception e )
+         {} // { if ( connection != null ) connection.disconnect(); }
+
+      return "";
+   }
+   */
+
+   // public static String httpMime(String str)
+   // {
+   //    HttpURLConnection connection = null;
+
+   //    try
+   //    {
+   //       URL url = new URL(str);
+   //       connection = new HttpURLConnection(url);
+   //       connection.setRequestMethod("HEAD");
+   //       connection.openConnection();
+   //       String mime = connection.getContentType();
+   //       connection.disconnect();
+   //       return mime;
+   //    }
+   //    catch ( Exception e )
+   //       { if ( connection != null ) connection.disconnect(); }
+
+   //    return "";
+   // }
 
    private static void readStream(InputStream stream, List<String> lines) throws Exception
    {

@@ -56,22 +56,21 @@ public class Playlist extends AsyncTask<String, Void, String>
             url = null;
       }
 
-      if ( url  == null ) { log("Playlist: failed to extract url."    );             }
-      if ( ttl  == 0    ) { log("Playlist: too many playlists (TTL)." ); url = null; }
-      if ( type != NONE ) { log("Playlist: too many playlists (TYPE)."); url = null; }
-      if ( url  != null ) { log("Playlist final url: ", url           );             }
+      if ( url  == null ) { log("Playlist: failed to extract url."     );             }
+      if ( ttl  == 0    ) { log("Playlist: too many playlists (TTL)."  ); url = null; }
+      if ( type != NONE ) { log("Playlist: too many playlists (TYPE)." ); url = null; }
+      if ( url  != null ) { log("Playlist final url: ", url            );             }
 
       return url;
    }
-
-   private static boolean is_playlist(String url)
-      { return playlist_type(url) != NONE; }
 
    // This runs on the main thread...
    //
    protected void onPostExecute(String url) {
       if ( url != null && player != null && ! isCancelled() && Counter.still(then) )
          player.play_launch(url);
+      else
+         log("Playlist: launch cancelled");
    }
 
    /* ********************************************************************
@@ -99,7 +98,7 @@ public class Playlist extends AsyncTask<String, Void, String>
    }
 
    /* ********************************************************************
-    * Fetch a single (random) url from a playlist...
+    * Select a single (random) url from a playlist...
     */
 
    private static Random random = null;
@@ -167,29 +166,29 @@ public class Playlist extends AsyncTask<String, Void, String>
    private static Uri parse_uri(String url)
       { return Uri.parse(url); }
 
-   private static boolean check_suffix(String text, String suffix)
+   private static boolean is_suffix(String text, String suffix)
       { return text != null && text.endsWith(suffix) ; }
 
-   private static boolean is_playlist_suffix(String url, String suffix)
+   private static boolean is_some_suffix(String url, String suffix)
    {
-      if ( check_suffix(url, suffix) )
+      if ( is_suffix(url, suffix) )
          return true;
 
-      Uri uri = parse_uri(url);
-      if ( uri == null )
-         return false;
-
-      return check_suffix(uri.getPath(), suffix);
+      return is_suffix(parse_uri(url).getPath(), suffix);
    }
 
+   // We rely only on the suffix, here.
+   // It seems that checking the actual MIME Content-Type
+   // returned by the server is not reliable, in practice.
+   //
    private static int playlist_type(String url)
    {
       url = url.toLowerCase();
-      if ( is_playlist_suffix(url,".m3u" ) )
+      if ( is_some_suffix(url,".m3u" ) )
          return M3U;
-      if ( is_playlist_suffix(url,".m3u8" ) )
+      if ( is_some_suffix(url,".m3u8" ) )
          return M3U;
-      if ( is_playlist_suffix(url,".pls" ) )
+      if ( is_some_suffix(url,".pls" ) )
          return PLS;
       return NONE;
    }
