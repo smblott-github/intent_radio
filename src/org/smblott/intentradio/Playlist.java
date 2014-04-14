@@ -214,33 +214,33 @@ public class Playlist extends AsyncTask<Void, Void, String>
     * MIME types...
     */
 
-   // // Is this (likely to be) a playlist MIME type?
-   // //
-   // // We can be quite loose here.  We're just avoiding downloading
-   // // a media URL as a playlist.
-   // //
-   // private static int is_playlist_mime_type(String mime)
-   // {
-   //    if ( mime == null )
-   //       return NONE;
+   // Is this (likely to be) a playlist MIME type?
+   //
+   // We can be quite loose here.  We're just avoiding downloading
+   // a media URL as a playlist.
+   //
+   public static boolean is_playlist_mime_type(String mime)
+   {
+      if ( mime == null )
+         return false;
 
-   //    if ( mime.equals("audio/x-scpls")                 ) return PLS;
-   //    if ( mime.equals("audio/scpls")                   ) return PLS;
-   //    if ( mime.equals("audio/x-mpegurl")               ) return M3U;
-   //    if ( mime.equals("audio/mpegurl")                 ) return M3U;
-   //    if ( mime.equals("audio/mpeg-url")                ) return M3U;
-   //    if ( mime.equals("application/vnd.apple.mpegurl") ) return M3U;
-   //    if ( mime.equals("application/x-winamp-playlist") ) return M3U;
+      if ( mime.equals("audio/x-scpls")                 ) return true;
+      if ( mime.equals("audio/scpls")                   ) return true;
+      if ( mime.equals("audio/x-mpegurl")               ) return true;
+      if ( mime.equals("audio/mpegurl")                 ) return true;
+      if ( mime.equals("audio/mpeg-url")                ) return true;
+      if ( mime.equals("application/vnd.apple.mpegurl") ) return true;
+      if ( mime.equals("application/x-winamp-playlist") ) return true;
 
-   //    // Catch alls...
-   //    //
-   //    if ( mime.indexOf("mpegurl")  != -1 ) return M3U;
-   //    if ( mime.indexOf("mpeg-url") != -1 ) return M3U;
-   //    if ( mime.indexOf("scpls")    != -1 ) return PLS;
+      // Catch alls...
+      //
+      if ( mime.indexOf("mpegurl")  != -1 ) return true;
+      if ( mime.indexOf("mpeg-url") != -1 ) return true;
+      if ( mime.indexOf("scpls")    != -1 ) return true;
 
-   //    Logger.log("Playlist - not a valid MIME type: ", mime);
-   //    return NONE;
-   // }
+      Logger.log("Playlist - not a valid MIME type: ", mime);
+      return false;
+   }
 
    /* ********************************************************************
     * Logging...

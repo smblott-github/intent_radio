@@ -30,8 +30,12 @@ public class HttpGetter
          URL url = new URL(str);
          connection = (HttpURLConnection) url.openConnection();
 
-         InputStream stream = new BufferedInputStream(connection.getInputStream());
-         readStream(stream, lines);
+         if ( Playlist.is_playlist_mime_type(connection.getContentType()) )
+         {
+            InputStream stream = new BufferedInputStream(connection.getInputStream());
+            readStream(stream, lines);
+         }
+         connection.disconnect();
       }
       catch ( Exception e )
          { if ( connection != null ) connection.disconnect(); }
