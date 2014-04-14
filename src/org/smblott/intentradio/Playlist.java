@@ -4,7 +4,6 @@ import java.util.Random;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-import android.text.TextUtils;
 import java.util.List;
 import android.os.AsyncTask;
 import android.webkit.URLUtil;
@@ -132,7 +131,7 @@ public class Playlist extends AsyncTask<Void, Void, String>
          lines.set(i, line);
       }
 
-      List<String> links = get_links(TextUtils.join("\n", lines));
+      List<String> links = select_urls_from_list(lines);
       if ( links.size() == 0 )
          return null;
 
@@ -154,21 +153,27 @@ public class Playlist extends AsyncTask<Void, Void, String>
    private static final String url_regex = "\\(?\\b(http://|www[.])[-A-Za-z0-9+&@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#/%=~_()|]";
    private static Pattern url_pattern = null;
 
-   private static List<String> get_links(String text)
+   private static List<String> select_urls_from_list(List<String> lines)
    {
       ArrayList links = new ArrayList<String>();
 
       if ( url_pattern == null )
          url_pattern = Pattern.compile(url_regex);
 
-      Matcher matcher = url_pattern.matcher(text);
-
-      while( matcher.find() )
+      for (int i=0; i<lines.size(); i+=1)
       {
-         String str = matcher.group();
-         if (str.startsWith("(") && str.endsWith(")"))
-            str = str.substring(1, str.length() - 1);
-         links.add(str);
+         String line = lines.get(i);
+         if ( 0 < line.length() )
+         {
+            Matcher matcher = url_pattern.matcher(line);
+            if ( matcher.find() )
+            {
+               String link = matcher.group();
+               if (link.startsWith("(") && link.endsWith(")"))
+                  link = link.substring(1, link.length() - 1);
+               links.add(link);
+            }
+         }
       }
 
       return links;
@@ -199,12 +204,9 @@ public class Playlist extends AsyncTask<Void, Void, String>
    private static int playlist_type(String url)
    {
       url = url.toLowerCase();
-      if ( is_some_suffix(url,".m3u" ) )
-         return M3U;
-      if ( is_some_suffix(url,".m3u8" ) )
-         return M3U;
-      if ( is_some_suffix(url,".pls" ) )
-         return PLS;
+      if ( is_some_suffix(url,".m3u"  ) ) return M3U;
+      if ( is_some_suffix(url,".m3u8" ) ) return M3U;
+      if ( is_some_suffix(url,".pls"  ) ) return PLS;
       return NONE;
    }
 
@@ -212,33 +214,33 @@ public class Playlist extends AsyncTask<Void, Void, String>
     * MIME types...
     */
 
-   // Is this (likely to be) a playlist MIME type?
-   //
-   // We can be quite loose here.  We're just avoiding downloading
-   // a media URL as a playlist.
-   //
-   private static int is_playlist_mime_type(String mime)
-   {
-      if ( mime == null )
-         return NONE;
+   // // Is this (likely to be) a playlist MIME type?
+   // //
+   // // We can be quite loose here.  We're just avoiding downloading
+   // // a media URL as a playlist.
+   // //
+   // private static int is_playlist_mime_type(String mime)
+   // {
+   //    if ( mime == null )
+   //       return NONE;
 
-      if ( mime.equals("audio/x-scpls")                 ) return PLS;
-      if ( mime.equals("audio/scpls")                   ) return PLS;
-      if ( mime.equals("audio/x-mpegurl")               ) return M3U;
-      if ( mime.equals("audio/mpegurl")                 ) return M3U;
-      if ( mime.equals("audio/mpeg-url")                ) return M3U;
-      if ( mime.equals("application/vnd.apple.mpegurl") ) return M3U;
-      if ( mime.equals("application/x-winamp-playlist") ) return M3U;
+   //    if ( mime.equals("audio/x-scpls")                 ) return PLS;
+   //    if ( mime.equals("audio/scpls")                   ) return PLS;
+   //    if ( mime.equals("audio/x-mpegurl")               ) return M3U;
+   //    if ( mime.equals("audio/mpegurl")                 ) return M3U;
+   //    if ( mime.equals("audio/mpeg-url")                ) return M3U;
+   //    if ( mime.equals("application/vnd.apple.mpegurl") ) return M3U;
+   //    if ( mime.equals("application/x-winamp-playlist") ) return M3U;
 
-      // Catch alls...
-      //
-      if ( mime.indexOf("mpegurl")  != -1 ) return M3U;
-      if ( mime.indexOf("mpeg-url") != -1 ) return M3U;
-      if ( mime.indexOf("scpls")    != -1 ) return PLS;
+   //    // Catch alls...
+   //    //
+   //    if ( mime.indexOf("mpegurl")  != -1 ) return M3U;
+   //    if ( mime.indexOf("mpeg-url") != -1 ) return M3U;
+   //    if ( mime.indexOf("scpls")    != -1 ) return PLS;
 
-      Logger.log("Playlist - not a valid MIME type: ", mime);
-      return NONE;
-   }
+   //    Logger.log("Playlist - not a valid MIME type: ", mime);
+   //    return NONE;
+   // }
 
    /* ********************************************************************
     * Logging...
