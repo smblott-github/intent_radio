@@ -37,9 +37,6 @@ stop:
 r4:
 	adb shell am broadcast -a org.smblott.intentradio.PLAY -e url http://www.bbc.co.uk/radio/listen/live/r4_heaacv2.pls -e name "BBC Radio 4" -e debug yes
 
-r4ms:
-	adb shell am broadcast -a org.smblott.intentradio.PLAY -e url http://www.bbc.co.uk/mediaselector/playlists/hls/radio/nonuk/lo/ak/bbc_radio_fourfm.m3u8 -e name "BBC Radio 4 (M3u8)" -e debug yes
-
 ufm:
 	adb shell am broadcast -a org.smblott.intentradio.PLAY -e url http://192.168.3.3/cgi-bin/sc/wav -e name "Elsa Sound Card" -e debug yes
 
