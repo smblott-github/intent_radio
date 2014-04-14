@@ -216,6 +216,9 @@ public class IntentPlayer extends Service
       WifiLocker.lock(context, app_name_long);
       log("Connecting...");
 
+      // All requests (including non-playlists), now go through the Playlist
+      // class.  This simplifies the logic of deciding what is what.
+      //
       playlist_task = new Playlist(this);
       playlist_task.execute(url);
 
