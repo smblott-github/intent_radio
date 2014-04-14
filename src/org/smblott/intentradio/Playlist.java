@@ -38,6 +38,12 @@ public class Playlist extends AsyncTask<Void, Void, String>
    {
       // log("ThreadPoolExecutor cores: ", ""+((ThreadPoolExecutor)AsyncTask.THREAD_POOL_EXECUTOR).getCorePoolSize());
       // log("ThreadPoolExecutor max: ", ""+((ThreadPoolExecutor)AsyncTask.THREAD_POOL_EXECUTOR).getMaximumPoolSize());
+      //
+      // Start this on a THREAD_POOL_EXECUTOR.  If it runs as a regular
+      // AsyncTask, then it can interfere with loading of the app's UI.  So,
+      // use regular AsyncTasks for the UI, and THREAD_POOL_EXECUTOR tasks for
+      // the service.
+      //
       executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
    }
 
@@ -47,7 +53,7 @@ public class Playlist extends AsyncTask<Void, Void, String>
       int ttl = max_ttl;
       int type = NONE;
 
-      if ( url != null && URLUtil.isValidUrl(url) )
+      if ( url != null && url.length() != 0 && URLUtil.isValidUrl(url) )
          type = playlist_type(url);
       else
          url = null;
@@ -59,7 +65,7 @@ public class Playlist extends AsyncTask<Void, Void, String>
          log("Playlist type: ", ""+type);
 
          url = select_url_from_playlist(url,type);
-         if ( url != null && URLUtil.isValidUrl(url) )
+         if ( url != null && url.length() != 0 && URLUtil.isValidUrl(url) )
             type = playlist_type(url);
          else
             url = null;
@@ -100,8 +106,8 @@ public class Playlist extends AsyncTask<Void, Void, String>
             return "";
          //
          default:
-            // Should not happen.
-            log("Playlist invalid filter line: ", line);
+         // Should not happen.
+            log("Playlist invalid filter type: ", line);
             return line;
       }
    }
@@ -117,14 +123,14 @@ public class Playlist extends AsyncTask<Void, Void, String>
       List<String> lines = HttpGetter.httpGet(url);
 
       for (int i=0; i<lines.size(); i+= 1)
-         log("Playlist lines: ", lines.get(i));
-
-      for (int i=0; i<lines.size(); i+= 1)
-         lines.set(i, filter(lines.get(i).trim(),type));
-
-      for (int i=0; i<lines.size(); i+= 1)
-         if ( lines.get(i).length() != 0 )
-            log("Playlist filtered: ", lines.get(i));
+      {
+         String line = lines.get(i);
+         log("Playlist lines: ", line);
+         line = filter(line.trim(),type);
+         if ( 0 < line.length() )
+            log("Playlist filtered: ", line);
+         lines.set(i, line);
+      }
 
       List<String> links = get_links(TextUtils.join("\n", lines));
       if ( links.size() == 0 )
