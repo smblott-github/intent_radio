@@ -24,16 +24,16 @@ public class HttpGetter
          URL url = new URL(str);
          connection = (HttpURLConnection) url.openConnection();
 
-         String mime = connection.getContentType();
-         if ( mime == null )
-            return lines;
+         // String mime = connection.getContentType();
+         // if ( mime == null )
+         //    return lines;
 
-         Logger.log("HttpGetter mime type: ", mime);
-         if ( ! Playlist.is_playlist_mime_type(mime) )
-         {
-            Logger.log("HttpGetter: invalid mime type");
-            return lines;
-         }
+         // Logger.log("HttpGetter mime type: ", mime);
+         // if ( ! Playlist.is_playlist_mime_type(mime) )
+         // {
+         //    Logger.log("HttpGetter: invalid mime type");
+         //    return lines;
+         // }
 
          InputStream stream = new BufferedInputStream(connection.getInputStream());
          readStream(stream, lines);

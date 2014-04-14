@@ -14,14 +14,14 @@ public class Playlist extends AsyncTask<String, Void, String>
 {
    private static final int max_ttl = 10;
 
-   private IntentPlayer player = null;
-   private int then = 0;
-
    // Enumeration for playlist types.
    //
-   private static final int NONE = 0;
-   private static final int M3U  = 1;
-   private static final int PLS  = 2;
+   private static final int NONE    = 0;
+   private static final int M3U     = 1;
+   private static final int PLS     = 2;
+
+   private IntentPlayer player = null;
+   private int then = 0;
 
    Playlist(IntentPlayer a_player)
    {
@@ -36,41 +36,35 @@ public class Playlist extends AsyncTask<String, Void, String>
       int ttl = max_ttl;
 
       String url = args[0];
-      int type = playlist_type(url);
+      int type = NONE;
+
+      if ( url != null && URLUtil.isValidUrl(url) )
+         type = playlist_type(url);
+      else
+         url = null;
 
       while ( 0 < ttl && url != null && type != NONE )
       {
+         ttl -= 1;
          log("Playlist url: ", url);
          log("Playlist type: ", ""+type);
 
-         if ( ! URLUtil.isValidUrl(url) )
-         {
-            log("Invalid URL.");
+         url = select_url_from_playlist(url,type);
+         if ( url != null && URLUtil.isValidUrl(url) )
+            type = playlist_type(url);
+         else
             url = null;
-            break;
-         }
-
-         url = fetch_url(url,type);
-         type = playlist_type(url);
-
-         ttl -= 1;
       }
 
-      if ( ttl == 0 && type != NONE )
-      {
-         log("Playlist: too many playlists.");
-         url = null;
-      }
-
-      if ( url == null )
-         log("Playlist: failed to extract URL from playlist.");
-      else
-         log("Playlist final url: ", url);
+      if ( url  == null ) { log("Playlist: failed to extract url."    );             }
+      if ( ttl  == 0    ) { log("Playlist: too many playlists (TTL)." ); url = null; }
+      if ( type != NONE ) { log("Playlist: too many playlists (TYPE)."); url = null; }
+      if ( url  != null ) { log("Playlist final url: ", url           );             }
 
       return url;
    }
 
-   public static boolean is_playlist(String url)
+   private static boolean is_playlist(String url)
       { return playlist_type(url) != NONE; }
 
    // This runs on the main thread...
@@ -110,7 +104,7 @@ public class Playlist extends AsyncTask<String, Void, String>
 
    private static Random random = null;
 
-   private String fetch_url(String url, int type)
+   private String select_url_from_playlist(String url, int type)
    {
       List<String> lines = HttpGetter.httpGet(url);
 
@@ -209,29 +203,27 @@ public class Playlist extends AsyncTask<String, Void, String>
    // We can be quite loose here.  We're just avoiding downloading
    // a media URL as a playlist.
    //
-   public static boolean is_playlist_mime_type(String mime)
+   private static int is_playlist_mime_type(String mime)
    {
       if ( mime == null )
-         return false;
+         return NONE;
 
-      if ( mime.equals("audio/x-scpls")                 ) return true;
-      if ( mime.equals("audio/scpls")                   ) return true;
-      if ( mime.equals("audio/x-mpegurl")               ) return true;
-      if ( mime.equals("audio/mpegurl")                 ) return true;
-      if ( mime.equals("audio/mpeg-url")                ) return true;
-      if ( mime.equals("application/vnd.apple.mpegurl") ) return true;
-      if ( mime.equals("application/x-winamp-playlist") ) return true;
-      if ( mime.equals("application/music")             ) return true;
+      if ( mime.equals("audio/x-scpls")                 ) return PLS;
+      if ( mime.equals("audio/scpls")                   ) return PLS;
+      if ( mime.equals("audio/x-mpegurl")               ) return M3U;
+      if ( mime.equals("audio/mpegurl")                 ) return M3U;
+      if ( mime.equals("audio/mpeg-url")                ) return M3U;
+      if ( mime.equals("application/vnd.apple.mpegurl") ) return M3U;
+      if ( mime.equals("application/x-winamp-playlist") ) return M3U;
 
       // Catch alls...
       //
-      if ( mime.indexOf("mpegurl")  != -1 ) return true;
-      if ( mime.indexOf("mpeg-url") != -1 ) return true;
-      if ( mime.indexOf("scpls")    != -1 ) return true;
-      if ( mime.indexOf("text/")    ==  0 ) return true;
+      if ( mime.indexOf("mpegurl")  != -1 ) return M3U;
+      if ( mime.indexOf("mpeg-url") != -1 ) return M3U;
+      if ( mime.indexOf("scpls")    != -1 ) return PLS;
 
       Logger.log("Playlist - not a valid MIME type: ", mime);
-      return false;
+      return NONE;
    }
 
    /* ********************************************************************
