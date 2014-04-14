@@ -52,6 +52,10 @@ newstalk:
 lyric:
 	adb shell am broadcast -a org.smblott.intentradio.PLAY -e url http://icecast2.rte.ie/lyric -e name "RTE Lyric FM" -e debug yes
 
+shoutcast:
+	adb shell am broadcast -a org.smblott.intentradio.PLAY -e url 'http://yp.shoutcast.com/sbin/tunein-station.pls?id=230816' -e name "Shoutcast" -e debug yes
+	# adb shell am broadcast -a org.smblott.intentradio.PLAY -e url 'http://yp.shoutcast.com/sbin/tunein-station.pls?id=230816\&type=.pls' -e name "Shoutcast" -e debug yes
+
 file:
 	adb shell am broadcast -a org.smblott.intentradio.PLAY -e url file:///sdcard/x.mp3 -e name "Files" -e debug yes
 
