@@ -399,14 +399,12 @@ public class IntentPlayer extends Service
       if ( player == null || State.is_stopped() )
          return play();
 
+      player.setVolume(1.0f, 1.0f);
       if ( State.is(State.STATE_PLAY) || State.is(State.STATE_BUFFER) )
          return done();
 
       if ( State.is(State.STATE_DUCK) )
-      {
-         player.setVolume(0.1f, 0.1f);
          return done(State.STATE_PLAY);
-      }
 
       int focus = audio_manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
       if ( focus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
@@ -421,7 +419,6 @@ public class IntentPlayer extends Service
          pause_task = null;
       }
 
-      player.setVolume(1.0f, 1.0f);
       player.start();
       return done(State.STATE_PLAY);
    }
