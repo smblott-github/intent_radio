@@ -4,8 +4,8 @@ Stephen Blott <smblott+ir@gmail.com>
 
 .Quick links:
 ****
-- jump straight to link:#downloads[downloads].
-- jump straight to broadcast intent link:#how[instructions].
+- Jump straight to broadcast intent link:#how[instructions].
+- Jump straight to link:#downloads[downloads].
 ****
 
 // /////////////////////////////////////////////////////
@@ -227,19 +227,22 @@ version and edited it to meet your own needs), then set up Tasker as follows:
 
 .Downloads:
 ****
-The _IR_ app is:
+- Available on the Google
+  https://play.google.com/store/apps/details?id=org.smblott.intentradioio[Play Store].
 
-- Available on https://f-droid.org/repository/browse/?fdid=org.smblott.intentradio[F-Droid]. +
-  If you use the F-Droid version (which is recommended) and install the
-  https://f-droid.org/[F-Droid app] (which is also recommended), then you
-  will receive notifications of new releases.
+- Also available on https://f-droid.org/repository/browse/?fdid=org.smblott.intentradio[F-Droid]. +
+  If you use this version, then also install the
+  https://f-droid.org/[F-Droid app] (which is also recommended) in order to receive notifications of new releases.
 
-Alternatively:
+Do not install versions from both of these sources.  Pick one and stick
+with it.  They're the same thing.
 
-- The latest release is
-  link:IntentRadio-release.apk[here]
-  or on https://dl.dropboxusercontent.com/u/41898306/IntentRadio-release.apk[Dropbox]. +
-  If you use this version, then you will _not_ be notified about updates.
+// Alternatively:
+// 
+// - The latest release is
+//   link:IntentRadio-release.apk[here]
+//   or on https://dl.dropboxusercontent.com/u/41898306/IntentRadio-release.apk[Dropbox]. +
+//   If you use this version, then you will _not_ be notified about updates.
 ****
 
 // /////////////////////////////////////////////////////
