@@ -24,7 +24,6 @@ More information, downloads and a sample Tasker project are available on:
 
 The download is also available on:
 
-- Available on the Google
-  The Google [Play Store](https://play.google.com/store/apps/details?id=org.smblott.intentradioio).
+- The Google [Play Store](https://play.google.com/store/apps/details?id=org.smblott.intentradioio).
 - [F-Droid](https://f-droid.org/repository/browse/?fdid=org.smblott.intentradio).
 
