@@ -8,6 +8,7 @@ target += index.html
 target += debug.html
 target += tasker.html
 target += privacy.html
+target += release.html
 
 build: $(target)
 	@true
