@@ -399,7 +399,16 @@ public class IntentPlayer extends Service
       if ( player == null || State.is_stopped() )
          return play();
 
+      // Always reset the volume.
+      // There's something broken about the state model.
+      // For example, we could be in state DUCK, then buffering starts, so
+      // suddenly we're in state BUFFERING, although we're also still ducked.
+      // The probelm is that one state is being used to model two different
+      // things.  Until that's fixed, it is nevertheless always safe (??)
+      // reset the volume on restart.
+      //
       player.setVolume(1.0f, 1.0f);
+
       if ( State.is(State.STATE_PLAY) || State.is(State.STATE_BUFFER) )
          return done();
 
