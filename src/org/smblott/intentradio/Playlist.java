@@ -35,8 +35,8 @@ public class Playlist extends AsyncTask<Void, Void, String>
 
    public void start()
    {
-      // log("ThreadPoolExecutor cores: ", ""+((ThreadPoolExecutor)AsyncTask.THREAD_POOL_EXECUTOR).getCorePoolSize());
-      // log("ThreadPoolExecutor max: ", ""+((ThreadPoolExecutor)AsyncTask.THREAD_POOL_EXECUTOR).getMaximumPoolSize());
+      // log("ThreadPoolExecutor cores: ", ""+((ThreadPoolExecutor)AsyncTask.THREAD_POOL_EXECUTOR).getCorePoolSize());  -> 5   on Nexus 4 emulator
+      // log("ThreadPoolExecutor max: ", ""+((ThreadPoolExecutor)AsyncTask.THREAD_POOL_EXECUTOR).getMaximumPoolSize()); -> 128 on Nexus 4 emulator
       //
       // Start this on a THREAD_POOL_EXECUTOR.  If it runs as a regular
       // AsyncTask, then it can interfere with loading of the app's UI.  So,
