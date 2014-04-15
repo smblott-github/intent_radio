@@ -227,41 +227,35 @@ version and edited it to meet your own needs), then set up Tasker as follows:
 
 .Downloads:
 ****
-The _IR_ app is available on
-https://f-droid.org/repository/browse/?fdid=org.smblott.intentradio[F-Droid]. +
-If you use that version (which is recommended) and install the https://f-droid.org/[F-Droid app] (which is also recommended), then you will
-receive notifications of new releases.
+The _IR_ app is:
+
+- Available on https://f-droid.org/repository/browse/?fdid=org.smblott.intentradio[F-Droid]. +
+  If you use the F-Droid version (which is recommended) and install the
+  https://f-droid.org/[F-Droid app] (which is also recommended), then you
+  will receive notifications of new releases.
 
 Alternatively:
 
-- There is a direct link to the most recent GitHub release in the release
-  notes, below.
-- Or, you can use the
-  link:IntentRadio-release.apk[bleeding edge release]. +
-// https://dl.dropboxusercontent.com/u/41898306/IntentRadio-release.apk[bleeding edge release].  +
-  (This is the version I use myself, although it may be unstable.)
+- The latest release is
+  link:IntentRadio-release.apk[here]
+  or on https://dl.dropboxusercontent.com/u/41898306/IntentRadio-release.apk[Dropbox]. +
+  If you use this version, then you will _not_ be notified about updates.
 ****
 
 // /////////////////////////////////////////////////////
 [[notes]]
 == Release Notes ==
 
-// .GitHub/master and bleeding-edge release:
-
 .Version 1.9:
 ****
-- Direct download: +
-  https://github.com/smblott-github/intent_radio/releases/download/v1.9.3/IntentRadio-release.apk[v1.9.3/IntentRadio-release.apk].
 - Better playlist detection and handling.
+- Bug fixes for playlist handling.
+- Bug fixes for audio focus.
+- Better default BBC Radio 4 URL.
 ****
-
-// /////////////////////////////////////////////////////
-=== Old Stuff ===
 
 .Version 1.8:
 ****
-- Direct download: +
-  https://github.com/smblott-github/intent_radio/releases/download/v1.8.1/IntentRadio-release.apk[v1.8.1/IntentRadio-release.apk].
 - Major reworking of notifications, including look and click behaviour. +
   When stopped or paused, clicking on the notification now restarts.
 - Substantial reworking of the state/audio-focus/thread model.
@@ -276,7 +270,6 @@ Alternatively:
 
 .Version 1.7:
 ****
-// - https://github.com/smblott-github/intent_radio/releases/download/v1.7/IntentRadio-release.apk[v1.7/IntentRadio-release.apk]
 - Add button to install sample Tasker project.
 - Improved (extended) the sample Tasker project.
 - Broadcast state (can be tracked in Tasker).
