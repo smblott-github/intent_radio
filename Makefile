@@ -2,10 +2,10 @@
 srv = smblott.org
 www = public_html/intent_radio/
 
-debug:
+debug: ir_library/res/raw/tasker.prj
 	ant debug
 
-release:
+release: ir_library/res/raw/tasker.prj
 	$(MAKE) clean
 	ant release
 	cp bin/IntentRadio-release.apk $(HOME)/storage/Dropbox/Public/IntentRadio-release.apk
@@ -13,7 +13,7 @@ release:
 
 clean:
 	ant clean
-	cd ./ir_library && make clean
+	cd ./ir_library && ant clean
 
 install:
 	$(MAKE) debug
@@ -32,6 +32,9 @@ logcat:
 
 log:
 	$(MAKE) logcat
+
+ir_library/res/raw/tasker.prj: ./ir_library/misc/Radio.prj.xml
+	cd ./ir_library/ && make $@
 
 .PHONY: debug release clean install install-release update-project logcat log
 

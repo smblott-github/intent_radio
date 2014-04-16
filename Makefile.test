@@ -40,3 +40,5 @@ pause:
 restart:
 	$(restart)
 
+.PHONY: play stop r4 ufm wnyc newstalk lyric shoutcast file pause restart
+
