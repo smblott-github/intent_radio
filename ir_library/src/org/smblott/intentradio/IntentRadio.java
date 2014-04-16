@@ -59,17 +59,20 @@ public class IntentRadio extends Activity
             url = (String) args[2];
 
             String text = ReadRawTextFile.read(getApplicationContext(),id.intValue());
+
             if ( url != null )
                text = text.replace("REPLACE_URL", url);
-
-            return Html.fromHtml(
-                    text 
+            else
+               text += 
+                    "\n"
                   + "<p>\n"
                   + "Distribution: " + getString(R.string.distribution) + "<br>\n"
                   + "Version: " + getString(R.string.version) + "<br>\n" 
                   + "Build: " + Build.getBuildDate(context) + "\n"
-                  + "</p>\n"
-                  );
+                  + "</p>\n";
+
+
+            return Html.fromHtml(text);
          }
 
          @Override
