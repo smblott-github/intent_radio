@@ -249,6 +249,11 @@ with it.  They're the same thing.
 [[notes]]
 == Release Notes ==
 
+.GitHub/Master:
+****
+- Clarify in-app messages.
+****
+
 .Version 1.9:
 ****
 - Better playlist detection and handling.
