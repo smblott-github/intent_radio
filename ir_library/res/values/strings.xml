@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="version">1.9.4</string>
+    <string name="distribution">General</string>
     <string name="app_name">IntentRadio</string>
     <string name="app_name_long">Intent Radio</string>
     <!-- <string name="default_url">http://www.bbc.co.uk/mediaselector/playlists/hls/radio/nonuk/lo/ak/bbc_radio_fourfm.m3u8</string> -->

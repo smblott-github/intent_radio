@@ -12,9 +12,9 @@ release: ir_library/res/raw/tasker.prj
 	rsync bin/IntentRadio-release.apk $(srv):$(www)
 
 clean:
-	ant clean
 	cd ./ir_library && ant clean
 	cd ./google-play-store && ant clean
+	ant clean
 
 install:
 	$(MAKE) debug

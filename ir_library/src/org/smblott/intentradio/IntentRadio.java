@@ -65,6 +65,7 @@ public class IntentRadio extends Activity
             return Html.fromHtml(
                     text 
                   + "<p>\n"
+                  + "Distribution: " + getString(R.string.distribution) + "<br>\n"
                   + "Version: " + getString(R.string.version) + "<br>\n" 
                   + "Build: " + Build.getBuildDate(context) + "\n"
                   + "</p>\n"
@@ -95,12 +96,12 @@ public class IntentRadio extends Activity
          draw_task.execute(view, R.raw.playing, url);
          return;
       }
-      else
-      {
-         findViewById(R.id.clip_buttons).setVisibility(View.VISIBLE);
-         findViewById(R.id.install_tasker).setVisibility(View.VISIBLE);
-         draw_task.execute(view, R.raw.message, null);
-      }
+
+      // Open app...
+      //
+      findViewById(R.id.clip_buttons).setVisibility(View.VISIBLE);
+      findViewById(R.id.install_tasker).setVisibility(View.VISIBLE);
+      draw_task.execute(view, R.raw.message, null);
    }
 
    /* ********************************************************************
