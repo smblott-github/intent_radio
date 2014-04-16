@@ -35,7 +35,7 @@ log:
 	$(MAKE) logcat
 
 ir_library/res/raw/tasker.prj: ./ir_library/misc/Radio.prj.xml
-	cd ./ir_library/ && make $@
+	cd ./ir_library/ && make res/raw/tasker.prj
 
 .PHONY: debug release clean install install-release update-project logcat log
 

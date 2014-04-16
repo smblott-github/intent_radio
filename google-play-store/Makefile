@@ -1,21 +1,12 @@
 
-debug: ir_library ir_library/res/raw/tasker.prj
+debug: ../ir_library/res/raw/tasker.prj
 	ant debug
 
-srv = smblott.org
-www = public_html/intent_radio/
-
-release: ir_library ir_library/res/raw/tasker.prj
+release: ../ir_library/res/raw/tasker.prj
 	$(MAKE) clean
 	ant release
 
-clean:
-	cd .. && $(MAKE) clean
-
-ir_library:
-	ln -s ../ir_library .
-
-install: ir_library
+install:
 	$(MAKE) debug
 	adb install -r bin/IntentRadio-debug.apk
 
@@ -23,18 +14,21 @@ install-release:
 	$(MAKE) release
 	adb install -r bin/IntentRadio-release.apk
 
+clean:
+	cd .. && $(MAKE) clean
+
 logcat:
 	cd .. && $(MAKE) $@
 
 log:
 	cd .. && $(MAKE) $@
 
-update-project: ir_library
+update-project:
 	android update project --name "IntentRadio" --target android-19 --path . --subprojects
-	cd ./ir_library/ && $(MAKE) update-project
+	cd ../ir_library/ && $(MAKE) update-project
 
-ir_library/res/raw/tasker.prj: ./ir_library ./ir_library/misc/Radio.prj.xml
-	cd ./ir_library/ && $(MAKE) $@
+../ir_library/res/raw/tasker.prj: ../ir_library/misc/Radio.prj.xml
+	cd ../ir_library/ && $(MAKE) res/raw/tasker.prj
 
 .PHONY: debug release clean install install-release logcat log update-project
 include ../Makefile.test
