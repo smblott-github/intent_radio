@@ -21,7 +21,6 @@ public class Notify
    private static NotificationManager note_manager = null;
    private static Builder builder = null;
    private static Notification note = null;
-   private static PendingIntent pending_click = null;
 
    public static void init(Service a_service, Context a_context)
    {
@@ -30,20 +29,8 @@ public class Notify
 
       note_manager = (NotificationManager) service.getSystemService(Context.NOTIFICATION_SERVICE);
 
-      boolean use_service_intent = true;
-      if ( use_service_intent )
-      {
-         Intent click = new Intent(context, IntentPlayer.class).putExtra("action", service.getString(R.string.intent_click));
-         click.setClass(context,IntentPlayer.class);
-         pending_click = PendingIntent.getService(context, 0, click, 0);
-      }
-      else
-      {
-
-         String intent_state = context.getString(R.string.intent_state);
-         Intent click = new Intent(intent_state).putExtra("action", service.getString(R.string.intent_click));
-         pending_click = PendingIntent.getBroadcast(context, 0, click, 0);
-      }
+      Intent click = new Intent(context, IntentPlayer.class).putExtra("action", service.getString(R.string.intent_click));
+      PendingIntent pending_click = PendingIntent.getService(context, 0, click, 0);
 
       builder =
          new Notification.Builder(context)
@@ -87,7 +74,6 @@ public class Notify
                   .setOngoing(true)
                   .setPriority(Notification.PRIORITY_HIGH)
                   .setWhen(System.currentTimeMillis())
-                  .setContentIntent(pending_click)
                   .build();
             service.startForeground(note_id, note);
          }
@@ -105,7 +91,6 @@ public class Notify
                   .setOngoing(false)
                   .setPriority(Notification.PRIORITY_DEFAULT)
                   .setWhen(System.currentTimeMillis())
-                  .setContentIntent(pending_click)
                   .build();
             note_manager.notify(note_id, note);
          }
@@ -121,7 +106,6 @@ public class Notify
             builder
             .setSubText(state+".")
             .setWhen(System.currentTimeMillis())
-            .setContentIntent(pending_click)
             .build();
          note_manager.notify(note_id, note);
          previous_state = state;

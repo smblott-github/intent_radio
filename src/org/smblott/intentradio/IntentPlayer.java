@@ -118,7 +118,6 @@ public class IntentPlayer extends Service
    @Override
    public int onStartCommand(Intent intent, int flags, int startId)
    {
-      log("XXXXXXXXX onStartCommand...");
       if ( intent == null || ! intent.hasExtra("action") )
          return done();
 
