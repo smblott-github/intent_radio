@@ -79,7 +79,7 @@ log_file_tail:
 	$(MAKE) log_file | tail -40
 
 update-project:
-	android update project -p .
+	android update lib-project --target android-19 --path .
 
 # Release process:
 #

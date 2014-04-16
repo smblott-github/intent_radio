@@ -1,0 +1,42 @@
+
+broadcast = adb shell am broadcast -a
+debug     = -e debug yes
+
+play      = $(broadcast) org.smblott.intentradio.PLAY $(debug)
+stop      = $(broadcast) org.smblott.intentradio.STOP
+pause     = $(broadcast) org.smblott.intentradio.PAUSE
+restart   = $(broadcast) org.smblott.intentradio.RESTART
+
+play:
+	$(play)
+
+stop:
+	$(stop)
+
+r4:
+	$(play) -e url http://www.bbc.co.uk/radio/listen/live/r4_heaacv2.pls -e name "BBC Radio 4"
+
+ufm:
+	$(play) -e url http://192.168.3.3/cgi-bin/sc/wav -e name "Elsa Sound Card"
+
+wnyc:
+	$(play) -e url http://www.wnyc.org/stream/fm.pls -e name "WNYC"
+
+newstalk:
+	$(play) -e url http://communicorp.mp3.miisolutions.net:8000/communicorp/Newstalk_low.m3u -e name "Newstalk"
+
+lyric:
+	$(play) -e url http://icecast2.rte.ie/lyric -e name "RTE Lyric FM"
+
+shoutcast:
+	$(play) -e url 'http://yp.shoutcast.com/sbin/tunein-station.pls?id=230816' -e name "Shoutcast"
+
+file:
+	$(play) -e url file:///sdcard/x.mp3 -e name "/sdcard/x/mp3"
+
+pause:
+	$(pause)
+
+restart:
+	$(restart)
+

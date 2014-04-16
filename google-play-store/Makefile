@@ -79,8 +79,9 @@ log_file:
 log_file_tail:
 	$(MAKE) log_file | tail -40
 
-update-project:
+update-project: ir_library
 	android update project --name "IntentRadio" --target android-19 --path . --subprojects
+	cd ./ir_library/ && $(MAKE) update-project
 
 # Release process:
 #
