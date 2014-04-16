@@ -9,10 +9,16 @@ public abstract class Later extends AsyncTask<Integer, Void, Void>
    private int seconds = default_seconds;
    private int then;
 
+   // secs <  0: execute immediately
+   // secs == 0: delay for default_seconds
+   // otherwise: delay for secs
+   //
    Later(int secs)
    {
       super();
-      seconds = 0 < secs ? secs : default_seconds;
+      if ( secs == 0 )
+         secs = default_seconds;
+      seconds = secs;
       then = Counter.now();
    }
 
@@ -23,7 +29,7 @@ public abstract class Later extends AsyncTask<Integer, Void, Void>
 
    protected Void doInBackground(Integer... args)
    {
-      try { Thread.sleep(seconds * 1000); }
+      try { if ( 0 < seconds ) Thread.sleep(seconds * 1000); }
       catch ( Exception e ) { }
       return null;
    }
