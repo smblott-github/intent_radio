@@ -40,17 +40,17 @@ public class Logger
 
       // Always enable debugging on debug builds...
       //
+      if ( Build.debug_build(context) )
+      {
+         state("debug");
+         log("Debug build: debugging enabled");
+      }
       boolean debug_build = ( (context.getApplicationInfo().flags & DEBUGGABLE) == DEBUGGABLE );
-      state(debug_build);
-      log("Debug build: ", ""+debug_build);
    }
 
    /* ********************************************************************
     * Enable/disable...
     */
-
-   public static void state(boolean enable)
-      { state(enable ? "debug" : "nodebug"); }
 
    public static void state(String s)
    {

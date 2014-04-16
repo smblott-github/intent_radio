@@ -5,6 +5,7 @@ import android.content.pm.ApplicationInfo;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipEntry;
 import java.text.SimpleDateFormat;
+import android.content.pm.ApplicationInfo;
 
 public class Build
 {
@@ -28,6 +29,15 @@ public class Build
       catch (Exception e)
          { build = "Unknown"; }
 
+      if ( debug_build(context)  )
+         build += " [debug]";
+
       return build;
+   }
+
+   public static boolean debug_build(Context context)
+   {
+      int DEBUGGABLE = ApplicationInfo.FLAG_DEBUGGABLE;
+      return (context.getApplicationInfo().flags & DEBUGGABLE) == DEBUGGABLE;
    }
 }
