@@ -21,6 +21,7 @@ public class Notify
    private static NotificationManager note_manager = null;
    private static Builder builder = null;
    private static Notification note = null;
+   private static boolean use_broadcast_intent = true;
 
    public static void init(Service a_service, Context a_context)
    {
@@ -29,8 +30,31 @@ public class Notify
 
       note_manager = (NotificationManager) service.getSystemService(Context.NOTIFICATION_SERVICE);
 
-      Intent click = new Intent(context, IntentPlayer.class).putExtra("action", service.getString(R.string.intent_click));
-      PendingIntent pending_click = PendingIntent.getService(context, 0, click, 0);
+      PendingIntent pending_click = null;
+      String intent_click = context.getString(R.string.intent_click);
+      if ( use_broadcast_intent )
+      {
+         // Either:
+         // Use broadcast to deliver clicks...
+         log("Notify: using broadcasts to deliver clicks.");
+         Intent click = new Intent(intent_click);
+         pending_click = PendingIntent.getBroadcast(context, 0, click, 0);
+      }
+      else
+      {
+         // Or:
+         // Use service class to deliver clicks...
+         //
+         // Android seems to get confused if you use a pending intent to a service
+         // class, and two apps (with different packages) that use
+         // the *same* service class name are installed.
+         // This could be a security issue.
+         //
+         log("Notify: using service to deliver clicks.");
+         Intent click = new Intent(context, IntentPlayer.class);
+         click.putExtra("action", intent_click);
+         pending_click = PendingIntent.getService(context, 0, click, 0);
+      }
 
       builder =
          new Notification.Builder(context)
