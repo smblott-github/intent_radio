@@ -2,21 +2,23 @@
 build:
 	$(MAKE) debug
 
-debug:
+debug: res/raw/tasker.prj
 	ant debug
 
 srv = smblott.org
 www = public_html/intent_radio/
 
-release:
+release: res/raw/tasker.prj
 	$(MAKE) clean
 	ant release
 	cp bin/IntentRadio-release.apk $(HOME)/storage/Dropbox/Public/IntentRadio-release.apk
 	rsync bin/IntentRadio-release.apk $(srv):$(www)
 
+res/raw/tasker.prj: misc/Radio.prj.xml
+	install -m 0444 $< $@
+
 clean:
 	ant clean
-	cd ./ir_library && make clean
 
 install:
 	$(MAKE) debug
@@ -77,7 +79,7 @@ log_file_tail:
 	$(MAKE) log_file | tail -40
 
 update-project:
-	android update project --name "IntentRadio" --target android-19 --path . --subprojects
+	android update project -p .
 
 # Release process:
 #
