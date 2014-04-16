@@ -216,10 +216,10 @@ version and edited it to meet your own needs), then set up Tasker as follows:
 - Or, there are some basic instructions link:./tasker.html[here].
 ****
 
-.Debugging:
-****
-- See link:./debug.html[here].
-****
+// .Debugging:
+// ****
+// - See link:./debug.html[here].
+// ****
 
 // /////////////////////////////////////////////////////
 [[downloads]]
