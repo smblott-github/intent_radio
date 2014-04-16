@@ -59,11 +59,11 @@ public class State extends Logger
 
       // is_playing states.
       if ( is(STATE_PLAY)     ) return "Playing";
-      if ( is(STATE_BUFFER)   ) return "Buffering";
+      if ( is(STATE_BUFFER)   ) return "Buffering..";
       if ( is(STATE_DUCK)     ) return "Ducked";
 
       // paused.
-      if ( is(STATE_PAUSE)    ) return "Paused";
+      if ( is(STATE_PAUSE)    ) return "Paused..";
 
       // Should not happen.
       //

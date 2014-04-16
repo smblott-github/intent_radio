@@ -300,11 +300,18 @@ public class IntentPlayer extends Service
          log("Stopping player...");
          if ( player.isPlaying() )
             player.stop();
-         player.reset();
+         log("releasing player...");
+         // If the player is buffering, then resetting the player hangs for
+         // quite some time.
+         // 
+         player.release();
+         player = null;
       }
 
+      log("Perhaps cancel task...");
       if ( playlist_task != null )
       {
+         log("Cancel task...");
          playlist_task.cancel(true);
          playlist_task = null;
       }
@@ -312,6 +319,7 @@ public class IntentPlayer extends Service
       if ( ! real_stop )
          return done();
 
+      log("Start launch player release task...");
       // We're still holding resources, including the player itself.
       // Spin off a task to clean up, soon.
       //
@@ -331,7 +339,9 @@ public class IntentPlayer extends Service
             }
          }
       }.start();
+      log("Player release task started...");
 
+      log("Returning...");
       return done(State.STATE_STOP);
    }
 
