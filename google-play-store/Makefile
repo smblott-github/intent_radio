@@ -10,7 +10,7 @@ release: ir_library ir_library/res/raw/tasker.prj
 	ant release
 
 clean:
-	cd ir_library && $(MAKE) clean
+	cd .. && $(MAKE) clean
 
 ir_library:
 	ln -s ../ir_library .

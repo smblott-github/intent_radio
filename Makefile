@@ -14,6 +14,7 @@ release: ir_library/res/raw/tasker.prj
 clean:
 	ant clean
 	cd ./ir_library && ant clean
+	cd ./google-play-store && ant clean
 
 install:
 	$(MAKE) debug
