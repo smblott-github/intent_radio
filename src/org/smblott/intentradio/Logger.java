@@ -22,6 +22,7 @@ public class Logger
    private static boolean debugging = false;
    private static int pid = 0;
 
+   private static final boolean use_file = false;
    private static final boolean append = false;
    private static final int DEBUGGABLE = ApplicationInfo.FLAG_DEBUGGABLE;
 
@@ -80,13 +81,14 @@ public class Logger
       if ( format == null )
          format = new SimpleDateFormat("HH:mm:ss ");
 
-      try
-      {
-         File log_file = new File(context.getExternalFilesDir(null), context.getString(R.string.intent_log_file));
-         file = new FileOutputStream(log_file, append);
-      }
-      catch (Exception e)
-         { file = null; }
+      if ( use_file )
+         try
+         {
+            File log_file = new File(context.getExternalFilesDir(null), context.getString(R.string.intent_log_file));
+            file = new FileOutputStream(log_file, append);
+         }
+         catch (Exception e)
+            { file = null; }
 
       log("Logger: -> on");
    }
