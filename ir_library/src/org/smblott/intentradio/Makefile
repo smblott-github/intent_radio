@@ -1,18 +1,12 @@
 
-default: debug
+root = ../../../../..
 
-# Makefile hack:
+debug install release clean:
+	cd $(root) && $(MAKE) $@
+
+.PHONY: debug install release clean
+
+# Use path (again) so that completion works.
 #
-# The following dependencies are circular; GNU make drops them.  However, they allow
-# zsh completion to work, and GNU make uses the rule at the bottom.
-#
+include ../../../../../Makefile.test
 
-install: install
-play: play
-stop: stop
-pause: pause
-restart: restart
-release: release
-
-%:
-	cd ../../../.. && $(MAKE) $@
