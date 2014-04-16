@@ -45,7 +45,6 @@ public class Logger
          state("debug");
          log("Debug build: debugging enabled");
       }
-      boolean debug_build = ( (context.getApplicationInfo().flags & DEBUGGABLE) == DEBUGGABLE );
    }
 
    /* ********************************************************************
