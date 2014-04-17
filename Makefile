@@ -28,6 +28,12 @@ update-project:
 	android update project --name "IntentRadio" --target android-19 --path . --subprojects
 	cd ./ir_library/ && $(MAKE) update-project
 
+google:
+	cd ./google-play-store && $(MAKE) debug
+
+google-release:
+	cd ./google-play-store && $(MAKE) release
+
 logcat:
 	adb logcat -s IntentRadio -s MediaPlayer
 
@@ -37,7 +43,7 @@ log:
 ir_library/res/raw/tasker.prj: ./ir_library/misc/Radio.prj.xml
 	cd ./ir_library/ && make res/raw/tasker.prj
 
-.PHONY: debug release clean install install-release update-project logcat log
+.PHONY: debug release clean install install-release update-project logcat log google google-release
 
 include ./Makefile.test
 
