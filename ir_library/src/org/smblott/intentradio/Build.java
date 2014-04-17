@@ -49,7 +49,7 @@ public class Build
          PackageInfo pinfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
          int version_code = pinfo.versionCode;
          String version_name = pinfo.versionName;
-         return version_name + ":" + version_code;
+         return version_name + "-" + version_code;
       }
       catch (Exception e) {}
 
