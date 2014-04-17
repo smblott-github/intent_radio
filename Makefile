@@ -2,12 +2,16 @@
 srv = smblott.org
 www = public_html/intent_radio/
 
+versioncode = $(shell make -s vercode)
+
 debug: ir_library/res/raw/tasker.prj
 	ant debug
 
 release: ir_library/res/raw/tasker.prj
 	$(MAKE) clean
 	ant release
+	mkdir -p releases
+	install -v -m 0444 bin/IntentRadio-release.apk releases/IntentRadio-release-general-$(versioncode).apk
 	cp bin/IntentRadio-release.apk $(HOME)/storage/Dropbox/Public/IntentRadio-release.apk
 	rsync bin/IntentRadio-release.apk $(srv):$(www)
 
@@ -42,6 +46,11 @@ log:
 
 ir_library/res/raw/tasker.prj: ./ir_library/misc/Radio.prj.xml
 	cd ./ir_library/ && make res/raw/tasker.prj
+
+vercode = $(shell sh ./script/version.sh ir_library/res/values/strings.xml)
+
+vercode:
+	@echo $(vercode)
 
 .PHONY: debug release clean install install-release update-project logcat log google google-release
 

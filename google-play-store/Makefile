@@ -2,9 +2,13 @@
 debug: ../ir_library/res/raw/tasker.prj
 	ant debug
 
+versioncode = $(shell cd .. && make -s vercode)
+
 release: ../ir_library/res/raw/tasker.prj
 	$(MAKE) clean
 	ant release
+	mkdir -p ../releases
+	install -v -m 0444 bin/IntentRadio-release.apk ../releases/IntentRadio-release-google-$(versioncode).apk
 
 install:
 	$(MAKE) debug
