@@ -15,10 +15,12 @@ stop:
 	$(stop)
 
 r4:
-	$(play) -e url http://www.bbc.co.uk/radio/listen/live/r4_heaacv2.pls -e name "BBC Radio 4"
-
-r4ms:
 	$(play) -e url http://www.bbc.co.uk/mediaselector/playlists/hls/radio/nonuk/lo/ak/bbc_radio_fourfm.m3u8 -e name "BBC Radio 4 (Fast)"
+
+# This blocks for quite some time, and cannot be cancelled until buffering has
+# completed; Android bug.
+r4aac:
+	$(play) -e url http://www.bbc.co.uk/radio/listen/live/r4_heaacv2.pls -e name "BBC Radio 4"
 
 ufm:
 	$(play) -e url http://192.168.3.3/cgi-bin/sc/wav -e name "Elsa Sound Card"
@@ -47,5 +49,5 @@ restart:
 click:
 	$(click)
 
-.PHONY: play stop r4 r4ms ufm wnyc newstalk lyric shoutcast file pause restart click
+.PHONY: play stop r4 r4aac ufm wnyc newstalk lyric shoutcast file pause restart click
 
