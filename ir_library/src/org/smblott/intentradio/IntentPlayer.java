@@ -301,17 +301,15 @@ public class IntentPlayer extends Service
          if ( player.isPlaying() )
             player.stop();
          log("releasing player...");
-         // If the player is buffering, then resetting the player hangs for
-         // quite some time.
+         // If the player is still connecting, then resetting or releasing the
+         // player hangs for quite some time.
          // 
          player.release();
          player = null;
       }
 
-      log("Perhaps cancel task...");
       if ( playlist_task != null )
       {
-         log("Cancel task...");
          playlist_task.cancel(true);
          playlist_task = null;
       }
