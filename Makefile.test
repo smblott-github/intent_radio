@@ -6,6 +6,7 @@ play      = $(broadcast) org.smblott.intentradio.PLAY $(debug)
 stop      = $(broadcast) org.smblott.intentradio.STOP
 pause     = $(broadcast) org.smblott.intentradio.PAUSE
 restart   = $(broadcast) org.smblott.intentradio.RESTART
+click     = $(broadcast) org.smblott.intentradio.CLICK
 
 play:
 	$(play)
@@ -40,5 +41,8 @@ pause:
 restart:
 	$(restart)
 
-.PHONY: play stop r4 ufm wnyc newstalk lyric shoutcast file pause restart
+click:
+	$(click)
+
+.PHONY: play stop r4 ufm wnyc newstalk lyric shoutcast file pause restart click
 
