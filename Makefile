@@ -52,7 +52,10 @@ vercode = $(shell sh ./script/version.sh ir_library/res/values/version.xml)
 vercode:
 	@echo $(vercode)
 
-.PHONY: debug release clean install install-release update-project logcat log google google-release
+version:
+	vim ./ir_library/res/values/version.xml
+
+.PHONY: debug release clean install install-release update-project logcat log google google-release version
 
 include ./Makefile.test
 
