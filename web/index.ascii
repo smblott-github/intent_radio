@@ -256,6 +256,7 @@ with it.  They're the same thing.
 - Disable recursive playlist fetch. +
   Without recursive playlist fetch, we can use better URLs for some
   stations, including some important BBC radio stations.
+- Use better (faster start up) URL for default radio station.
 ****
 
 .Version 1.9:
