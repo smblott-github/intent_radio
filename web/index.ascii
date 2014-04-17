@@ -183,10 +183,11 @@ version and edited it to meet your own needs), then set up Tasker as follows:
   For example:
 ** `http://www.bbc.co.uk/.../xxx.pls`
 ** `http://www.bbc.co.uk/.../xxx.m3u`
+** `http://www.bbc.co.uk/.../xxx.m3u8`
 
-- When a playlist is encountered, _IR_ selects a random link from the
-  playlist.  Additionally, playlists can themselves contain playlists
-  (nested up to ten times).
+// - When a playlist is encountered, _IR_ selects a random link from the
+//   playlist.  Additionally, playlists can themselves contain playlists
+//   (nested up to ten times).
 ****
 
 .Important!
@@ -252,6 +253,9 @@ with it.  They're the same thing.
 .GitHub/Master:
 ****
 - Clarify in-app messages.
+- Disable recursive playlist fetch. +
+  Without recursive playlist fetch, we can use better URLs for some
+  stations, including some important BBC radio stations.
 ****
 
 .Version 1.9:

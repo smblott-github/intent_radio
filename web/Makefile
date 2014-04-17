@@ -20,6 +20,6 @@ install:
 	$(MAKE) build
 	rsync -av $(target) $(srv):$(www)
 
-Radio.prj.xml: ../misc/Radio.prj.xml
+Radio.prj.xml: ../ir_library/misc/Radio.prj.xml
 	install -m 0444 $< $@
 

@@ -57,7 +57,10 @@ public class Playlist extends AsyncTask<Void, Void, String>
       else
          url = null;
 
-      while ( 0 < ttl && url != null && type != NONE )
+      // Disable recursive playlist fetch; to re-enable, change this to while
+      // and see comment regarding BBC Radio 4, below.
+      //
+      if ( 0 < ttl && url != null && type != NONE )
       {
          ttl -= 1;
          log("Playlist url: ", url);
@@ -72,7 +75,9 @@ public class Playlist extends AsyncTask<Void, Void, String>
 
       if ( url  == null ) { log("Playlist: failed to extract url."     );             }
       if ( ttl  == 0    ) { log("Playlist: too many playlists (TTL)."  ); url = null; }
-      if ( type != NONE ) { log("Playlist: too many playlists (TYPE)." ); url = null; }
+      //
+      // Disbaled, so the BBC Radio 4 Media selector playlist is passed directly to MediaPlayer.
+      // if ( type != NONE ) { log("Playlist: too many playlists (TYPE)." ); url = null; }
       if ( url  != null ) { log("Playlist final url: ", url            );             }
 
       return url;
