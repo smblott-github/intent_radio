@@ -47,7 +47,10 @@ log:
 ir_library/res/raw/tasker.prj: ./ir_library/misc/Radio.prj.xml
 	cd ./ir_library/ && make res/raw/tasker.prj
 
-.PHONY: debug release clean install install-release update-project logcat log google google-release
+version:
+	@echo $(versioncode)
+
+.PHONY: debug release clean install install-release update-project logcat log google google-release version
 
 include ./Makefile.test
 

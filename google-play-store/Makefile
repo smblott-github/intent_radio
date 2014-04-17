@@ -34,7 +34,10 @@ update-project:
 ../ir_library/res/raw/tasker.prj: ../ir_library/misc/Radio.prj.xml
 	cd ../ir_library/ && $(MAKE) res/raw/tasker.prj
 
-.PHONY: debug release clean install install-release logcat log update-project
+version:
+	@echo $(versioncode)
+
+.PHONY: debug release clean install install-release logcat log update-project versioncode
 include ../Makefile.test
 
 # Release process:
