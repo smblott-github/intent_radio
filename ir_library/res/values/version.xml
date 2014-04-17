@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Keep this order for the following two codes.  It effects the naming of
+         release builds. -->
+    <integer name="versioncode">15</integer>
+    <string name="version">1.9.5</string>
+</resources>

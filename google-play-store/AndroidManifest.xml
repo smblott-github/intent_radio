@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
    xmlns:android="http://schemas.android.com/apk/res/android"
-   android:versionCode="@string/versioncode"
+   android:versionCode="@integer/versioncode"
    android:versionName="@string/version"
    package="org.smblott.intentradioio">
       <uses-sdk android:minSdkVersion="16" />

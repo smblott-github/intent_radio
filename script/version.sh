@@ -1,5 +1,5 @@
 #!/bin/sh
 
-sed -n '/name="version/ { s/^[^>]*>//; s/<\/string.*//; p }' "$@" \
+sed -n '/name="version/ { s/^[^>]*>//; s/<\/.*//; p }' "$@" \
    | tr '\n' '-' \
    | sed 's/-$//'

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="org.smblott.intentradio"
-      android:versionCode="@string/versioncode"
-      android:versionName="@string/version">
+      android:versionCode="@integer/versioncode"
+      android:versionName="@string/version"
+      >
 
    <uses-sdk android:minSdkVersion="16" />
 

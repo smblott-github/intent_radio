@@ -39,15 +39,15 @@ google-release:
 	cd ./google-play-store && $(MAKE) release
 
 logcat:
-	adb logcat -s IntentRadio -s MediaPlayer
+	adb logcat
 
 log:
-	$(MAKE) logcat
+	adb logcat -s IntentRadio -s MediaPlayer
 
 ir_library/res/raw/tasker.prj: ./ir_library/misc/Radio.prj.xml
 	cd ./ir_library/ && make res/raw/tasker.prj
 
-vercode = $(shell sh ./script/version.sh ir_library/res/values/strings.xml)
+vercode = $(shell sh ./script/version.sh ir_library/res/values/version.xml)
 
 vercode:
 	@echo $(vercode)

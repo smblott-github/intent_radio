@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Keep this order for the following three codes.  It effects the naming of
-         release builds. -->
-    <string name="versioncode">15</string>
-    <string name="version">1.9.5</string>
-
     <string name="app_name">IntentRadio</string>
     <string name="app_name_long">Intent Radio</string>
     <string name="distribution">General</string>
