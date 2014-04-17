@@ -6,6 +6,7 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipEntry;
 import java.text.SimpleDateFormat;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 
 public class Build
 {
@@ -39,5 +40,19 @@ public class Build
    {
       int DEBUGGABLE = ApplicationInfo.FLAG_DEBUGGABLE;
       return (context.getApplicationInfo().flags & DEBUGGABLE) == DEBUGGABLE;
+   }
+
+   public static String version_string(Context context)
+   {
+      try
+      {
+         PackageInfo pinfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+         int version_code = pinfo.versionCode;
+         String version_name = pinfo.versionName;
+         return version_name + ":" + version_code;
+      }
+      catch (Exception e) {}
+
+      return "Unknown";
    }
 }

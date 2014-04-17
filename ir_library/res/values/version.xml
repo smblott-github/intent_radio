@@ -2,6 +2,9 @@
 <resources>
     <!-- Keep this order for the following two codes.  It effects the naming of
          release builds. -->
+    <!--
+         Now In Android Manifests, directly. -->
+
     <integer name="versioncode">16</integer>
     <string name="version">1.9.6</string>
 </resources>

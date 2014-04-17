@@ -67,7 +67,7 @@ public class IntentRadio extends Activity
                     "\n"
                   + "<p>\n"
                   + "Distribution: " + getString(R.string.distribution) + "<br>\n"
-                  + "Version: " + getString(R.string.version) + "<br>\n" 
+                  + "Version: " + Build.version_string(context) + "<br>\n" 
                   + "Build: " + Build.getBuildDate(context) + "\n"
                   + "</p>\n";
 

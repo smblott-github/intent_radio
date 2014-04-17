@@ -1,8 +1,8 @@
 
+versioncode = $(shell sh ../script/version.sh)
+
 debug: ../ir_library/res/raw/tasker.prj
 	ant debug
-
-versioncode = $(shell cd .. && make -s vercode)
 
 release: ../ir_library/res/raw/tasker.prj
 	$(MAKE) clean

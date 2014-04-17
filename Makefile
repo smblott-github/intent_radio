@@ -2,7 +2,7 @@
 srv = smblott.org
 www = public_html/intent_radio/
 
-versioncode = $(shell make -s vercode)
+versioncode = $(shell sh ./script/version.sh)
 
 debug: ir_library/res/raw/tasker.prj
 	ant debug
@@ -47,15 +47,7 @@ log:
 ir_library/res/raw/tasker.prj: ./ir_library/misc/Radio.prj.xml
 	cd ./ir_library/ && make res/raw/tasker.prj
 
-vercode = $(shell sh ./script/version.sh ir_library/res/values/version.xml)
-
-vercode:
-	@echo $(vercode)
-
-version:
-	vim ./ir_library/res/values/version.xml
-
-.PHONY: debug release clean install install-release update-project logcat log google google-release version
+.PHONY: debug release clean install install-release update-project logcat log google google-release
 
 include ./Makefile.test
 

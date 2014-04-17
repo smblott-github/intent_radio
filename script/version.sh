@@ -1,5 +1,6 @@
 #!/bin/sh
 
-sed -n '/name="version/ { s/^[^>]*>//; s/<\/.*//; p }' "$@" \
+< ./AndroidManifest.xml \
+   sed -n '/android:version/ {s/.*="//; s/".*//; p}' \
    | tr '\n' '-' \
    | sed 's/-$//'
