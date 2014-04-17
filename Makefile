@@ -56,18 +56,19 @@ include ./Makefile.test
 
 # Release process:
 #
-# - bump
-#   ** version code in ./AndroidManifest.xml
-#   ** version name in ./res/values/strings.xml
-# - update release notes in web/index.ascii
-# - git commit/push
-# - build release APK
-# - git tag -a vX.Y
-# - git push origin --tags
-# - on GitHub, publish release
-#   including upload of release APK
-# - add link to release APK to web/index.ascii (at bottom)
-# - in web: make install
-# - git commit/push
+# - bump:
+#      - version code and name in BOTH ./AndroidManifest.xml and ./google-play-store/AndroidManifest.xml
+# - update release notes in web/index.ascii:
+#      make install
+# - git commit; git push
+# - gtag vX.Y.Z
+# - build release APKs:
+#      make release
+#      make google-release
+# - F-Droid:
+#      - update metadata
+#      - submit PR
+# - Google Play Store:
+#      - upload new APK
 #
 
