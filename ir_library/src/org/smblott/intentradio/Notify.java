@@ -11,6 +11,9 @@ import android.app.Notification.Builder;
 
 import android.app.PendingIntent;
 
+import android.preference.PreferenceManager;
+import android.content.SharedPreferences;
+
 public class Notify
 {
    private static final int note_id = 100;
@@ -133,6 +136,16 @@ public class Notify
             .build();
          note_manager.notify(note_id, note);
          previous_state = state;
+      }
+
+      // Cludge.
+      // Cancel the notification if we're now stopped and the user has indicated
+      // a preference for no on-going notification.
+      if ( State.is(State.STATE_STOP) )
+      {
+         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+         if ( ! settings.getBoolean("persistent_notification", true) )
+            note_manager.cancel(note_id);
       }
    }
 
