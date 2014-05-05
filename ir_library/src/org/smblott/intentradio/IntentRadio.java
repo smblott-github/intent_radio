@@ -21,7 +21,7 @@ import android.widget.PopupMenu;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 
-public class IntentRadio extends Activity
+public class IntentRadio extends PreferenceActivity
 {
    private static Context context = null;
 
@@ -192,32 +192,6 @@ public class IntentRadio extends Activity
 
    public void clip_url(View view)
       { Clipper.clip(context,url); }
-
-   /* ********************************************************************
-    * Preferences menu...
-    */
-
-
-   @Override
-   public boolean onCreateOptionsMenu(Menu menu)
-   {
-      MenuInflater inflater = getMenuInflater();
-      inflater.inflate(R.menu.prefs, menu);
-      return true;
-   } 
-
-   @Override
-   public boolean onOptionsItemSelected(MenuItem item)
-   {
-      if ( item.getItemId() == R.id.prefs )
-      {
-         Intent prefs = new Intent(IntentRadio.this, Prefs.class);
-         startActivity(prefs);
-         return true;   
-      }
-
-      return super.onOptionsItemSelected(item);
-   }
 
    /* ********************************************************************
     * Toasts...

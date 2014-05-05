@@ -8,7 +8,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 
-public class ClipButtons extends Activity
+public class ClipButtons extends PreferenceActivity
 {
 
    private static String intent_play = null;
