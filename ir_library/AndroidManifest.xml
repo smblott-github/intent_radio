@@ -49,6 +49,7 @@
          </intent-filter>
       </activity>
 
+      <activity android:name=".Prefs" />
       <activity android:name=".ClipButtons" />
 
       <!-- /////////////////////////////

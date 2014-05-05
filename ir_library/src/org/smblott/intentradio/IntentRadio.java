@@ -11,8 +11,12 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.text.Spanned;
 import android.view.View;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MenuInflater;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.PopupMenu;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -188,6 +192,32 @@ public class IntentRadio extends Activity
 
    public void clip_url(View view)
       { Clipper.clip(context,url); }
+
+   /* ********************************************************************
+    * Preferences menu...
+    */
+
+
+   @Override
+   public boolean onCreateOptionsMenu(Menu menu)
+   {
+      MenuInflater inflater = getMenuInflater();
+      inflater.inflate(R.menu.prefs, menu);
+      return true;
+   } 
+
+   @Override
+   public boolean onOptionsItemSelected(MenuItem item)
+   {
+      if ( item.getItemId() == R.id.prefs )
+      {
+         Intent prefs = new Intent(IntentRadio.this, Prefs.class);
+         startActivity(prefs);
+         return true;   
+      }
+
+      return super.onOptionsItemSelected(item);
+   }
 
    /* ********************************************************************
     * Toasts...
