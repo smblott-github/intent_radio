@@ -317,6 +317,7 @@ public class IntentPlayer extends Service
       if ( ! real_stop )
          return done();
 
+      /*
       log("Start launch player release task...");
       // We're still holding resources, including the player itself.
       // Spin off a task to clean up, soon.
@@ -338,6 +339,7 @@ public class IntentPlayer extends Service
          }
       }.start();
       log("Player release task started...");
+      */
 
       log("Returning...");
       return done(State.STATE_STOP);
@@ -500,7 +502,7 @@ public class IntentPlayer extends Service
          // thread move time on.
          // TODO: Is that really true?
          // 
-         new Later(30)
+         new Later(10)
          {
             @Override
             public void later()
@@ -552,6 +554,10 @@ public class IntentPlayer extends Service
          return true;
       }
 
+      stop();
+      State.set_state(context,State.STATE_ERROR);
+
+      /*
       switch ( what )
       {
          case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
@@ -567,7 +573,10 @@ public class IntentPlayer extends Service
             State.set_state(context,State.STATE_ERROR);
             break;
       }
+      */
 
+      // Returning true, here, prevents the onCompletionlistener from being called.
+      //
       return true;
    }
 

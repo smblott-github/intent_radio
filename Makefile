@@ -12,7 +12,7 @@ release: ir_library/res/raw/tasker.prj
 	ant release
 	mkdir -p releases
 	install -v -m 0444 bin/IntentRadio-release.apk releases/IntentRadio-release-general-$(versioncode).apk
-	cp bin/IntentRadio-release.apk $(HOME)/storage/Dropbox/Public/IntentRadio-release.apk
+	rsync -v releases/*.apk $(HOME)/storage/Dropbox/Public/
 	rsync bin/IntentRadio-release.apk $(srv):$(www)
 
 clean:
