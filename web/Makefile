@@ -9,6 +9,7 @@ target += debug.html
 target += tasker.html
 target += privacy.html
 target += release.html
+target += favicon.ico
 
 build: $(target)
 	@true
