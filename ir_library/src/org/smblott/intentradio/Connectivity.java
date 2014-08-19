@@ -68,7 +68,7 @@ public class Connectivity extends BroadcastReceiver
       if ( State.is_stopped() || State.is(State.STATE_PAUSE) )
          return;
 
-      Logger.log("Network state change, connected = " + isConnected(context));
+      // Logger.log("Network state change, connected = " + isConnected(context));
 
       // ///////////////////////////////////////////////////
       // We seem to have lost our internet connection....

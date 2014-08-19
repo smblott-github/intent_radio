@@ -469,6 +469,9 @@ public class IntentPlayer extends Service
    {
       log("Click: ", State.current());
 
+      // This case must come first.  Otherwise, when the state is disconnected,
+      // player is always null, so the case below would always be triggered
+      // (were it first).
       if ( State.is_playing() || State.is(State.STATE_DISCONNECTED) )
       {
          stop();
