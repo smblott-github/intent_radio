@@ -8,7 +8,8 @@
      <CheckBoxPreference
        android:key="persistent_notification"
        android:title="Persistent notification"
-       android:summary="Should the notification persist after playback completes?"
+       android:summaryOn="The notification persists until it is explicitly dismissed."
+       android:summaryOff="The notification is dismissed automatically when playback stops."
        android:defaultValue="true"
        />
 
@@ -20,7 +21,8 @@
      <CheckBoxPreference
        android:key="reconnect"
        android:title="Restart playback"
-       android:summary="If the network connection is lost then re-established during playback, then should playback be restarted? Playback is restarted only if the connection is re-established within five minutes."
+       android:summaryOn="If the network connection is lost during playback and then re-established within five minutes, then playback is restarted"
+       android:summaryOff="If the network connection is lost during playback, then playback is stopped."
        android:defaultValue="false"
        />
 
