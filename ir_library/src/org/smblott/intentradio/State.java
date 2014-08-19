@@ -8,14 +8,15 @@ public class State extends Logger
    private static Context context = null;
    private static String intent_state = null;
 
-   public static final String STATE_STOP     = "stop";
-   public static final String STATE_ERROR    = "error";
-   public static final String STATE_COMPLETE = "complete";
-   public static final String STATE_PAUSE    = "play/pause";
+   public static final String STATE_STOP         = "stop";
+   public static final String STATE_ERROR        = "error";
+   public static final String STATE_COMPLETE     = "complete";
+   public static final String STATE_PAUSE        = "play/pause";
 
-   public static final String STATE_PLAY     = "play";
-   public static final String STATE_BUFFER   = "play/buffering";
-   public static final String STATE_DUCK     = "play/duck";
+   public static final String STATE_PLAY         = "play";
+   public static final String STATE_BUFFER       = "play/buffering";
+   public static final String STATE_DUCK         = "play/duck";
+   public static final String STATE_DISCONNECTED = "play/disconnected";
 
    private static String current_state = STATE_STOP;
 
@@ -53,17 +54,20 @@ public class State extends Logger
    public static String text()
    {
       // is_stopped states.
-      if ( is(STATE_STOP)     ) return "Stopped";
-      if ( is(STATE_ERROR)    ) return "Error";
-      if ( is(STATE_COMPLETE) ) return "Complete";
+      if ( is(STATE_STOP)         ) return "Stopped";
+      if ( is(STATE_ERROR)        ) return "Error";
+      if ( is(STATE_COMPLETE)     ) return "Complete";
 
       // is_playing states.
-      if ( is(STATE_PLAY)     ) return "Playing";
-      if ( is(STATE_BUFFER)   ) return "Buffering..";
-      if ( is(STATE_DUCK)     ) return "Ducked";
+      if ( is(STATE_PLAY)         ) return "Playing";
+      if ( is(STATE_BUFFER)       ) return "Buffering..";
+      if ( is(STATE_DUCK)         ) return "Ducked";
 
       // paused.
-      if ( is(STATE_PAUSE)    ) return "Paused..";
+      if ( is(STATE_PAUSE)        ) return "Paused..";
+
+      // disconnected
+      if ( is(STATE_DISCONNECTED) ) return "No network connection.";
 
       // Should not happen.
       //
@@ -74,7 +78,7 @@ public class State extends Logger
    // except "pause".
    //
    public static boolean is_playing()
-      { return is(State.STATE_PLAY) || is(State.STATE_BUFFER) || is(State.STATE_DUCK); }
+      { return is(State.STATE_PLAY) || is(State.STATE_BUFFER) || is(State.STATE_DUCK) || is(State.STATE_DISCONNECTED); }
 
    public static boolean is_stopped()
       { return State.is(State.STATE_STOP) || State.is(State.STATE_ERROR) || State.is(State.STATE_COMPLETE); }

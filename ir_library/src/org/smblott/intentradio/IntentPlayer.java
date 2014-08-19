@@ -64,6 +64,8 @@ public class IntentPlayer extends Service
    private static Playlist playlist_task = null;
    private static AsyncTask<Integer,Void,Void> pause_task = null;
 
+   private static Connectivity connectivity = null;
+
    /* ********************************************************************
     * Create service...
     */
@@ -90,6 +92,7 @@ public class IntentPlayer extends Service
       name = settings.getString("name", default_name);
 
       audio_manager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+      connectivity = new Connectivity(context,this);
    }
 
    /* ********************************************************************
@@ -105,6 +108,12 @@ public class IntentPlayer extends Service
       {
          player.release();
          player = null;
+      }
+
+      if ( connectivity != null )
+      {
+         connectivity.destroy();
+         connectivity = null;
       }
 
       Logger.state("off");
@@ -168,7 +177,7 @@ public class IntentPlayer extends Service
     * Play...
     */
 
-   private int play()
+   public int play()
       { return play(url); }
 
    private int play(String url)
@@ -188,11 +197,25 @@ public class IntentPlayer extends Service
       }
 
       // /////////////////////////////////////////////////////////////////
+      // Check connectivity...
+
+      if ( ! Connectivity.isConnected(context) )
+      {
+         int ret = stop();
+         State.set_state(context, State.STATE_DISCONNECTED);
+         toast("No internet connection; will not start playback.");
+         return ret;
+      }
+
+      // /////////////////////////////////////////////////////////////////
       // Audio focus...
 
       int focus = audio_manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
       if ( focus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
+      {
+         toast("Could not obtain audio focus; not playing.");
          return stop();
+      }
 
       // /////////////////////////////////////////////////////////////////
       // Set up media player...
@@ -271,7 +294,7 @@ public class IntentPlayer extends Service
     * Stop...
     */
 
-   private int stop()
+   public int stop()
       { return stop(true); }
 
    // Parameters:
@@ -446,16 +469,16 @@ public class IntentPlayer extends Service
    {
       log("Click: ", State.current());
 
-      if ( player == null || State.is_stopped() )
-         return play();
-
-      if ( State.is_playing() )
+      if ( State.is_playing() || State.is(State.STATE_DISCONNECTED) )
       {
          stop();
          log("Click: cancel notification");
          Notify.cancel();
          return done();
       }
+
+      if ( player == null || State.is_stopped() )
+         return play();
 
       if ( State.is(State.STATE_PAUSE) )
          return restart();

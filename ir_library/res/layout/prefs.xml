@@ -12,6 +12,13 @@
        android:defaultValue="true"
        />
 
+     <CheckBoxPreference
+       android:key="reconnect"
+       android:title="Restart playback"
+       android:summary="Should playback be restarted after network disconnection then reconnection?"
+       android:defaultValue="false"
+       />
+
   </PreferenceCategory>
 
 </PreferenceScreen>
