@@ -250,6 +250,12 @@ with it.  They're the same thing.
 [[notes]]
 == Release Notes ==
 
+.Version 1.9.8:
+****
+- Add option (disabled by default) to restart playback if the network
+  connection is lost and then re-established.
+****
+
 .Version 1.9.7:
 ****
 - Better playlist detection and handling.
