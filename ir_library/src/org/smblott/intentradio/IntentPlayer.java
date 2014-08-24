@@ -524,7 +524,7 @@ public class IntentPlayer extends Service
          // considered successful, then it will not be repeated.  This is
          // intented to prevent thrashing.
          //
-         // No need to cancel this.  All events effecting the relevance of this
+         // No need to cancel this.  All events affecting the relevance of this
          // thread move time on.
          // TODO: Is that really true?
          // 
@@ -573,7 +573,8 @@ public class IntentPlayer extends Service
       if ( player != null
             && previous_launch_url != null
             && previous_launch_successful
-            && URLUtil.isNetworkUrl(previous_launch_url))
+            && URLUtil.isNetworkUrl(previous_launch_url)
+            && Connectivity.isConnected(context) )
       {
          player.reset();
          play_relaunch();

@@ -50,6 +50,7 @@ public class Connectivity extends BroadcastReceiver
       NetworkInfo[] info = connectivity.getAllNetworkInfo();
 
       /* Do we really have to ask for all state and check each item individually? */
+      /* Do we care about Bluetooth connectivity? */
       if (info != null) 
          for (int i = 0; i < info.length; i+=1) 
             if (info[i].getState() == NetworkInfo.State.CONNECTED)
@@ -66,7 +67,8 @@ public class Connectivity extends BroadcastReceiver
       // register and deregister the listener as we go along.
       //
       if ( State.is_stopped() || State.is(State.STATE_PAUSE) )
-         return;
+         if ( ! State.is(State.STATE_ERROR) )
+            return;
 
       // Logger.log("Network state change, connected = " + isConnected(context));
 
@@ -106,23 +108,24 @@ public class Connectivity extends BroadcastReceiver
       // ///////////////////////////////////////////////////
       // We seem to have been reconnected....
       //
-      if ( State.is(State.STATE_DISCONNECTED) && Counter.still(then) && isConnected(context) )
-      {
-         Logger.log("Reconnected...");
-
-         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-         if ( ! settings.getBoolean("reconnect", false) )
-            return;
-
-         if ( disable_task != null )
+      if ( isConnected(context) )
+         if ( (State.is(State.STATE_DISCONNECTED) && Counter.still(then)) || State.is(State.STATE_ERROR) )
          {
-            disable_task.cancel(true);
-            disable_task = null;
-         }
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+            if ( ! settings.getBoolean("reconnect", false) )
+               return;
 
-         player.play();
-         return;
-      }
+            Logger.log("Reconnecting...");
+
+            if ( disable_task != null )
+            {
+               disable_task.cancel(true);
+               disable_task = null;
+            }
+
+            player.play();
+            return;
+         }
 
    }
 }
