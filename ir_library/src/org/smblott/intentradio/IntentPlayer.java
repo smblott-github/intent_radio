@@ -570,18 +570,20 @@ public class IntentPlayer extends Service
    {
       log("Error: ", ""+what);
 
-      if ( player != null
-            && previous_launch_url != null
-            && previous_launch_successful
-            && URLUtil.isNetworkUrl(previous_launch_url)
-            && Connectivity.isConnected(context) )
-      {
-         player.reset();
-         play_relaunch();
-         return true;
-      }
-
-      stop();
+      // Disabled in favour of logic in ./Connectivity.java
+      //
+      // if ( player != null
+      //       && previous_launch_url != null
+      //       && previous_launch_successful
+      //       && URLUtil.isNetworkUrl(previous_launch_url)
+      //       && Connectivity.isConnected(context) )
+      // {
+      //    player.reset();
+      //    play_relaunch();
+      //    return true;
+      // }
+      //
+      // stop();
       State.set_state(context,State.STATE_ERROR);
 
       /*
