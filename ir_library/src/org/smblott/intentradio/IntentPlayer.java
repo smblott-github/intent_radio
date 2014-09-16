@@ -248,6 +248,9 @@ public class IntentPlayer extends Service
       return done(State.STATE_BUFFER);
    }
 
+   public boolean isNetworkUrl()
+      { return (previous_launch_url != null && URLUtil.isNetworkUrl(previous_launch_url) ); }
+
    /* ********************************************************************
     * Launch player...
     */

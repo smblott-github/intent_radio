@@ -78,8 +78,11 @@ public class Connectivity extends BroadcastReceiver
    {
       int type = getType();
 
-      if ( State.is(State.STATE_STOP) || State.is(State.STATE_PAUSE) || State.is(State.STATE_COMPLETE) )
-      {
+      if ( State.is(State.STATE_STOP)
+            || State.is(State.STATE_PAUSE)
+            || State.is(State.STATE_COMPLETE)
+            || ! player.isNetworkUrl() )
+      {  // We have not involvement in these cases, so bail quickly.
          previous_type = type;
          return;
       }
