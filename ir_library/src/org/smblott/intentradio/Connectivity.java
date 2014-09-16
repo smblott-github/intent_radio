@@ -82,7 +82,7 @@ public class Connectivity extends BroadcastReceiver
             || State.is(State.STATE_PAUSE)
             || State.is(State.STATE_COMPLETE)
             || ! player.isNetworkUrl() )
-      {  // We have not involvement in these cases, so bail quickly.
+      {  // We have no involvement in these cases, so bail quickly.
          previous_type = type;
          return;
       }
