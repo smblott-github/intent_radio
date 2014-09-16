@@ -38,7 +38,6 @@ ir_url_encode ()
    if type sed >&2
    then
       ir_urlencode_sed
-      grep -v '[ :]'
    else
       # Exclude just the simplest cases...
       # The obvious remaining common problem cases are "'", '"'
@@ -58,13 +57,13 @@ ir_make_file_url ()
 ir_to_url ()
 {
    log "to URL $*"
-   case "$1" in
+   case "$*" in
       # We assume that arguments which are already URLs do not contain non-URL characters.
-      file://*  ) echo "$1"; return ;;
-      http://*  ) echo "$1"; return ;;
-      https://* ) echo "$1"; return ;;
+      file://*  ) echo "$*"; return ;;
+      http://*  ) echo "$*"; return ;;
+      https://* ) echo "$*"; return ;;
       # And we assume that file names still need to be URL escaped.
-      /* ) [ -f "$1" ] && echo "$1" | ir_url_encode | ir_make_file_url | grep '.' && return;;
+      /* ) [ -f "$*" ] && echo "$*" | ir_url_encode | ir_make_file_url | grep '.' && return;;
    esac
    false
 }
@@ -81,7 +80,7 @@ ir_next ()
       } < "$state" 3> "$tmp" && mv "$tmp" "$state" || return
 
       [ -n "$item" ] || return
-      url=$(ir_to_url $item) && ir_play "$url" && return
+      url=$(ir_to_url "$item") && ir_play "$url" && return
    done
 }
 
