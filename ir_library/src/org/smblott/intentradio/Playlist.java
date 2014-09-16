@@ -209,6 +209,11 @@ public class Playlist extends AsyncTask<Void, Void, String>
    private static int playlist_type(String url)
    {
       url = url.toLowerCase();
+
+      // Never treat local things as playlists.
+      if ( url.indexOf("file://") == 0 || url.indexOf("/") == 0 )
+         return NONE;
+
       if ( is_some_suffix(url,".m3u"  ) ) return M3U;
       if ( is_some_suffix(url,".m3u8" ) ) return M3U;
       if ( is_some_suffix(url,".pls"  ) ) return PLS;

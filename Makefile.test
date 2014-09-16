@@ -43,6 +43,15 @@ file:
 pause:
 	$(pause)
 
+x:
+	$(play) -e url file:///data/local/ir/x.mp3 -e name "X"
+
+y:
+	$(play) -e url file:///data/local/ir/y.mp3 -e name "Y"
+
+xy:
+	$(play) -e url file:///data/local/ir/xy.m3u -e name "XY"
+
 restart:
 	$(restart)
 
