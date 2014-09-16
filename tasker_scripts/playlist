@@ -1,14 +1,71 @@
 #!/bin/sh
 
+# We have to work with the commands available in /system/bin.  So no sed,
+# no seq, and so on.  We don't even have head and tail -- which would have
+# been helpful.
+
+# XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+exit
+
+
+config='/sdcard/intent_radio'
+
+exec 2> "$config/log.txt" 1>&2
 set -e
+set -x
 
 root='/sdcard/.intent_radio'
-
 mkdir -p "$root"
+
+state="$root/state"
+
+report ()
+{
+   echo "report $*"
+   exit
+}
 
 ir_play ()
 {
    echo "play" file:///sdcard/x.mp3
+   exit
 }
 
-ir_play
+ir_start ()
+{
+   file="$2"
+   [ -z "$file" ] \
+      && report "Start, but no file argument provided."
+
+   file="${file#file://}"
+
+   [ -f "$file" ] \
+      || report "Start, but $file does not exist."
+   
+   [ -s "$file" ] \
+      || report "Start, but $file is empty."
+
+   rm -f "$root"/*.txt || true
+
+   while read line
+   do
+      [ -z "$line" ] && continue
+      case "$line" in
+         http://* ) true ;;
+         file://* ) true ;;
+         /* ) true ;;
+         \#* ) true ;;
+         * ) continue
+      esac
+
+      read number <&3
+      echo "$line" > "$number.txt"
+      
+   done < "$file" 3< "$config/numbers.txt"
+}
+
+case "$1" in
+   'start' ) ir_start "$@" ;;
+   * ) ir_play ;;
+esac
+
