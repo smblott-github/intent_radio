@@ -5,7 +5,7 @@ state="$root/state.txt"
 tmp="$state.tmp"
 log="$root/log.txt"
 
-exec 4>> $log
+exec 4>> $log 2>&4
 
 log ()
 {
@@ -18,29 +18,101 @@ mkdir -p "$root"
 ir_play ()
 {
    log "play $*"
-   [ -n "$*" ] && echo "play" "$@"
+   [ -n "$*" ] && echo "play" "$*"
 }
 
 ir_next ()
 {
    log "next"
-   [ -f "$state" ] || return
-   {
+   if [ -f "$state" ] && [ -s "$state" ]
+   then
       read item
       log "item $item"
       ir_play "$item"
       cat >&3
-   } < "$state" 3> "$tmp" && mv "$tmp" "$state"
+   else
+      false
+   fi < "$state" 3> "$tmp" && mv "$tmp" "$state"
+}
+
+ir_filename_clean ()
+{
+   if type sed >&2
+   then
+      log "using sed"
+      sed 's/ /%20/g'
+   else
+      log "dropping lines with spaces"
+      grep -v ' '
+   fi
+}
+
+ir_playlist_clean ()
+{
+   while read f
+   do
+      log "clean $f"
+      case "$f" in
+         file://* ) echo "$f" ;;
+         http://* ) echo "$f" ;;
+         https://* ) echo "$f" ;;
+         /* ) [ -f "$f" ] && echo "file://$f" ;;
+      esac
+   done
+}
+
+ir_playlist_m3u ()
+{
+   log "playlist $1"
+   grep -v '^#' "$1"
+}
+
+ir_playlist_file ()
+{
+   if [ -f "$1" ]
+   then
+      log "file $1"
+      case "$1" in
+         *.m3u  ) ir_playlist_m3u "$1";;
+         *.mp3  ) echo "file://$1" ;;
+         *.aac  ) echo "file://$1" ;;
+         *.m4a  ) echo "file://$1" ;;
+         *.ogg  ) echo "file://$1" ;;
+         *.oga  ) echo "file://$1" ;;
+         *.flac ) echo "file://$1" ;;
+         *.wav  ) echo "file://$1" ;;
+      esac
+   fi
+}
+
+ir_playlist_directory ()
+{
+   if [ -d "$1" ] && cd "$1"
+   then
+      log "directory $1"
+      pwd >&4
+      ls >&4
+      ls | while read file
+         do
+            log "try file $dir/$file"
+            ir_playlist_file "$1/$file"
+         done
+   fi
 }
 
 ir_start ()
 {
-   file="${1#file://}"
-   log "start $file" >&2
-   grep -v '^#' "$file" | grep . | grep '://' > "$state"
+   log "start $*"
+   for arg
+   do
+      arg="${arg#file://}"
+      ir_playlist_file "$arg"
+      ir_playlist_directory "$arg"
+   done | ir_playlist_clean | ir_filename_clean > "$state"
+   log "state..."
    cat "$state" >&4
+   log "...end"
    ir_next
-   exit
 }
 
 ir_stop ()

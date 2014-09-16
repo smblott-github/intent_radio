@@ -5,5 +5,8 @@ install:
 	adb push playlist $(dest)
 
 log:
-	adb shell tail -20 /sdcard/Tasker/.intent_radio/log.txt
+	adb shell tail -50 /sdcard/Tasker/.intent_radio/log.txt
+
+state:
+	adb shell cat /sdcard/Tasker/.intent_radio/state.txt
 
