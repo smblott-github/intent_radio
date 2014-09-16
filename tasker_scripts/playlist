@@ -1,71 +1,57 @@
 #!/bin/sh
 
-# We have to work with the commands available in /system/bin.  So no sed,
-# no seq, and so on.  We don't even have head and tail -- which would have
-# been helpful.
+root='/sdcard/Tasker/.intent_radio'
+state="$root/state.txt"
+tmp="$state.tmp"
+log="$root/log.txt"
 
-# XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-exit
+exec 4>> $log
 
-
-config='/sdcard/intent_radio'
-
-exec 2> "$config/log.txt" 1>&2
-set -e
-set -x
-
-root='/sdcard/.intent_radio'
-mkdir -p "$root"
-
-state="$root/state"
-
-report ()
+log ()
 {
-   echo "report $*"
-   exit
+   date +"%H:%M.%S $*" >&4
 }
+
+log "args $*"
+mkdir -p "$root"
 
 ir_play ()
 {
-   echo "play" file:///sdcard/x.mp3
-   exit
+   log "play $*"
+   [ -n "$*" ] && echo "play" "$@"
+}
+
+ir_next ()
+{
+   log "next"
+   [ -f "$state" ] || return
+   {
+      read item
+      log "item $item"
+      ir_play "$item"
+      cat >&3
+   } < "$state" 3> "$tmp" && mv "$tmp" "$state"
 }
 
 ir_start ()
 {
-   file="$2"
-   [ -z "$file" ] \
-      && report "Start, but no file argument provided."
+   file="${1#file://}"
+   log "start $file" >&2
+   grep -v '^#' "$file" | grep . | grep '://' > "$state"
+   cat "$state" >&4
+   ir_next
+   exit
+}
 
-   file="${file#file://}"
-
-   [ -f "$file" ] \
-      || report "Start, but $file does not exist."
-   
-   [ -s "$file" ] \
-      || report "Start, but $file is empty."
-
-   rm -f "$root"/*.txt || true
-
-   while read line
-   do
-      [ -z "$line" ] && continue
-      case "$line" in
-         http://* ) true ;;
-         file://* ) true ;;
-         /* ) true ;;
-         \#* ) true ;;
-         * ) continue
-      esac
-
-      read number <&3
-      echo "$line" > "$number.txt"
-      
-   done < "$file" 3< "$config/numbers.txt"
+ir_stop ()
+{
+   [ -f "$state" ] && rm "$state"
 }
 
 case "$1" in
-   'start' ) ir_start "$@" ;;
-   * ) ir_play ;;
+   'start'    ) shift; ir_start "$@" ;;
+   'next'     ) ir_next ;;
+   'complete' ) ir_next ;;
+   'stop'     ) ir_stop ;;
 esac
 

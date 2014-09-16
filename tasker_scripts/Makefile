@@ -1,10 +1,9 @@
 
 dest = /sdcard/intent_radio
 
-install: numbers.txt
+install:
 	adb push playlist $(dest)
-	adb push numbers.txt $(dest)
 
-numbers.txt:
-	seq --format="%03.0f" 0 1 999 >$@
+log:
+	adb shell tail -20 /sdcard/Tasker/.intent_radio/log.txt
 
