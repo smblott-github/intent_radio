@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+
+root='/sdcard/.intent_radio'
+
+mkdir -p "$root"
+
+ir_play ()
+{
+   echo "play" file:///sdcard/x.mp3
+}
+
+ir_play
