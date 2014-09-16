@@ -5,6 +5,7 @@ state="$root/state.txt"
 tmp="$state.tmp"
 log="$root/log.txt"
 
+mkdir -p "$root"
 exec 4>> $log 2>&4
 
 log ()
@@ -13,12 +14,15 @@ log ()
 }
 
 log "args $*"
-mkdir -p "$root"
 
 ir_play ()
 {
    log "play $*"
-   [ -n "$*" ] && echo "play" "$*"
+   if [ -n "$*" ]
+   then
+      am broadcast -a 'org.smblott.intentradio.PLAY' -e url "$*" -e name "FIXME"
+      # echo "play" "$*"
+   fi
 }
 
 ir_next ()
