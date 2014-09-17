@@ -13,6 +13,8 @@
 root='/sdcard/Tasker/.intent_radio'
 state="$root/state.txt"
 seendir="$root/seen"
+randomfile="$root/random"
+loopfile="$root/loop"
 tmp="$state.tmp"
 log="$root/log.txt"
 
@@ -44,7 +46,7 @@ log "args $*"
 
 ir_cleanup ()
 {
-   rm -fr "$state" "$seendir"
+   rm -fr "$state" "$seendir" "$loopfile" "$randomfile"
 }
 
 # ########################################################################
@@ -225,7 +227,7 @@ ir_play ()
 # ########################################################################
 # Play next item.
 
-ir_next ()
+ir_next_picker ()
 {
    while [ -f "$state" ] && [ -s "$state" ]
    do
@@ -237,9 +239,25 @@ ir_next ()
       if [ -n "$item" ] && ir_is_url "$item"
       then
          ir_play "$item"
-         return
+         return 0
       fi
    done
+   return 1
+}
+
+ir_next ()
+{
+   if ir_next_picker
+   then
+      return
+   fi
+
+   if [ -f "$loopfile" ]
+   then
+      cp "$loopfile" "$state"
+      [ -f "$randomfile" ] && ir_randomize "$state"
+      ir_next_picker && return
+   fi
 
    ir_cleanup
 }
@@ -366,6 +384,8 @@ ir_process ()
 ir_append ()
 {
    log "append $*"
+
+   rm -fr "$seendir"
    ir_process "$*" | ir_urlencode_files >> "$state"
 
    log "state..."
@@ -375,6 +395,12 @@ ir_append ()
    if [ -n "$opt_random" ]
    then
       ir_randomize "$state"
+      true > "$randomfile"
+   fi
+
+   if [ -n "$opt_loop" ]
+   then
+      cp "$state" "$loopfile"
    fi
 
    ir_next
