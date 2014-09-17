@@ -13,6 +13,7 @@
 root='/sdcard/Tasker/.intent_radio'
 state="$root/state.txt"
 seendir="$root/seen"
+loopfile="$root/loop"
 tmp="$state.tmp"
 log="$root/log.txt"
 
@@ -44,7 +45,7 @@ log "args $*"
 
 ir_cleanup ()
 {
-   rm -fr "$state" "$seendir"
+   rm -fr "$root"
 }
 
 # ########################################################################
@@ -375,6 +376,11 @@ ir_append ()
    if [ -n "$opt_random" ]
    then
       ir_randomize "$state"
+   fi
+
+   if [ -n "$opt_loop" ]
+   then
+      true > "$loopfile"
    fi
 
    ir_next
