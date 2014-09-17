@@ -4,6 +4,7 @@ include $(HOME)/.gnumake.mk
 .PHONY: build install
 
 target += Radio.prj.xml 
+target += IR_Playlist.prj.xml
 target += index.html
 target += debug.html
 target += tasker.html
