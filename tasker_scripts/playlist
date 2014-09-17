@@ -18,6 +18,7 @@ log="$root/log.txt"
 
 # Bail early out early (to avoid even having to parse this script) if
 # there's nothing to be done.
+[ $# = 0 ] && exit 1
 [ $# = 1 ] && ! [ -f $state ] && exit
 
 mkdir -p "$root"
@@ -47,6 +48,9 @@ ir_cleanup ()
 # ########################################################################
 # Options.
 # The vanilla shell on Android does not have getopt.
+
+command="$1"
+shift
 
 random=''
 loop=''
@@ -165,14 +169,17 @@ ir_urlencode_files ()
 # ########################################################################
 # Play.
 
-IR_PLAY='org.smblott.intentradio.PLAY'
+IR_PLAY_INTENT='org.smblott.intentradio.PLAY'
+
+set -x
 
 ir_play ()
 {
    echo "$1"
-   log am broadcast -a $IR_PLAY -e url "$1" -e name "$1" # "${1##*/}"
+   log ""
+   echo "  " am broadcast -a $IR_PLAY_INTENT -e url "$1" -e name "$1" >&4
    ir_on_android \
-      && am broadcast -a IR_PLAY -e url "$1" -e name "$1" # "${1##*/}" # -e debug yes
+      && am broadcast -a $IR_PLAY_INTENT -e url "$1" -e name "$1"
 }
 
 # ########################################################################
@@ -338,9 +345,9 @@ ir_stop ()
    [ -f "$state" ] && ir_cleanup
 }
 
-case "$1" in
-   'start'    ) shift; ir_start "$@" ;;
-   'append'   ) shift; ir_append "$@" ;;
+case "$command" in
+   'start'    ) ir_start "$@" ;;
+   'append'   ) ir_append "$@" ;;
    'next'     ) ir_next ;;
    'complete' ) ir_next ;;
    'stop'     ) ir_stop ;;
