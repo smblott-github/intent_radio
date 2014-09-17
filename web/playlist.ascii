@@ -90,7 +90,7 @@ In this case, all audio files _in or under_ `/sdcard/Music/Yes/Tormato` will be 
 
 ****
 If you provide multiple arguments after `start`, then they are joined
-together (with spaces) and treated as a single directory.
+together (with spaces) and treated as a single thing.
 
    sh /sdcard/intent_radio/playlist start /sdcard/Music/Yes/The Yes Album
 
@@ -105,7 +105,7 @@ a playlist file, a directory, or an audio file.
 
 .Playlist files
 ****
-Roughly, the supported playlist format is the http://en.wikipedia.org/wiki/M3U[M3U]:
+Roughly, the supported playlist format is http://en.wikipedia.org/wiki/M3U[M3U]:
 
 - Playlist file names must end with the extension `.m3u` (all lower case).
 - Empty lines and lines on which the first non-whitespace character is `#` are ignored.
@@ -140,6 +140,9 @@ Other playlist files::
 
 .Tips
 ****
+If you have existing M3U playlists which use relative paths, then there's a good chance
+that they will just work.
+
 It's easy to generate playlist files with standard Unix utilities (if you have them).  Here are a couple of
 examples:
 
@@ -153,6 +156,20 @@ Create a playlist with relative file names:
    ls *.mp3 > Tormato.m3u
 ****
 
+.Techy tips
+****
+Take a look at the shell script itself and you'll get a better idea of
+what's going on.  The shell script leaves a log of its runs in:
+
+- `/sdcard/Tasker/.intent_radio/log.txt`
+
+The state file itself is:
+
+- `/sdcard/Tasker/.intent_radio/state.txt`
+
+(Yes, those are a leading dots in those file names.)
+****
+
 // /////////////////////////////////////////////////////
 == How does it work? ==
 
@@ -163,8 +180,8 @@ shell script.
 
 When the shell script sees a `completed` state, it fires off
 the next track.  When it sees a `stop` state, it removes the active
-playlist.  So that subsequently, when a non-playlist track completes, it
-does not incorrectly fire off the next track on the active playlist.
+playlist (so that subsequently, when a non-playlist track completes, it
+does not incorrectly fire off the next track on the active playlist).
 ****
 
 // vim: set syntax=asciidoc:
