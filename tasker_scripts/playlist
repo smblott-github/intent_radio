@@ -55,7 +55,6 @@ ir_is_playlist ()
 ir_is_audio ()
 {
    case "$1" in
-      *.m3u  ) [ -f "$1" ] ;;
       *.mp3  ) [ -f "$1" ] ;;
       *.aac  ) [ -f "$1" ] ;;
       *.m4a  ) [ -f "$1" ] ;;
