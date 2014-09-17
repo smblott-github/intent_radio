@@ -23,8 +23,17 @@ log="$root/log.txt"
 mkdir -p "$root"
 exec 4>> $log 2>&4
 
+# For testing, it is convenient to be able to run this script on
+# non-Android systems too.  ir_on_android succeeds only if calibre is not
+# available.  calibre is unlikely to be installed on an Android device.
+ir_on_android ()
+{
+   ! type calibre > /dev/null
+}
+
 log ()
 {
+   ir_on_android || echo "$*"
    date +"%H:%M.%S $*" >&4
 }
 
@@ -140,25 +149,14 @@ ir_urlencode_files ()
 # ########################################################################
 # Play.
 
-# For testing, it is convenient to be able to run this script on
-# non-Android systems too.  ir_on_android succeeds only if calibre is not
-# available.  calibre is unlikely to be installed on an Android device.
-ir_on_android ()
-{
-   ! type calibre > /dev/null
-}
-
 IR_PLAY='org.smblott.intentradio.PLAY'
 
 ir_play ()
 {
-   if [ -n "$1" ]
-   then
-      echo "$1"
-      log am broadcast -a $IR_PLAY -e url "$1" -e name "$1" # "${1##*/}"
-      ir_on_android \
-         && am broadcast -a IR_PLAY -e url "$1" -e name "$1" # "${1##*/}" # -e debug yes
-   fi
+   echo "$1"
+   log am broadcast -a $IR_PLAY -e url "$1" -e name "$1" # "${1##*/}"
+   ir_on_android \
+      && am broadcast -a IR_PLAY -e url "$1" -e name "$1" # "${1##*/}" # -e debug yes
 }
 
 # ########################################################################
