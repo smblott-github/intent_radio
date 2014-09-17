@@ -6,7 +6,7 @@ tmp="$state.tmp"
 log="$root/log.txt"
 
 mkdir -p "$root"
-exec 4> $log 2>&4
+exec 4>> $log 2>&4
 # set -x
 
 # Bail early out early (to avoid even having to parse this script) if there's nothing to be done.
@@ -32,7 +32,6 @@ is_url ()
 
 is_path ()
 {
-   log "is_path $1"
    case "$1" in
       /* ) [ -f "$1" ] || [ -d "$1" ] ;;
       * ) false ;;
@@ -44,8 +43,8 @@ ir_play ()
    log "play $1"
    if [ -n "$1" ]
    then
-      log am broadcast -a 'org.smblott.intentradio.PLAY' -e url "$1" -e name "${1##*/}"
-      am broadcast -a 'org.smblott.intentradio.PLAY' -e url "$1" -e name "${1##*/}"
+      log am broadcast -a 'org.smblott.intentradio.PLAY' -e url "$1" -e name "$1" # "${1##*/}"
+      am broadcast -a 'org.smblott.intentradio.PLAY' -e url "$1" -e name "$1" # "${1##*/}"
    fi
 }
 
@@ -62,9 +61,8 @@ ir_url_encode ()
    then
       ir_urlencode_sed
    else
-      # Exclude just the simplest cases...
-      # The obvious remaining common problem cases are "'", '"'
-      grep -v '[ :]'
+      # We know that the Android media player baulks at spaces...
+      grep -v ' '
    fi
 }
 
@@ -93,7 +91,7 @@ ir_next ()
          read item
          log "item $item"
          cat >&3
-      } < "$state" 3> "$tmp" && mv "$tmp" "$state" || return
+      } < "$state" 3> "$tmp" && mv "$tmp" "$state"
 
       if is_url "$item"
       then
@@ -102,6 +100,8 @@ ir_next ()
          return
       fi
    done
+
+   rm "$state"
 }
 
 ir_playlist_m3u ()
@@ -120,14 +120,14 @@ ir_playlist_file ()
    then
       log "file $1"
       case "$1" in
-         *.m3u  ) ir_playlist_m3u "$1";;
-         *.mp3  ) echo "$1" ;;
-         *.aac  ) echo "$1" ;;
-         *.m4a  ) echo "$1" ;;
-         *.ogg  ) echo "$1" ;;
-         *.oga  ) echo "$1" ;;
-         *.flac ) echo "$1" ;;
-         *.wav  ) echo "$1" ;;
+         /*.m3u  ) ir_playlist_m3u "$1";;
+         /*.mp3  ) echo "$1" ;;
+         /*.aac  ) echo "$1" ;;
+         /*.m4a  ) echo "$1" ;;
+         /*.ogg  ) echo "$1" ;;
+         /*.oga  ) echo "$1" ;;
+         /*.flac ) echo "$1" ;;
+         /*.wav  ) echo "$1" ;;
       esac
    fi
 }
@@ -170,7 +170,7 @@ ir_process ()
 ir_start ()
 {
    log "start $*"
-   ir_process "$@" | ir_urlencode_files > "$state"
+   ir_process "$*" | ir_urlencode_files > "$state"
 
    log "state..."
    cat "$state" >&4
@@ -185,7 +185,7 @@ ir_stop ()
 }
 
 case "$1" in
-   'start'    ) shift; ir_start "${1#file://}" ;;
+   'start'    ) shift; ir_start "$@" ;;
    'next'     ) ir_next ;;
    'complete' ) ir_next ;;
    'stop'     ) ir_stop ;;
