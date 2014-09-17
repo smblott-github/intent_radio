@@ -89,17 +89,13 @@ ir_replace ()
    symbol="$1"
    replacement="$2"
 
-   log "ir_replace symbol $symbol"
-
    while read line
    do
-      log "ir_replace $symbol $line"
       done_first=''
       OLDIFS="$IFS"
       IFS="$symbol"
       for tok in $line
       do
-         log "$tok"
          [ -n "$done_first" ] && echo -n "$replacement"
          echo -n "$tok"
          done_first='yes'
