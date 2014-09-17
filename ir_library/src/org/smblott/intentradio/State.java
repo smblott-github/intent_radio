@@ -19,8 +19,9 @@ public class State extends Logger
    public static final String STATE_DISCONNECTED = "play/disconnected";
 
    private static String current_state = STATE_STOP;
+   private static boolean current_isNetworkUrl = false;
 
-   public static void set_state(Context context, String s)
+   public static void set_state(Context context, String s, boolean isNetworkUrl)
    {
       if ( s == null )
          return;
@@ -30,7 +31,8 @@ public class State extends Logger
 
       log("State.set_state(): ", s);
       current_state = s;
-      Notify.note();
+      current_isNetworkUrl = isNetworkUrl;
+      Notify.note(isNetworkUrl);
 
       Intent intent = new Intent(intent_state);
       intent.putExtra("state", current_state);
@@ -43,7 +45,7 @@ public class State extends Logger
    }
 
    public static void get_state(Context context)
-      { set_state(context, current_state); }
+      { set_state(context, current_state, current_isNetworkUrl); }
 
    public static String current()
       { return current_state; }

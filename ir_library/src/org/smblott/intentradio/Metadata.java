@@ -50,7 +50,7 @@ public class Metadata extends AsyncTask<Void, Void, String>
       if ( title != null && ! isCancelled() && Counter.still(then) )
       {
          Notify.name("XX" + title);
-         Notify.note();
+         // Notify.note();
       }
    }
 

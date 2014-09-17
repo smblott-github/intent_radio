@@ -202,7 +202,7 @@ public class IntentPlayer extends Service
       if ( ! Connectivity.isConnected(context) )
       {
          int ret = stop();
-         State.set_state(context, State.STATE_DISCONNECTED);
+         State.set_state(context, State.STATE_DISCONNECTED, isNetworkUrl());
          toast("No internet connection; will not start playback.");
          return ret;
       }
@@ -249,7 +249,9 @@ public class IntentPlayer extends Service
    }
 
    public boolean isNetworkUrl()
-      { return (previous_launch_url != null && URLUtil.isNetworkUrl(previous_launch_url) ); }
+   {
+      return ( previous_launch_url != null && URLUtil.isNetworkUrl(previous_launch_url) );
+   }
 
    /* ********************************************************************
     * Launch player...
@@ -472,13 +474,21 @@ public class IntentPlayer extends Service
    {
       log("Click: ", State.current());
 
-      // This case must come first.  Otherwise, when the state is disconnected,
-      // player is always null, so the case below would always be triggered
-      // (were it first).
-      if ( State.is_playing() || State.is(State.STATE_DISCONNECTED) )
+      if ( State.is(State.STATE_DISCONNECTED) )
       {
          stop();
-         log("Click: cancel notification");
+         log("Click: cancel notification (disconnected)");
+         Notify.cancel();
+         return done();
+      }
+
+      if ( State.is_playing() && ! isNetworkUrl() )
+         return pause();
+
+      if ( State.is_playing() )
+      {
+         stop();
+         log("Click: cancel notification (playing)");
          Notify.cancel();
          return done();
       }
@@ -500,7 +510,7 @@ public class IntentPlayer extends Service
    private int done(String state)
    {
       if ( state != null )
-         State.set_state(context, state);
+         State.set_state(context, state, isNetworkUrl());
 
       return done();
    }
@@ -519,7 +529,7 @@ public class IntentPlayer extends Service
       {
          log("Starting....");
          player.start();
-         State.set_state(context, State.STATE_PLAY);
+         State.set_state(context, State.STATE_PLAY, isNetworkUrl());
 
          // A launch is successful if there is no error within the first few
          // seconds.  If a launch is successful then later the stream fails,
@@ -558,11 +568,11 @@ public class IntentPlayer extends Service
       switch (what)
       {
          case MediaPlayer.MEDIA_INFO_BUFFERING_START:
-            State.set_state(context, State.STATE_BUFFER);
+            State.set_state(context, State.STATE_BUFFER, isNetworkUrl());
             break;
 
          case MediaPlayer.MEDIA_INFO_BUFFERING_END:
-            State.set_state(context, State.STATE_PLAY);
+            State.set_state(context, State.STATE_PLAY, isNetworkUrl());
             break;
       }
       return true;
@@ -587,22 +597,28 @@ public class IntentPlayer extends Service
       // }
       //
       // stop();
-      State.set_state(context,State.STATE_ERROR);
+      State.set_state(context,State.STATE_ERROR, isNetworkUrl());
+      new Later(300)
+      {
+         @Override
+         public void later()
+            { stop(); }
+      }.start();
 
       /*
       switch ( what )
       {
          case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
             stop();
-            State.set_state(context,State.STATE_ERROR);
+            State.set_state(context,State.STATE_ERROR, isNetworkUrl());
             break;
          case MediaPlayer.MEDIA_ERROR_UNKNOWN:
             stop();
-            State.set_state(context,State.STATE_ERROR);
+            State.set_state(context,State.STATE_ERROR, isNetworkUrl());
             break;
          default:
             stop();
-            State.set_state(context,State.STATE_ERROR);
+            State.set_state(context,State.STATE_ERROR, isNetworkUrl());
             break;
       }
       */
@@ -625,7 +641,7 @@ public class IntentPlayer extends Service
       // no further state change) shortly later (the Later default timeout) a
       // STATE_STOP broadcast.
       //
-      State.set_state(context, State.STATE_COMPLETE);
+      State.set_state(context, State.STATE_COMPLETE, isNetworkUrl());
       new Later()
       {
          @Override

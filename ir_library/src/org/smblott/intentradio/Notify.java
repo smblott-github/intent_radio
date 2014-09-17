@@ -83,7 +83,7 @@ public class Notify
       }
    }
 
-   public static void note()
+   public static void note(boolean isNetworkUrl)
    {
       // Note:
       // STATE_PAUSED is *not* in the foreground.
@@ -97,7 +97,7 @@ public class Notify
             log("Starting foreground.");
             Notification note =
                builder
-                  .setContentInfo("(touch to stop)")
+                  .setContentInfo(isNetworkUrl ? "(touch to stop)" : "(touch to pause)")
                   .setOngoing(true)
                   .setPriority(Notification.PRIORITY_HIGH)
                   .setWhen(System.currentTimeMillis())
@@ -114,7 +114,7 @@ public class Notify
             service.stopForeground(true);
             Notification note =
                builder
-                  .setContentInfo("(touch to restart)")
+                  .setContentInfo(State.is(State.STATE_PAUSE) ? "(touch to resume)" : "(touch to restart)")
                   .setOngoing(false)
                   .setPriority(Notification.PRIORITY_DEFAULT)
                   .setWhen(System.currentTimeMillis())
