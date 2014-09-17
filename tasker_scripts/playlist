@@ -140,19 +140,24 @@ ir_urlencode_files ()
 # ########################################################################
 # Play.
 
+# For testing, it is convenient to be able to run this script on
+# non-Android systems too.  ir_on_android succeeds only if calibre is not
+# available.  calibre is unlikely to be installed on an Android device.
 ir_on_android ()
 {
-   ! type xterm > /dev/null
+   ! type calibre > /dev/null
 }
+
+IR_PLAY='org.smblott.intentradio.PLAY'
 
 ir_play ()
 {
    if [ -n "$1" ]
    then
       echo "$1"
-      log am broadcast -a 'org.smblott.intentradio.PLAY' -e url "$1" -e name "$1" # "${1##*/}"
+      log am broadcast -a $IR_PLAY -e url "$1" -e name "$1" # "${1##*/}"
       ir_on_android \
-         && am broadcast -a 'org.smblott.intentradio.PLAY' -e url "$1" -e name "$1" # "${1##*/}" # -e debug yes
+         && am broadcast -a IR_PLAY -e url "$1" -e name "$1" # "${1##*/}" # -e debug yes
    fi
 }
 
