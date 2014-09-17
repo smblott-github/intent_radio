@@ -53,7 +53,7 @@ ir_urlencode_sed ()
 {
    # Everything except: s/\//%2f/g;
    # Was sed 's/%/%25/g; s/ /%20/g; s/\t/%09/g; s/!/%21/g; s/"/%22/g; s/#/%23/g; s/\$/%24/g; s/\&/%26/g; s/(/%28/g; s/)/%29/g; s/\*/%2a/g; s/+/%2b/g; s/,/%2c/g; s/-/%2d/g; s/\./%2e/g; s/:/%3a/g; s/;/%3b/g; s//%3e/g; s/?/%3f/g; s/@/%40/g; s/\[/%5b/g; s/\\/%5c/g; s/\]/%5d/g; s/\^/%5e/g; s/_/%5f/g; s/`/%60/g; s/{/%7b/g; s/|/%7c/g; s/}/%7d/g; s/~/%7e/g; s/      /%09/g' | sed "s/'/%27/g"
-   sed 's/%/%25/g; s/ /%20/g; s/\t/%09/g;s/"/%22/g; s/#/%23/g; s/\&/%26/g; s/(/%28/g; s/)/%29/g; s/\*/%2a/g; s/+/%2b/g; s/,/%2c/g; s/:/%3a/g; s/;/%3b/g; s/>/%3e/g; s/?/%3f/g; s/@/%40/g; s/\[/%5b/g; s/\\/%5c/g; s/\]/%5d/g; s/\^/%5e/g; s/`/%60/g; s/{/%7b/g; s/|/%7c/g; s/}/%7d/g; s/~/%7e/g' | sed "s/'/%27/g"
+   sed '/^\// {s/%/%25/g; s/ /%20/g; s/\t/%09/g;s/"/%22/g; s/#/%23/g; s/\&/%26/g; s/(/%28/g; s/)/%29/g; s/\*/%2a/g; s/+/%2b/g; s/,/%2c/g; s/:/%3a/g; s/;/%3b/g; s/>/%3e/g; s/?/%3f/g; s/@/%40/g; s/\[/%5b/g; s/\\/%5c/g; s/\]/%5d/g; s/\^/%5e/g; s/`/%60/g; s/{/%7b/g; s/|/%7c/g; s/}/%7d/g; s/~/%7e/g}' | sed "/^\// {s/'/%27/g}"
 }
 
 ir_url_encode ()
@@ -72,28 +72,16 @@ ir_make_file_url ()
 {
    while read f
    do
-      log "make url $f file://$f"
-      echo "file://$f"
+      case "$f" in
+         /* ) echo "file://$f" ;;
+         * ) echo "$f" ;;
+      esac
    done
 }
 
-ir_file ()
+ir_urlencode_files ()
 {
    ir_url_encode | ir_make_file_url
-}
-
-ir_to_url ()
-{
-   log "to URL $*"
-   case "$*" in
-      # We assume that arguments which are already URLs do not contain non-URL characters.
-      file://*  ) echo "$*"; return ;;
-      http://*  ) echo "$*"; return ;;
-      https://* ) echo "$*"; return ;;
-      # And we assume that file names still need to be URL escaped.
-      /* ) [ -f "$*" ] && echo "$*" | ir_url_encode | ir_make_file_url | grep '.' && return;;
-   esac
-   false
 }
 
 ir_next ()
@@ -107,8 +95,12 @@ ir_next ()
          cat >&3
       } < "$state" 3> "$tmp" && mv "$tmp" "$state" || return
 
-      [ -n "$item" ] || return
-      url=$(ir_to_url "$item") && ir_play "$url" && return
+      if is_url "$item"
+      then
+         echo "$item"
+         ir_play "$item"
+         return
+      fi
    done
 }
 
@@ -129,13 +121,13 @@ ir_playlist_file ()
       log "file $1"
       case "$1" in
          *.m3u  ) ir_playlist_m3u "$1";;
-         *.mp3  ) echo "$1" | ir_file ;;
-         *.aac  ) echo "$1" | ir_file ;;
-         *.m4a  ) echo "$1" | ir_file ;;
-         *.ogg  ) echo "$1" | ir_file ;;
-         *.oga  ) echo "$1" | ir_file ;;
-         *.flac ) echo "$1" | ir_file ;;
-         *.wav  ) echo "$1" | ir_file ;;
+         *.mp3  ) echo "$1" ;;
+         *.aac  ) echo "$1" ;;
+         *.m4a  ) echo "$1" ;;
+         *.ogg  ) echo "$1" ;;
+         *.oga  ) echo "$1" ;;
+         *.flac ) echo "$1" ;;
+         *.wav  ) echo "$1" ;;
       esac
    fi
 }
@@ -178,7 +170,7 @@ ir_process ()
 ir_start ()
 {
    log "start $*"
-   ir_process "$@" > "$state"
+   ir_process "$@" | ir_urlencode_files > "$state"
 
    log "state..."
    cat "$state" >&4
