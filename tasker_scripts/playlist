@@ -6,8 +6,11 @@ tmp="$state.tmp"
 log="$root/log.txt"
 
 mkdir -p "$root"
-exec 4>> $log 2>&4
+exec 4> $log 2>&4
 # set -x
+
+# Bail early out early (to avoid even having to parse this script) if there's nothing to be done.
+[ $# = 1 ] && ! [ -f $state ] && exit
 
 log ()
 {
