@@ -1,16 +1,27 @@
 #!/bin/sh
 
+# ########################################################################
+# Constraints:
+#    This script has to work with the standard Android shell, and with only
+#    the utilities available on a vanilla Android installation (which
+#    doesn't even have head and tail).
+#
+#    For URL encoding, we sed if it's available.  Otherwise, we strip out
+#    playlist entries which we know will not play (their file names contain
+#    spaces).
+
 root='/sdcard/Tasker/.intent_radio'
 state="$root/state.txt"
 tmp="$state.tmp"
 log="$root/log.txt"
 
+# Bail early out early (to avoid even having to parse this script) if
+# there's nothing to be done.
+[ $# = 1 ] && ! [ -f $state ] && exit
+
 mkdir -p "$root"
 exec 4>> $log 2>&4
 # set -x
-
-# Bail early out early (to avoid even having to parse this script) if there's nothing to be done.
-[ $# = 1 ] && ! [ -f $state ] && exit
 
 log ()
 {
@@ -19,7 +30,10 @@ log ()
 
 log "args $*"
 
-is_url ()
+# ########################################################################
+# Identify file types.
+
+ir_is_url ()
 {
    case "$1" in
       file://*  ) true ;;
@@ -30,22 +44,31 @@ is_url ()
    esac
 }
 
-is_path ()
+ir_is_playlist ()
 {
    case "$1" in
-      /* ) [ -f "$1" ] || [ -d "$1" ] ;;
+      *.m3u  ) [ -f "$1" ] ;;
       * ) false ;;
    esac
 }
 
-ir_play ()
+ir_is_audio ()
 {
-   if [ -n "$1" ]
-   then
-      log am broadcast -a 'org.smblott.intentradio.PLAY' -e url "$1" -e name "$1" # "${1##*/}"
-      am broadcast -a 'org.smblott.intentradio.PLAY' -e url "$1" -e name "$1" # "${1##*/}"
-   fi
+   case "$1" in
+      *.m3u  ) [ -f "$1" ] ;;
+      *.mp3  ) [ -f "$1" ] ;;
+      *.aac  ) [ -f "$1" ] ;;
+      *.m4a  ) [ -f "$1" ] ;;
+      *.ogg  ) [ -f "$1" ] ;;
+      *.oga  ) [ -f "$1" ] ;;
+      *.flac ) [ -f "$1" ] ;;
+      *.wav  ) [ -f "$1" ] ;;
+      * ) false ;;
+   esac
 }
+
+# ########################################################################
+# URL encoding.
 
 ir_urlencode_sed ()
 {
@@ -56,7 +79,7 @@ ir_urlencode_sed ()
 
 ir_url_encode ()
 {
-   if type sed >&2
+   if type sed > /dev/null
    then
       ir_urlencode_sed
    else
@@ -81,6 +104,18 @@ ir_urlencode_files ()
    ir_url_encode | ir_make_file_url
 }
 
+# ########################################################################
+# Play.
+
+ir_play ()
+{
+   if [ -n "$1" ]
+   then
+      log am broadcast -a 'org.smblott.intentradio.PLAY' -e url "$1" -e name "$1" # "${1##*/}"
+      am broadcast -a 'org.smblott.intentradio.PLAY' -e url "$1" -e name "$1" # "${1##*/}"
+   fi
+}
+
 ir_next ()
 {
    while [ -f "$state" ] && [ -s "$state" ]
@@ -90,7 +125,7 @@ ir_next ()
          cat >&3
       } < "$state" 3> "$tmp" && mv "$tmp" "$state"
 
-      if is_url "$item"
+      if ir_is_url "$item"
       then
          echo "$item"
          ir_play "$item"
@@ -101,59 +136,100 @@ ir_next ()
    rm "$state"
 }
 
-ir_playlist_m3u ()
+# ########################################################################
+# Construct playlist for various types of thing.
+#
+# Each function assumes:
+#  - The CWD is the location of the file or directory.
+#  - It's first argument is the absolute path of the file or directory.
+
+ir_playlist ()
 {
-   while read line
+   log "ir_playlist $(pwd) $1"
+   log "  ls $(ls -l $1)"
+   while read f
    do
-      ir_process "$line"
+      case "$f" in
+         \#* ) true ;;
+         /* ) [ -n "$f" ] && ir_process "/$f" ;;
+         * ) [ -n "$f" ] && ir_process "$(pwd)/$f" ;;
+      esac
    done < "$1"
 }
 
-ir_playlist_file ()
+ir_directory ()
 {
-   if [ -f "$1" ]
+   dir="$1"
+   ls | while read file
+      do
+         ir_process "$dir/$file"
+      done
+}
+
+ir_file ()
+{
+   echo "$1"
+}
+
+# ########################################################################
+# Keep the CWD as that of the thing we're currently handling.
+
+ir_absolute_path ()
+{
+   if type readlink > /dev/null
    then
+      # Amazingly, we have readlink in /system/bin (at least on my phone).
+      readlink -f "$1"
+   else
+      # If we don't have readlink, then we'll try building an absolute path by hand.
       case "$1" in
-         /*.m3u  ) ir_playlist_m3u "$1";;
-         /*.mp3  ) echo "$1" ;;
-         /*.aac  ) echo "$1" ;;
-         /*.m4a  ) echo "$1" ;;
-         /*.ogg  ) echo "$1" ;;
-         /*.oga  ) echo "$1" ;;
-         /*.flac ) echo "$1" ;;
-         /*.wav  ) echo "$1" ;;
+         /* ) echo $1 ;;
+         * ) echo "$(pwd)/$1"
       esac
    fi
 }
 
-ir_playlist_directory ()
+# The first argument is either a directory or a file.
+# cd to the directory or (in the case of a file) the containing directory.
+# Then call the remaining command/arguments with the absolute path of the first
+# argument appended.
+# This allows us to handle both absolute and relative paths.
+ir_track_directory ()
 {
-   if [ -d "$1" ] && cd "$1"
+   thing=$(ir_absolute_path "$1")
+   shift
+
+   if [ -f "$thing" ]
    then
-      ls | while read file
-         do
-            ir_playlist_file "$1/$file"
-         done
+      directory="${thing%/*}"
+   else
+      directory="$thing"
    fi
+
+   (
+      if cd "$directory"
+      then
+         "$@" "$thing"
+      fi
+   )
 }
+
+# ########################################################################
+# Handle various types of thing.
 
 ir_process ()
 {
    for arg
    do
-      if is_url "$arg"
-      then
-         echo "$arg"
-         continue
-      fi
-      if is_path "$arg"
-      then
-         ir_playlist_directory "$arg"
-         ir_playlist_file "$arg"
-         continue
-      fi
+      ir_is_url "$arg" && echo $arg
+      [ -d "$arg" ] && ir_track_directory "$arg" ir_directory
+      ir_is_playlist "$arg" && ir_track_directory "$arg" ir_playlist
+      ir_is_audio "$arg" && ir_track_directory "$arg" ir_file
    done
 }
+
+# ########################################################################
+# External operations.
 
 ir_start ()
 {
