@@ -1,0 +1,194 @@
+#!/bin/sh
+
+root='/sdcard/Tasker/.intent_radio'
+state="$root/state.txt"
+tmp="$state.tmp"
+log="$root/log.txt"
+
+mkdir -p "$root"
+exec 4>> $log 2>&4
+# set -x
+
+# Bail early out early (to avoid even having to parse this script) if there's nothing to be done.
+[ $# = 1 ] && ! [ -f $state ] && exit
+
+log ()
+{
+   date +"%H:%M.%S $*" >&4
+}
+
+log "args $*"
+
+is_url ()
+{
+   case "$1" in
+      file://*  ) true ;;
+      http://*  ) true ;;
+      https://* ) true ;;
+      content://* ) true ;;
+      * ) false ;;
+   esac
+}
+
+is_path ()
+{
+   case "$1" in
+      /* ) [ -f "$1" ] || [ -d "$1" ] ;;
+      * ) false ;;
+   esac
+}
+
+ir_play ()
+{
+   log "play $1"
+   if [ -n "$1" ]
+   then
+      log am broadcast -a 'org.smblott.intentradio.PLAY' -e url "$1" -e name "$1" # "${1##*/}"
+      am broadcast -a 'org.smblott.intentradio.PLAY' -e url "$1" -e name "$1" # "${1##*/}"
+   fi
+}
+
+ir_urlencode_sed ()
+{
+   # Everything except: s/\//%2f/g;
+   # Was sed 's/%/%25/g; s/ /%20/g; s/\t/%09/g; s/!/%21/g; s/"/%22/g; s/#/%23/g; s/\$/%24/g; s/\&/%26/g; s/(/%28/g; s/)/%29/g; s/\*/%2a/g; s/+/%2b/g; s/,/%2c/g; s/-/%2d/g; s/\./%2e/g; s/:/%3a/g; s/;/%3b/g; s//%3e/g; s/?/%3f/g; s/@/%40/g; s/\[/%5b/g; s/\\/%5c/g; s/\]/%5d/g; s/\^/%5e/g; s/_/%5f/g; s/`/%60/g; s/{/%7b/g; s/|/%7c/g; s/}/%7d/g; s/~/%7e/g; s/      /%09/g' | sed "s/'/%27/g"
+   sed '/^\// {s/%/%25/g; s/ /%20/g; s/\t/%09/g;s/"/%22/g; s/#/%23/g; s/\&/%26/g; s/(/%28/g; s/)/%29/g; s/\*/%2a/g; s/+/%2b/g; s/,/%2c/g; s/:/%3a/g; s/;/%3b/g; s/>/%3e/g; s/?/%3f/g; s/@/%40/g; s/\[/%5b/g; s/\\/%5c/g; s/\]/%5d/g; s/\^/%5e/g; s/`/%60/g; s/{/%7b/g; s/|/%7c/g; s/}/%7d/g; s/~/%7e/g}' | sed "/^\// {s/'/%27/g}"
+}
+
+ir_url_encode ()
+{
+   if type sed >&2
+   then
+      ir_urlencode_sed
+   else
+      # We know that the Android media player baulks at spaces...
+      grep -v ' '
+   fi
+}
+
+ir_make_file_url ()
+{
+   while read f
+   do
+      case "$f" in
+         /* ) echo "file://$f" ;;
+         * ) echo "$f" ;;
+      esac
+   done
+}
+
+ir_urlencode_files ()
+{
+   ir_url_encode | ir_make_file_url
+}
+
+ir_next ()
+{
+   log "next"
+   while [ -f "$state" ] && [ -s "$state" ]
+   do
+      {
+         read item
+         log "item $item"
+         cat >&3
+      } < "$state" 3> "$tmp" && mv "$tmp" "$state"
+
+      if is_url "$item"
+      then
+         echo "$item"
+         ir_play "$item"
+         return
+      fi
+   done
+
+   rm "$state"
+}
+
+ir_playlist_m3u ()
+{
+   log "playlist $1"
+   while read line
+   do
+      log "m3u line $1"
+      ir_process "$line"
+   done < "$1"
+}
+
+ir_playlist_file ()
+{
+   if [ -f "$1" ]
+   then
+      log "file $1"
+      case "$1" in
+         /*.m3u  ) ir_playlist_m3u "$1";;
+         /*.mp3  ) echo "$1" ;;
+         /*.aac  ) echo "$1" ;;
+         /*.m4a  ) echo "$1" ;;
+         /*.ogg  ) echo "$1" ;;
+         /*.oga  ) echo "$1" ;;
+         /*.flac ) echo "$1" ;;
+         /*.wav  ) echo "$1" ;;
+      esac
+   fi
+}
+
+ir_playlist_directory ()
+{
+   if [ -d "$1" ] && cd "$1"
+   then
+      log "directory $1"
+      ls | while read file
+         do
+            log "try file $1/$file"
+            ir_playlist_file "$1/$file"
+         done
+   fi
+}
+
+ir_process ()
+{
+   log "process $*"
+   for arg
+   do
+      log "processing $arg"
+      if is_url "$arg"
+      then
+         log "url $arg"
+         echo "$arg"
+         continue
+      fi
+      if is_path "$arg"
+      then
+         log "path $arg"
+         ir_playlist_directory "$arg"
+         ir_playlist_file "$arg"
+         continue
+      fi
+   done
+}
+
+ir_start ()
+{
+   log "start $*"
+   ir_process "$*" | ir_urlencode_files > "$state"
+
+   log "state..."
+   cat "$state" >&4
+   log "...end"
+
+   ir_next
+}
+
+ir_stop ()
+{
+   [ -f "$state" ] && rm "$state"
+}
+
+case "$1" in
+   'start'    ) shift; ir_start "$@" ;;
+   'next'     ) ir_next ;;
+   'complete' ) ir_next ;;
+   'stop'     ) ir_stop ;;
+esac
+
+true
