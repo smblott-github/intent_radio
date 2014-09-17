@@ -140,13 +140,19 @@ ir_urlencode_files ()
 # ########################################################################
 # Play.
 
+ir_on_android ()
+{
+   ! type xterm > /dev/null
+}
+
 ir_play ()
 {
    if [ -n "$1" ]
    then
       echo "$1"
       log am broadcast -a 'org.smblott.intentradio.PLAY' -e url "$1" -e name "$1" # "${1##*/}"
-      am broadcast -a 'org.smblott.intentradio.PLAY' -e url "$1" -e name "$1" # "${1##*/}" # -e debug yes
+      ir_on_android \
+         && am broadcast -a 'org.smblott.intentradio.PLAY' -e url "$1" -e name "$1" # "${1##*/}" # -e debug yes
    fi
 }
 
