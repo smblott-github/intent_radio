@@ -23,6 +23,8 @@ log="$root/log.txt"
 
 mkdir -p "$root"
 exec 4>> $log 2>&4
+# set -x
+
 
 # For testing, it is convenient to be able to run this script on
 # non-Android systems too.  ir_on_android succeeds only if calibre is not
@@ -52,14 +54,14 @@ ir_cleanup ()
 command="$1"
 shift
 
-random=''
-loop=''
+opt_random=''
+opt_loop=''
 
 while [ 0 -lt $# ]
 do
    case "$1" in
-      "-r" ) random='yes'; shift ;;
-      "-l" ) loop='yes'; shift ;;
+      "-r" ) opt_random='yes'; shift ;;
+      "-l" ) opt_loop='yes'; shift ;;
       * ) break 2 ;;
    esac
 done
@@ -98,6 +100,46 @@ ir_is_audio ()
       *.wav  ) [ -f "$1" ] ;;
       * ) false ;;
    esac
+}
+
+# ########################################################################
+# Take a text file and randomize the lines.
+# It would be so much simpler if we had "sort -R".
+
+ir_randomize ()
+{
+   if type sort > /dev/null
+   then
+      log "randomizing..."
+      file="$1"
+      tmp_file_1="$file.1.rtmp"
+      tmp_file_2="$file.2.rtmp"
+
+      log "before randomizing...:"
+      cat "$file" >&4
+
+      while read line
+      do
+         echo "$RANDOM $line"
+      done < "$file" > "$tmp_file_1"
+
+      sort -g "$tmp_file_1" > "$tmp_file_2"
+      rm "$tmp_file_1"
+
+      while read random line
+      do
+         echo "$line"
+      done < "$tmp_file_2" > "$tmp_file_1"
+
+      rm "$tmp_file_2"
+      mv "$tmp_file_1" "$file"
+
+      log "after randomizing...:"
+      cat "$file" >&4
+
+   else
+      log "not randomizing... sort is not available"
+   fi
 }
 
 # ########################################################################
@@ -170,8 +212,6 @@ ir_urlencode_files ()
 # Play.
 
 IR_PLAY_INTENT='org.smblott.intentradio.PLAY'
-
-set -x
 
 ir_play ()
 {
@@ -331,6 +371,11 @@ ir_append ()
    log "state..."
    cat "$state" >&4
    log "...end"
+
+   if [ -n "$opt_random" ]
+   then
+      ir_randomize "$state"
+   fi
 
    ir_next
 }

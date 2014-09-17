@@ -10,3 +10,5 @@ log:
 state:
 	adb shell cat /sdcard/Tasker/.intent_radio/state.txt
 
+stop:
+	$(MAKE) -C .. stop
