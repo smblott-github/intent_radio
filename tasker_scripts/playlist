@@ -40,7 +40,6 @@ is_path ()
 
 ir_play ()
 {
-   log "play $1"
    if [ -n "$1" ]
    then
       log am broadcast -a 'org.smblott.intentradio.PLAY' -e url "$1" -e name "$1" # "${1##*/}"
@@ -84,12 +83,10 @@ ir_urlencode_files ()
 
 ir_next ()
 {
-   log "next"
    while [ -f "$state" ] && [ -s "$state" ]
    do
       {
          read item
-         log "item $item"
          cat >&3
       } < "$state" 3> "$tmp" && mv "$tmp" "$state"
 
@@ -106,10 +103,8 @@ ir_next ()
 
 ir_playlist_m3u ()
 {
-   log "playlist $1"
    while read line
    do
-      log "m3u line $1"
       ir_process "$line"
    done < "$1"
 }
@@ -118,7 +113,6 @@ ir_playlist_file ()
 {
    if [ -f "$1" ]
    then
-      log "file $1"
       case "$1" in
          /*.m3u  ) ir_playlist_m3u "$1";;
          /*.mp3  ) echo "$1" ;;
@@ -136,10 +130,8 @@ ir_playlist_directory ()
 {
    if [ -d "$1" ] && cd "$1"
    then
-      log "directory $1"
       ls | while read file
          do
-            log "try file $1/$file"
             ir_playlist_file "$1/$file"
          done
    fi
@@ -147,19 +139,15 @@ ir_playlist_directory ()
 
 ir_process ()
 {
-   log "process $*"
    for arg
    do
-      log "processing $arg"
       if is_url "$arg"
       then
-         log "url $arg"
          echo "$arg"
          continue
       fi
       if is_path "$arg"
       then
-         log "path $arg"
          ir_playlist_directory "$arg"
          ir_playlist_file "$arg"
          continue
