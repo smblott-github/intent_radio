@@ -154,4 +154,18 @@ Create a playlist with relative file names:
    ls *.mp3 > Tormato.m3u
 ****
 
+// /////////////////////////////////////////////////////
+== How does it work? ==
+
+****
+_IR_ broadcasts its state.  The `IR State` profile in the sample Tasker
+project listens for these broadcasts and forwards them to the `playlist`
+shell script.
+
+When the shell script sees a `completed` state, it fires off
+the next track.  When it sees a `stop` state, it removes the active
+playlist.  So that subsequently, when a non-playlist track completes, it
+does not incorrectly fire off the next track on the active playlist.
+****
+
 // vim: set syntax=asciidoc:
