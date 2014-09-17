@@ -231,16 +231,21 @@ ir_process ()
 # ########################################################################
 # External operations.
 
-ir_start ()
+ir_append ()
 {
-   log "start $*"
-   ir_process "$*" | ir_urlencode_files > "$state"
+   log "append $*"
+   ir_process "$*" | ir_urlencode_files >> "$state"
 
    log "state..."
    cat "$state" >&4
    log "...end"
 
    ir_next
+}
+
+ir_start ()
+{
+   rm -f "$state" && ir_append "$@"
 }
 
 ir_stop ()
@@ -250,6 +255,7 @@ ir_stop ()
 
 case "$1" in
    'start'    ) shift; ir_start "$@" ;;
+   'append'   ) shift; ir_append "$@" ;;
    'next'     ) ir_next ;;
    'complete' ) ir_next ;;
    'stop'     ) ir_stop ;;
