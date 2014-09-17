@@ -43,12 +43,8 @@ public class Connectivity extends BroadcastReceiver
       if (connectivity == null)
          return TYPE_NONE;
 
-      if ( intent != null )
-      {
-         if ( intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false) )
-            return TYPE_NONE;
-
-      }
+      if ( intent != null && intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false) )
+         return TYPE_NONE;
 
       NetworkInfo network = connectivity.getActiveNetworkInfo();
       if ( network != null && network.isConnected() )
@@ -90,25 +86,11 @@ public class Connectivity extends BroadcastReceiver
    public void onReceive(Context context, Intent intent)
    {
       int type = getType(intent);
-      Logger.log("Connectivity: " + type);
+      boolean want_network_playing = State.is_want_playing() && player.isNetworkUrl();
+      Logger.log("Connectivity: " + type + " " + want_network_playing);
 
-      /*
-      if ( State.is(State.STATE_PAUSE)
-            || State.is(State.STATE_COMPLETE)
-            || ! player.isNetworkUrl() )
-            */
-      // if ( ! player.isNetworkUrl() )
-      // {  // We have no involvement in these cases, so bail quickly.
-      //    Logger.log("Connectivity: bailing");
-      //    if ( disable_task != null )
-      //       { disable_task.cancel(true); disable_task = null; }
-      //    previous_type = type;
-      //    return;
-      // }
 
-      boolean network_playing = (State.is(State.STATE_PLAY) || State.is(State.STATE_ERROR)) && player.isNetworkUrl();
-
-      if ( type == TYPE_NONE && previous_type != TYPE_NONE && network_playing )
+      if ( type == TYPE_NONE && previous_type != TYPE_NONE && want_network_playing )
       {  // We've lost connectivity.
          Logger.log("Connectivity: disconnected");
          player.stop();
@@ -119,7 +101,6 @@ public class Connectivity extends BroadcastReceiver
             disable_task.cancel(true);
 
          disable_task =
-            // 300 seconds is enough time to pop into the supermarket, perhaps?
             new Later(300)
             {
                @Override
@@ -135,22 +116,21 @@ public class Connectivity extends BroadcastReceiver
             && type != previous_type
             && Counter.still(then)
             )
-      {  // We have become connected, and we're still in the window to resume playback.
+      {  // We have become reconnected, and we're still in the window to resume playback.
          Logger.log("Connectivity: connected");
          if ( disable_task != null )
             { disable_task.cancel(true); disable_task = null; }
-
          player.play();
       }
 
       // We can get from mobile data to WiFi without going through TYPE_NONE.
+      // So the counter does not help.
       // && Counter.still(then)
-      if ( previous_type != TYPE_NONE && type != TYPE_NONE && type != previous_type && network_playing )
-      {  // We have moved to a different type of network, and we're still in the window to resume playback.
+      if ( previous_type != TYPE_NONE && type != TYPE_NONE && type != previous_type && want_network_playing )
+      {  // We have moved to a different type of network.
          Logger.log("Connectivity: different network type");
          if ( disable_task != null )
             { disable_task.cancel(true); disable_task = null; }
-
          player.play();
       }
 
@@ -158,3 +138,4 @@ public class Connectivity extends BroadcastReceiver
       return;
    }
 }
+

@@ -80,9 +80,12 @@ public class State extends Logger
    // except "pause".
    //
    public static boolean is_playing()
-      { return is(State.STATE_PLAY) || is(State.STATE_BUFFER) || is(State.STATE_DUCK) || is(State.STATE_DISCONNECTED); }
+      { return is(State.STATE_PLAY) || is(State.STATE_BUFFER) || is(State.STATE_DUCK); }
 
    public static boolean is_stopped()
       { return State.is(State.STATE_STOP) || State.is(State.STATE_ERROR) || State.is(State.STATE_COMPLETE); }
+
+   public static boolean is_want_playing()
+      { return is(State.STATE_PLAY) || is(State.STATE_BUFFER) || is(State.STATE_DUCK) || is(State.STATE_ERROR); }
 }
 

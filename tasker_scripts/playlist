@@ -7,9 +7,8 @@
 #    the utilities available on a vanilla Android installation (which
 #    don't even include head and tail).
 #
-#    For URL encoding, we use sed if it's available.  Otherwise, we strip
-#    out playlist entries which we know will not play (their file names
-#    contain spaces).
+# For URL encoding we use sed, if it's available.  Otherwise, we use a
+# simple shell function to replace the most important non-URL characters.
 
 root='/sdcard/Tasker/.intent_radio'
 state="$root/state.txt"
@@ -23,7 +22,6 @@ log="$root/log.txt"
 
 mkdir -p "$root"
 exec 4>> $log 2>&4
-# set -x
 
 log ()
 {
@@ -84,6 +82,7 @@ ir_urlencode_sed ()
       | sed "/^\// {s/'/%27/g}"
 }
 
+# Copy stdin to stdout, replacing every instance of "$1" withe "$2".
 ir_replace ()
 {
    symbol="$1"
@@ -105,6 +104,7 @@ ir_replace ()
    done
 }
 
+# URL encode, but only replacing "%" and " ".
 ir_urlencode_poor ()
 {
    ir_replace "%" "%25" \
@@ -117,8 +117,6 @@ ir_url_encode ()
    then
       ir_urlencode_sed
    else
-      # We know that the Android media player baulks at spaces...
-      # grep -v ' '
       ir_urlencode_poor
    fi
 }
@@ -146,10 +144,14 @@ ir_play ()
 {
    if [ -n "$1" ]
    then
+      echo "$1"
       log am broadcast -a 'org.smblott.intentradio.PLAY' -e url "$1" -e name "$1" # "${1##*/}"
       am broadcast -a 'org.smblott.intentradio.PLAY' -e url "$1" -e name "$1" # "${1##*/}" # -e debug yes
    fi
 }
+
+# ########################################################################
+# Play next item.
 
 ir_next ()
 {
@@ -160,9 +162,8 @@ ir_next ()
          cat >&3
       } < "$state" 3> "$tmp" && mv "$tmp" "$state"
 
-      if ir_is_url "$item"
+      if [ -n "$item" ] && ir_is_url "$item"
       then
-         echo "$item"
          ir_play "$item"
          return
       fi
@@ -175,18 +176,16 @@ ir_next ()
 # Construct playlist for various types of thing.
 #
 # Each function assumes:
-#  - The CWD is the location of the file or directory.
-#  - It's first argument is the absolute path of the file or directory.
+#  - The current working directory is the location of the file or directory.
+#  - It's first (and only) argument is the absolute path of the file or directory.
 
 ir_playlist ()
 {
-   log "ir_playlist $(pwd) $1"
-   log "  ls $(ls -l $1)"
    while read f
    do
       case "$f" in
          \#* ) true ;;
-         /* ) [ -n "$f" ] && ir_process "/$f" ;;
+         /* ) ir_process "$f" ;;
          * ) [ -n "$f" ] && ir_process "$(pwd)/$f" ;;
       esac
    done < "$1"
@@ -209,7 +208,7 @@ ir_file ()
 # ########################################################################
 # Because playlist and directory handling is recursive, it is possible to
 # get stuck in an infinite loop.  Here, we provide tests to ensure that
-# cannot happen.
+# that cannot happen.
 
 ir_see ()
 {
@@ -226,7 +225,7 @@ ir_seen ()
 }
 
 # ########################################################################
-# Keep the CWD as that of the thing we're currently handling.
+# Change directory to that of the thing we're currently handling.
 
 ir_absolute_path ()
 {
@@ -247,7 +246,8 @@ ir_absolute_path ()
 # cd to the directory or (in the case of a file) the containing directory.
 # Then call the remaining command/arguments with the absolute path of the first
 # argument appended.
-# This allows us to handle both absolute and relative paths.
+# This allows us to handle both absolute and relative paths uniformly.
+# We assume that "$thing" exists.
 ir_cd ()
 {
    thing=$(ir_absolute_path "$1")
@@ -310,7 +310,7 @@ ir_start ()
 
 ir_stop ()
 {
-   [ -f "$state" ] && rm "$state"
+   [ -f "$state" ] && ir_cleanup
 }
 
 case "$1" in

@@ -635,14 +635,10 @@ public class IntentPlayer extends Service
    @Override
    public void onCompletion(MediaPlayer mp)
    {
-      log("Completion.");
+      log("Completion: " + State.current());
 
-      // Listeners will receive a STATE_COMPLETE broadcast, then (if there is
-      // no further state change) shortly later (the Later default timeout) a
-      // STATE_STOP broadcast.
-      //
       State.set_state(context, State.STATE_COMPLETE, isNetworkUrl());
-      new Later()
+      new Later(300)
       {
          @Override
          public void later()
