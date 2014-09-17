@@ -11,6 +11,7 @@ target += tasker.html
 target += privacy.html
 target += release.html
 target += favicon.ico
+target += playlist
 
 build: $(target)
 	@true
@@ -23,5 +24,8 @@ install:
 	rsync -av $(target) $(srv):$(www)
 
 Radio.prj.xml: ../ir_library/misc/Radio.prj.xml
+	install -m 0444 $< $@
+
+playlist: ../tasker_scripts/playlist
 	install -m 0444 $< $@
 
