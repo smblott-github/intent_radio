@@ -7,6 +7,7 @@ log="$root/log.txt"
 
 mkdir -p "$root"
 exec 4>> $log 2>&4
+# set -x
 
 log ()
 {
@@ -15,14 +16,33 @@ log ()
 
 log "args $*"
 
+is_url ()
+{
+   case "$1" in
+      file://*  ) true ;;
+      http://*  ) true ;;
+      https://* ) true ;;
+      content://* ) true ;;
+      * ) false ;;
+   esac
+}
+
+is_path ()
+{
+   log "is_path $1"
+   case "$1" in
+      /* ) [ -f "$1" ] || [ -d "$1" ] ;;
+      * ) false ;;
+   esac
+}
+
 ir_play ()
 {
-   log "play $*"
-   if [ -n "$*" ]
+   log "play $1"
+   if [ -n "$1" ]
    then
-      log am broadcast -a 'org.smblott.intentradio.PLAY' -e url "$*" -e name "FIXME"
-      am broadcast -a 'org.smblott.intentradio.PLAY' -e url "$*" -e name "FIXME"
-      # echo "play" "$*"
+      log am broadcast -a 'org.smblott.intentradio.PLAY' -e url "$1" -e name "${1##*/}"
+      am broadcast -a 'org.smblott.intentradio.PLAY' -e url "$1" -e name "${1##*/}"
    fi
 }
 
@@ -52,6 +72,11 @@ ir_make_file_url ()
       log "make url $f file://$f"
       echo "file://$f"
    done
+}
+
+ir_file ()
+{
+   ir_url_encode | ir_make_file_url
 }
 
 ir_to_url ()
@@ -87,7 +112,11 @@ ir_next ()
 ir_playlist_m3u ()
 {
    log "playlist $1"
-   grep -v '^#' "$1" | grep '.'
+   while read line
+   do
+      log "m3u line $1"
+      ir_process "$line"
+   done < "$1"
 }
 
 ir_playlist_file ()
@@ -97,13 +126,13 @@ ir_playlist_file ()
       log "file $1"
       case "$1" in
          *.m3u  ) ir_playlist_m3u "$1";;
-         *.mp3  ) echo "$1" ;;
-         *.aac  ) echo "$1" ;;
-         *.m4a  ) echo "$1" ;;
-         *.ogg  ) echo "$1" ;;
-         *.oga  ) echo "$1" ;;
-         *.flac ) echo "$1" ;;
-         *.wav  ) echo "$1" ;;
+         *.mp3  ) echo "$1" | ir_file ;;
+         *.aac  ) echo "$1" | ir_file ;;
+         *.m4a  ) echo "$1" | ir_file ;;
+         *.ogg  ) echo "$1" | ir_file ;;
+         *.oga  ) echo "$1" | ir_file ;;
+         *.flac ) echo "$1" | ir_file ;;
+         *.wav  ) echo "$1" | ir_file ;;
       esac
    fi
 }
@@ -115,24 +144,43 @@ ir_playlist_directory ()
       log "directory $1"
       ls | while read file
          do
-            log "try file $dir/$file"
+            log "try file $1/$file"
             ir_playlist_file "$1/$file"
          done
    fi
 }
 
+ir_process ()
+{
+   log "process $*"
+   for arg
+   do
+      log "processing $arg"
+      if is_url "$arg"
+      then
+         log "url $arg"
+         echo "$arg"
+         continue
+      fi
+      if is_path "$arg"
+      then
+         log "path $arg"
+         ir_playlist_directory "$arg"
+         ir_playlist_file "$arg"
+         continue
+      fi
+   done
+}
+
 ir_start ()
 {
    log "start $*"
-   for arg
-   do
-      arg="${arg#file://}"
-      ir_playlist_file "$arg"
-      ir_playlist_directory "$arg"
-   done > "$state"
+   ir_process "$@" > "$state"
+
    log "state..."
    cat "$state" >&4
    log "...end"
+
    ir_next
 }
 
@@ -142,9 +190,10 @@ ir_stop ()
 }
 
 case "$1" in
-   'start'    ) shift; ir_start "$@" ;;
+   'start'    ) shift; ir_start "${1#file://}" ;;
    'next'     ) ir_next ;;
    'complete' ) ir_next ;;
    'stop'     ) ir_stop ;;
 esac
 
+true
