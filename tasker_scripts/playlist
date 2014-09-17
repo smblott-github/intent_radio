@@ -386,6 +386,28 @@ ir_process ()
 }
 
 # ########################################################################
+# Save/restore.
+
+IR_STOP_INTENT='org.smblott.intentradio.STOP'
+
+ir_save ()
+{
+   ir_send_intent $IR_STOP_INTENT -e url "$1" -e name "$1"
+   [ -d "$savedir" ] && rm -fr "$savedir"
+   mv "$root" "$savedir"
+}
+
+ir_save ()
+{
+   if [ -d "$savedir" ]
+   then
+      rm -fr "$root"
+      mv "$savedir" "$root"
+      ir_next
+   fi
+}
+
+# ########################################################################
 # External operations.
 
 ir_append ()
@@ -429,6 +451,8 @@ case "$command" in
    'next'     ) ir_next ;;
    'complete' ) ir_next ;;
    'stop'     ) ir_stop ;;
+   'save'     ) ir_save ;;
+   'restore'  ) ir_restore ;;
 esac
 
 true
