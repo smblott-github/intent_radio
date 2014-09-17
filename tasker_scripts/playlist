@@ -13,6 +13,7 @@
 root='/sdcard/Tasker/.intent_radio'
 state="$root/state.txt"
 seendir="$root/seen"
+savedir="$root.save"
 randomfile="$root/random"
 loopfile="$root/loop"
 tmp="$state.tmp"
@@ -211,17 +212,23 @@ ir_urlencode_files ()
 }
 
 # ########################################################################
-# Play.
+# Play, stop.
 
 IR_PLAY_INTENT='org.smblott.intentradio.PLAY'
+IR_STOP_INTENT='org.smblott.intentradio.STOP'
+
+ir_send_intent ()
+{
+   log ""
+   echo "  " am broadcast -a "$@" >&4
+   ir_on_android \
+      && am broadcast -a "$@"
+}
 
 ir_play ()
 {
    echo "$1"
-   log ""
-   echo "  " am broadcast -a $IR_PLAY_INTENT -e url "$1" -e name "$1" >&4
-   ir_on_android \
-      && am broadcast -a $IR_PLAY_INTENT -e url "$1" -e name "$1"
+   ir_send_intent $IR_PLAY_INTENT -e url "$1" -e name "$1"
 }
 
 # ########################################################################
