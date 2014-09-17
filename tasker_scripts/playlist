@@ -45,6 +45,22 @@ ir_cleanup ()
 }
 
 # ########################################################################
+# Options.
+# The vanilla shell on Android does not have getopt.
+
+random=''
+loop=''
+
+while [ 0 -lt $# ]
+do
+   case "$1" in
+      "-r" ) random='yes'; shift ;;
+      "-l" ) loop='yes'; shift ;;
+      * ) break 2 ;;
+   esac
+done
+
+# ########################################################################
 # Identify file types.
 
 ir_is_url ()
