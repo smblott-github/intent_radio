@@ -1,14 +1,15 @@
 #!/bin/sh
+# Version 0.1.1
 
 # ########################################################################
 # Constraints:
 #    This script has to work with the standard Android shell, and with only
 #    the utilities available on a vanilla Android installation (which
-#    doesn't even have head and tail).
+#    don't even include head and tail).
 #
-#    For URL encoding, we sed if it's available.  Otherwise, we strip out
-#    playlist entries which we know will not play (their file names contain
-#    spaces).
+#    For URL encoding, we use sed if it's available.  Otherwise, we strip
+#    out playlist entries which we know will not play (their file names
+#    contain spaces).
 
 root='/sdcard/Tasker/.intent_radio'
 state="$root/state.txt"

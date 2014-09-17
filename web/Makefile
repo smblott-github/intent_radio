@@ -6,6 +6,7 @@ include $(HOME)/.gnumake.mk
 target += Radio.prj.xml 
 target += IR_Playlist.prj.xml
 target += index.html
+target += playlist.html
 target += debug.html
 target += tasker.html
 target += privacy.html

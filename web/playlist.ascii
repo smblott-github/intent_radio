@@ -1,0 +1,157 @@
+= Intent Radio -- Playlists =
+Stephen Blott <smblott+ir@gmail.com>
+:toc2:
+
+// /////////////////////////////////////////////////////
+== Why?  ==
+
+****
+I was asked by a user (thank you, Dan) to add playlist support to _IR_:
+play one song, then another, and so on.  However, I didn't want to do this.
+The whole idea of _IR_ is to _keep things simple_, and allow users to
+control playback (and hence get the behaviour they want) via external apps
+such as Tasker.
+****
+
+// /////////////////////////////////////////////////////
+== What? ==
+
+****
+This page describes how implement playlists for _IR_, but without extending
+_IR_ itself.
+
+The approach is to write a shell script (which is called by Tasker) to
+launch the next track when the current track finishes.
+****
+
+// /////////////////////////////////////////////////////
+== How? ==
+
+// /////////////////////////////////////////////////////
+=== First: A Tasker Project ===
+
+****
+First:
+
+. download link:./IR_Playlist.prj.xml[this Tasker project] and copy it to your Tasker
+  project directory (`/sdcard/Tasker/projects`), and
+
+. using Tasker, import the project (`IR_Playlist.prj.xml`).
+
+The project won't do much yet, but take a look around.  Eventually, you
+will have to edit the example tasks `IR Play Playlist` and `IR Play
+Directory` such that they reference suitable paths for your system.
+
+You do not need to make any changes to the other task or the `IR State` profile.
+****
+
+// /////////////////////////////////////////////////////
+=== Next: A Shell Script ===
+
+****
+Next:
+
+. create a directory `/sdcard/intent_radio`, and
+
+. download link:playlist[this shell script] and copy it to that directory +
+  (so, to `/sdcard/intent_radio/playlist`).
+
+The name of the directory (`/sdcard/intent_radio`) and the name of the
+script (`playlist`) matter; they're used in the sample Tasker project.
+****
+
+[NOTE]
+====
+Warning: +
+Only run this shell script from within Tasker.  Do not run it
+manually.  (Otherwise, the state file it creates will end up being owned by the wrong user -- I think).
+====
+
+// /////////////////////////////////////////////////////
+=== Finally: Give it a Go ===
+
+****
+The Tasker project includes a Task `IRP Playlist Play`.  All this does, is
+call the shell script above with suitable arguments.  In the sample
+project, it's:
+
+   sh /sdcard/intent_radio/playlist start /sdcard/xy.m3u
+
+Change the last part, the playlist file, to your own playlist (subject to
+the rules, below), and give it a go.
+****
+
+****
+You can also provide a directory name:
+
+   sh /sdcard/intent_radio/playlist start /sdcard/Music/Yes/Tormato
+
+In this case, all audio files _in or under_ `/sdcard/Music/Yes/Tormato` will be added to the playlist.
+****
+
+****
+If you provide multiple arguments after `start`, then they are joined
+together (with spaces) and treated as a single directory.
+
+   sh /sdcard/intent_radio/playlist start /sdcard/Music/Yes/The Yes Album
+
+This will be treated as a single directory (with spaces in its name).
+****
+
+[NOTE]
+====
+The argument to `start` is _not_ a URL.  It is the absolute path of
+a playlist file, a directory, or an audio file.
+====
+
+.Playlist files
+****
+Roughly, the supported playlist format is the http://en.wikipedia.org/wiki/M3U[M3U]:
+
+- Playlist file names must end with the extension `.m3u` (all lower case).
+- Empty lines and lines on which the first non-whitespace character is `#` are ignored.
+****
+
+.Playlist entries
+****
+URLs::
+   Entries beginning `file://`, `http://`, `https://` or `content://` are
+   appended verbatim to the active playlist.  Any necessary URL encoding
+   must already have been applied. +
+   +
+   Suggestion: +
+   Don't use `file://` for local files.  If `sed` is available,
+   then the `playlist` script handles URL encoding itself.
+
+Directories::
+   Every audio file and the contents of every playlist file _in or under_
+   the indicated directory are appended to the active playlist.  Directory
+   names can be either relative or absolute, and should not be URL encoded.
+
+Audio Files::
+   The audio file is appended to the active playlist.  File names can be
+   either relative or absolute, and should not be URL encoded.
+
+Other playlist files::
+   The contents of the playlist are appended to the active playlist,
+   recursively.
+   Playlist file names can be either relative or absolute, and should not
+   be URL encoded.
+****
+
+.Tips
+****
+It's easy to generate playlist files with standard Unix utilities (if you have them).  Here are a couple of
+examples:
+
+Create a playlist with absolute file names:
+
+   find /sdcard/Music/Yes/Tormato -type f -name '*.mp3' /sdcard/tormato.m3u
+
+Create a playlist with relative file names:
+
+   cd /sdcard/Music/Yes/Tormato
+   ls *.mp3 > Tormato.m3u
+****
+
+// vim: set syntax=asciidoc:
