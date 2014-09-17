@@ -34,13 +34,12 @@ launch the next track when the current track finishes.
 First:
 
 . download link:./IR_Playlist.prj.xml[this Tasker project] and copy it to your Tasker
-  project directory (`/sdcard/Tasker/projects`), and
+  project directory (`/sdcard/Tasker/projects`); then
 
 . using Tasker, import the project (`IR_Playlist.prj.xml`).
 
 The project won't do much yet, but take a look around.  Eventually, you
-will have to edit the example tasks `IR Play Playlist` and `IR Play
-Directory` such that they reference suitable paths for your system.
+will have to edit the example tasks such that they reference suitable paths for your system.
 
 You do not need to make any changes to the other task or the `IR State` profile.
 ****

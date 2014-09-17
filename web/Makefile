@@ -22,6 +22,7 @@ www = public_html/intent_radio/
 
 install:
 	$(MAKE) build
+	chmod ugo+r *
 	rsync -av $(target) $(srv):$(www)
 
 Radio.prj.xml: ../ir_library/misc/Radio.prj.xml
