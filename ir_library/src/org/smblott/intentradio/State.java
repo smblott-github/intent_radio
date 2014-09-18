@@ -55,37 +55,28 @@ public class State extends Logger
 
    public static String text()
    {
-      // is_stopped states.
       if ( is(STATE_STOP)         ) return "Stopped";
       if ( is(STATE_ERROR)        ) return "Error";
       if ( is(STATE_COMPLETE)     ) return "Complete";
-
-      // is_playing states.
       if ( is(STATE_PLAY)         ) return "Playing";
       if ( is(STATE_BUFFER)       ) return "Buffering..";
       if ( is(STATE_DUCK)         ) return "Ducked";
-
-      // paused.
       if ( is(STATE_PAUSE)        ) return "Paused..";
-
-      // disconnected
       if ( is(STATE_DISCONNECTED) ) return "No network connection.";
 
       // Should not happen.
-      //
       return "Unknown";
    }
 
-   // These two predicates cover all states
-   // except "pause".
+   // Paused is not in any of the following classes.
    //
    public static boolean is_playing()
-      { return is(State.STATE_PLAY) || is(State.STATE_BUFFER) || is(State.STATE_DUCK); }
+      { return is(STATE_PLAY) || is(STATE_BUFFER) || is(STATE_DUCK); }
 
    public static boolean is_stopped()
-      { return State.is(State.STATE_STOP) || State.is(State.STATE_ERROR) || State.is(State.STATE_COMPLETE); }
+      { return State.is(STATE_STOP) || State.is(STATE_ERROR) || State.is(STATE_COMPLETE); }
 
    public static boolean is_want_playing()
-      { return is(State.STATE_PLAY) || is(State.STATE_BUFFER) || is(State.STATE_DUCK) || is(State.STATE_ERROR); }
+      { return is_playing() || is(STATE_ERROR); }
 }
 

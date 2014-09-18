@@ -91,7 +91,6 @@ public class Connectivity extends BroadcastReceiver
       boolean want_network_playing = State.is_want_playing() && player.isNetworkUrl();
       Logger.log("Connectivity: " + type + " " + want_network_playing);
 
-
       if ( type == TYPE_NONE && previous_type != TYPE_NONE && want_network_playing )
       {  // We've lost connectivity.
          Logger.log("Connectivity: disconnected");
@@ -120,9 +119,7 @@ public class Connectivity extends BroadcastReceiver
             )
       {  // We have become reconnected, and we're still in the window to resume playback.
          Logger.log("Connectivity: connected");
-         if ( disable_task != null )
-            { disable_task.cancel(true); disable_task = null; }
-         player.play();
+         restart();
       }
 
       // We can get from mobile data to WiFi without going through TYPE_NONE.
@@ -131,13 +128,24 @@ public class Connectivity extends BroadcastReceiver
       if ( previous_type != TYPE_NONE && type != TYPE_NONE && type != previous_type && want_network_playing )
       {  // We have moved to a different type of network.
          Logger.log("Connectivity: different network type");
-         if ( disable_task != null )
-            { disable_task.cancel(true); disable_task = null; }
-         player.play();
+         restart();
       }
 
       previous_type = type;
       return;
+   }
+
+   private void restart()
+   {
+      if ( disable_task != null )
+      {
+         disable_task.cancel(true);
+         disable_task = null;
+      }
+
+      SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+      if ( settings.getBoolean("reconnect", false) )
+         player.play();
    }
 }
 

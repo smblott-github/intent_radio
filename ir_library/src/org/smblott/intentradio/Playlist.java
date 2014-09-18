@@ -49,9 +49,6 @@ public class Playlist extends AsyncTask<Void, Void, String>
       else
          url = null;
 
-      // Disable recursive playlist fetch; to re-enable, change this to while
-      // and see comment regarding BBC Radio 4, below.
-      //
       if ( 0 < ttl && url != null && type != NONE )
       {
          ttl -= 1;
@@ -67,16 +64,11 @@ public class Playlist extends AsyncTask<Void, Void, String>
 
       if ( url  == null ) { log("Playlist: failed to extract url."     );             }
       if ( ttl  == 0    ) { log("Playlist: too many playlists (TTL)."  ); url = null; }
-      //
-      // Disbaled, so the BBC Radio 4 Media selector playlist is passed directly to MediaPlayer.
-      // if ( type != NONE ) { log("Playlist: too many playlists (TYPE)." ); url = null; }
       if ( url  != null ) { log("Playlist final url: ", url            );             }
 
       return url;
    }
 
-   // This runs on the main thread...
-   //
    protected void onPostExecute(String url) {
       if ( url != null && player != null && ! isCancelled() && Counter.still(then) )
          player.play_launch(url);
@@ -196,7 +188,7 @@ public class Playlist extends AsyncTask<Void, Void, String>
 
    // We rely only on the suffix, here.
    // It seems that checking the actual MIME Content-Type
-   // returned by the server is not reliable, in practice.
+   // returned by the server is not reliable in practice.
    //
    private static int playlist_type(String url)
    {

@@ -9,6 +9,8 @@ public abstract class Later extends AsyncTask<Integer, Void, Void>
    private int seconds = default_seconds;
    private int then;
 
+   public abstract void later();
+
    // secs <  0: execute immediately
    // secs == 0: delay for default_seconds
    // otherwise: delay for secs
@@ -24,8 +26,6 @@ public abstract class Later extends AsyncTask<Integer, Void, Void>
 
    Later()
       { this(default_seconds); }
-
-   public abstract void later();
 
    protected Void doInBackground(Integer... args)
    {

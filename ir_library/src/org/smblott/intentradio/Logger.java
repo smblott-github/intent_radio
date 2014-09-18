@@ -40,7 +40,7 @@ public class Logger
 
       // Always enable debugging on debug builds...
       //
-      if ( true || Build.debug_build(context) )
+      if ( Build.debug_build(context) )
       {
          state("debug");
          log("Debug build: debugging enabled");
