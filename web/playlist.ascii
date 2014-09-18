@@ -173,6 +173,8 @@ The state file itself is:
 // /////////////////////////////////////////////////////
 == Options/Operations ==
 
+The shell script supports the following options.
+
 .Start:
 ****
 - `start [-l] [-r] THING`
@@ -189,7 +191,7 @@ Note, however, that randomization is only possible if you have
 Duplicate items encountered are silently discarded.
 ****
 
-.Append:
+.Append
 ****
 - `append THING`
 
@@ -200,23 +202,29 @@ New items will _not_ be added to the playlist if they are already on the
 playlist.
 ****
 
-.Stop
-****
-- `stop`
-
-Suspend the playlist.
-
-Normally, it _should not_ be necessary to invoke this manually.  It is
-generated automatically when the Tasker project receives the `stop` state
-from the player.
-****
-
 .Next
 ****
 - `next`
 
 Move on to the next item on the playlist.  If the playlist is stopped, then
 it is resumed.
+****
+
+.Stop
+****
+- `stop`
+
+Suspend the playlist.
+
+[NOTE]
+====
+_Do not use this option manually_.  It is
+generated automatically when the Tasker project receives the `stop` state
+from the player.
+
+Also, `stop`, here, does not actually stop playback.  It just disables the
+playlist.
+====
 ****
 
 // .Resume
