@@ -404,7 +404,7 @@ ir_append ()
       rm "$stopfile"
    fi
 
-   rm -fr "$seendir"
+   # rm -fr "$seendir"
    ir_process "$*" | ir_urlencode_files > "$tmp"
 
    if [ -f "$loopfile" ]
@@ -415,10 +415,10 @@ ir_append ()
    cat "$tmp" >> "$state"
    rm "$tmp"
 
-   # We randomize the entire playlist, not just the newly appended part.
-   # Is this the best thing to do?
    if [ -f "$randomfile" ]
    then
+      # We randomize the entire playlist, not just the newly appended part.
+      # Is this the best thing to do?
       ir_randomize "$state"
    fi
 
