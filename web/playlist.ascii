@@ -213,16 +213,17 @@ playlist.
 ****
 - `next`
 
-Move on to the next item on the playlist.
+Move on to the next item on the playlist.  If the playlist is stopped, then
+it is resumed.
 ****
 
-.Resume
-****
-- `resume`
-
-Resume a previously-stopped playlist.  Playback starts at the track after
-the one which was playing when the playlist was suspended.
-****
+// .Resume
+// ****
+// - `resume`
+// 
+// Resume a previously-stopped playlist.  Playback starts at the track after
+// the one which was playing when the playlist was suspended.
+// ****
 
 // /////////////////////////////////////////////////////
 == How does it work? ==

@@ -453,10 +453,10 @@ ir_resume ()
 case "$command" in
    'start'    ) ir_start "$@" ;;
    'append'   ) ir_append "$@" ;;
-   'next'     ) ir_next ;;
+   'next'     ) ir_resume ;;
    'complete' ) ir_next ;;
    'stop'     ) ir_stop ;;
-   'resume'   ) ir_resume ;;
+#  'resume'   ) ir_resume ;;
 esac
 
 true
