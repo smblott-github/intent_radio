@@ -13,8 +13,8 @@
 root='/sdcard/Tasker/.intent_radio'
 state="$root/state.txt"
 seendir="$root/seen"
-savedir="$root.save"
 randomfile="$root/random"
+stopfile="$root/stop"
 loopfile="$root/loop"
 tmp="$state.tmp"
 log="$root/log.txt"
@@ -22,12 +22,11 @@ log="$root/log.txt"
 # Bail early out early (to avoid even having to parse this script) if
 # there's nothing to be done.
 [ $# = 0 ] && exit 1
-[ $# = 1 ] && ! [ -f $state ] && exit
+[ $# = 1 ] && ! [ -f "$state" ] && exit
+[ $# = 1 ] && [ -f "$stopfile" ] && [ "$1" != 'resume' ] && exit
 
 mkdir -p "$root"
 exec 4>> $log 2>&4
-# set -x
-
 
 # For testing, it is convenient to be able to run this script on
 # non-Android systems too.  ir_on_android succeeds only if calibre is not
@@ -47,7 +46,7 @@ log "args $*"
 
 ir_cleanup ()
 {
-   rm -fr "$state" "$seendir" "$loopfile" "$randomfile"
+   rm -fr "$state" "$seendir" "$loopfile" "$randomfile" "$stopfile"
 }
 
 # ########################################################################
@@ -111,14 +110,14 @@ ir_is_audio ()
 
 ir_randomize ()
 {
-   if type sort > /dev/null
+   if [ -n "$RANDOM" ] && type sort > /dev/null
    then
       log "randomizing..."
       file="$1"
       tmp_file_1="$file.1.rtmp"
       tmp_file_2="$file.2.rtmp"
 
-      log "before randomizing...:"
+      log "before randomizing... $file...:"
       cat "$file" >&4
 
       while read line
@@ -212,10 +211,9 @@ ir_urlencode_files ()
 }
 
 # ########################################################################
-# Play, stop.
+# Play.
 
 IR_PLAY_INTENT='org.smblott.intentradio.PLAY'
-IR_STOP_INTENT='org.smblott.intentradio.STOP'
 
 ir_send_intent ()
 {
@@ -254,10 +252,7 @@ ir_next_picker ()
 
 ir_next ()
 {
-   if ir_next_picker
-   then
-      return
-   fi
+   ir_next_picker && return
 
    if [ -f "$loopfile" ]
    then
@@ -386,33 +381,18 @@ ir_process ()
 }
 
 # ########################################################################
-# Save/restore.
-
-IR_STOP_INTENT='org.smblott.intentradio.STOP'
-
-ir_save ()
-{
-   ir_send_intent $IR_STOP_INTENT -e url "$1" -e name "$1"
-   [ -d "$savedir" ] && rm -fr "$savedir"
-   mv "$root" "$savedir"
-}
-
-ir_save ()
-{
-   if [ -d "$savedir" ]
-   then
-      rm -fr "$root"
-      mv "$savedir" "$root"
-      ir_next
-   fi
-}
-
-# ########################################################################
 # External operations.
 
+# TODO. ir_append copies the *current* state file to $loopfile.  If we're
+# looping, then tracks which have already been played will be lost.
 ir_append ()
 {
    log "append $*"
+
+   if [ -f "$stopfile" ]
+   then
+      rm "$stopfile"
+   fi
 
    rm -fr "$seendir"
    ir_process "$*" | ir_urlencode_files >> "$state"
@@ -442,7 +422,13 @@ ir_start ()
 
 ir_stop ()
 {
-   [ -f "$state" ] && ir_cleanup
+   true > "$stopfile"
+}
+
+ir_resume ()
+{
+   [ -f "$stopfile" ] && rm "$stopfile"
+   ir_next
 }
 
 case "$command" in
@@ -451,8 +437,7 @@ case "$command" in
    'next'     ) ir_next ;;
    'complete' ) ir_next ;;
    'stop'     ) ir_stop ;;
-   'save'     ) ir_save ;;
-   'restore'  ) ir_restore ;;
+   'resume'   ) ir_resume ;;
 esac
 
 true
