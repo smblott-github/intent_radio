@@ -44,6 +44,9 @@ logcat:
 log:
 	adb logcat -s IntentRadio -s MediaPlayer
 
+logfile:
+	adb shell cat /sdcard/Android/data/org.smblott.intentradio/files/intent-radio.log
+
 ir_library/res/raw/tasker.prj: ./ir_library/misc/Radio.prj.xml
 	cd ./ir_library/ && make res/raw/tasker.prj
 
