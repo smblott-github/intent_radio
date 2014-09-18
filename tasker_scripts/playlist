@@ -384,8 +384,6 @@ ir_process ()
 # ########################################################################
 # External operations.
 
-# TODO. ir_append copies the *current* state file to $loopfile.  If we're
-# looping, then tracks which have already been played will be lost.
 ir_append ()
 {
    log "append $*"
@@ -396,11 +394,15 @@ ir_append ()
    fi
 
    rm -fr "$seendir"
-   ir_process "$*" | ir_urlencode_files >> "$state"
+   ir_process "$*" | ir_urlencode_files > "$tmp"
 
-   log "state..."
-   cat "$state" >&4
-   log "...end"
+   if [ -n "$opt_loop" ]
+   then
+      cat "$tmp" >> "$loopfile"
+   fi
+
+   cat "$tmp" >> "$state"
+   rm "$tmp"
 
    if [ -n "$opt_random" ]
    then
@@ -408,10 +410,9 @@ ir_append ()
       true > "$randomfile"
    fi
 
-   if [ -n "$opt_loop" ]
-   then
-      cp "$state" "$loopfile"
-   fi
+   log "state..."
+   cat "$state" >&4
+   log "...end"
 
    ir_next
 }
