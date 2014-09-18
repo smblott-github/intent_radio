@@ -193,7 +193,7 @@ public class IntentPlayer extends Service
          return stop();
       }
 
-      if ( URLUtil.isNetworkUrl(url) && ! Connectivity.isConnected(context) )
+      if ( isNetworkUrl(url) && ! Connectivity.isConnected(context) )
       {
          toast("No internet connection; will not start playback.");
          stop(false);
@@ -536,7 +536,8 @@ public class IntentPlayer extends Service
       // really were playing (so not, for example, if we are in STATE_ERROR, or
       // STATE_DISCONNECTED).  This simplifies connectivity management, in
       // Connectivity.java.
-      if ( isNetworkUrl() && (State.is(State.STATE_PLAY) || State.is(State.STATE_DUCK)) )
+      log("onCompletion: isNetworkUrl: " + isNetworkUrl());
+      if ( ! isNetworkUrl() && (State.is(State.STATE_PLAY) || State.is(State.STATE_DUCK)) )
          State.set_state(context, State.STATE_COMPLETE, isNetworkUrl());
 
       // Don't stay completed for long.
