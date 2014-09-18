@@ -64,6 +64,9 @@ public class Connectivity extends BroadcastReceiver
       return TYPE_NONE;
    }
 
+   static boolean onWifi()
+      { return getType() == ConnectivityManager.TYPE_WIFI; }
+
    static private void init_connectivity(Context context)
    {
       if ( connectivity == null )

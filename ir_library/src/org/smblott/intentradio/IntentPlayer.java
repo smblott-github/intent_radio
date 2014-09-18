@@ -224,7 +224,8 @@ public class IntentPlayer extends Service
          player.setOnCompletionListener(this);
       }
 
-      WifiLocker.lock(context, app_name_long);
+      if ( isNetworkUrl(url) )
+         WifiLocker.lock(context, app_name_long);
 
       log("Connecting...");
       playlist_task = new Playlist(this,url).start();
@@ -254,6 +255,19 @@ public class IntentPlayer extends Service
 
       launch_url = url;
 
+      // Note:  Because of the way we handle network connectivity, the player
+      // always stops and then restarts as we move between network types.
+      // Therefore, stop() and start() are always called.  So we always have
+      // the WiFi lock if we're on WiFi and we need it, and don't otherwise.
+      // 
+      // Here, we could be holding a WiFi lock because the playlist URL was a
+      // network URL, but perhaps now the launch URL is not.  Or the other way
+      // around.  So release the WiFi lock (if it's being held) and reaquire
+      // it, if necessary.
+      WifiLocker.unlock();
+      if ( isNetworkUrl(url) )
+         WifiLocker.lock(context, app_name_long);
+
       try
       {
          player.setVolume(1.0f, 1.0f);
@@ -269,9 +283,10 @@ public class IntentPlayer extends Service
    }
 
    public boolean isNetworkUrl()
-   {
-      return ( launch_url != null && URLUtil.isNetworkUrl(launch_url) );
-   }
+      { return isNetworkUrl(launch_url); }
+
+   public boolean isNetworkUrl(String check_url)
+      { return ( check_url != null && URLUtil.isNetworkUrl(check_url) ); }
 
    /* ********************************************************************
     * Stop...

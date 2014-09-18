@@ -7,7 +7,7 @@ import android.net.wifi.WifiManager.WifiLock;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-public class WifiLocker extends WifiOn
+public class WifiLocker extends Logger
 {
    private static WifiLock lock = null;
    private static WifiManager manager = null;
@@ -17,16 +17,19 @@ public class WifiLocker extends WifiOn
       if ( manager == null )
          manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
 
-      if ( ! onWifi(context) )
-         return;
+      if ( manager != null && lock == null )
+         lock = manager.createWifiLock(WifiManager.WIFI_MODE_FULL, app_name);
 
       if ( lock == null )
-         lock = manager.createWifiLock(WifiManager.WIFI_MODE_FULL, app_name);
+         return;
+
+      if ( ! Connectivity.onWifi() )
+         { unlock(); return; }
 
       if ( lock.isHeld() )
          return;
 
-      log("Wifi lock: acquire");
+      log("Wifi lock: acquired");
       lock.acquire();
    }
 
@@ -34,7 +37,7 @@ public class WifiLocker extends WifiOn
    {
       if ( lock != null && lock.isHeld() )
       {
-         log("Wifi lock: release");
+         log("Wifi lock: released");
          lock.release();
       }
    }
