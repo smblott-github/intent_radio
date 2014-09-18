@@ -265,11 +265,12 @@ ir_next ()
 }
 
 # ########################################################################
-# Construct playlist for various types of thing.
+# Construct playlists for various types of thing.
 #
 # Each function assumes:
 #  - The current working directory is the location of the file or directory.
 #  - It's first (and only) argument is the absolute path of the file or directory.
+# Callers arrange this by using ir_cd.
 
 ir_playlist ()
 {
