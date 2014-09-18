@@ -185,6 +185,8 @@ then the playlist is randomized.
 Note, however, that randomization is only possible if you have
 `sort` on your device.  Which probably means you have to have
 `busybox` installed.  Which probably means you need root.
+
+Duplicate items encountered are silently discarded.
 ****
 
 .Append:
@@ -193,20 +195,20 @@ Note, however, that randomization is only possible if you have
 
 Like `start`, but appends to an existing playlist.  Also advances to the
 next track.  `append` does not support the `-l` and `-r` options.
+
+New items will _not_ be added to the playlist if they are already on the
+playlist.
 ****
 
 .Stop
 ****
-- `append THING`
+- `stop`
 
 Suspend the playlist.
 
 Normally, it _should not_ be necessary to invoke this manually.  It is
 generated automatically when the Tasker project receives the `stop` state
 from the player.
-
-New items will _not_ be added to the playlist if they are already on the
-playlist.
 ****
 
 .Next
