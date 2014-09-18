@@ -1,5 +1,5 @@
 #!/bin/sh
-# Version 0.1.4
+# Version 0.1.5
 
 # ########################################################################
 # Instructions:
@@ -27,7 +27,7 @@ log="$root/log.txt"
 # there's nothing to be done.
 [ $# = 0 ] && exit 1
 [ $# = 1 ] && ! [ -f "$state" ] && exit
-[ $# = 1 ] && [ -f "$stopfile" ] && [ "$1" != 'resume' ] && exit
+[ $# = 1 ] && [ -f "$stopfile" ] && [ "$1" != 'next' ] && exit
 
 mkdir -p "$root"
 exec 4>> $log 2>&4
