@@ -517,9 +517,14 @@ public class IntentPlayer extends Service
    {
       log("Completion: " + State.current());
 
+      // We only enter STATE_COMPLETE for non-network URLs, and only if we
+      // really were playing (so not, for example, if we are in STATE_ERROR, or
+      // STATE_DISCONNECTED).  This simplifies connectivity management, in
+      // Connectivity.java.
       if ( isNetworkUrl() && (State.is(State.STATE_PLAY) || State.is(State.STATE_DUCK)) )
          State.set_state(context, State.STATE_COMPLETE, isNetworkUrl());
 
+      // Don't stay completed for long.
       new Later(300)
       {
          @Override
