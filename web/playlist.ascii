@@ -171,6 +171,57 @@ The state file itself is:
 ****
 
 // /////////////////////////////////////////////////////
+== Options/Operations ==
+
+.Start:
+****
+- `start [-l] [-r] THING`
+
+`THING` is the absolute path of a playlist file, directory or audio file.
+
+If `-l` is provided, then the playlist is looped.  If `-r` is provided,
+then the playlist is randomized.
+
+Note, however, that randomization is only possible if you have
+`sort` on your device.  Which probably means you have to have
+`busybox` installed.  Which probably means you need root.
+****
+
+.Append:
+****
+- `append THING`
+
+Like `start`, but appends to an existing playlist.  Also advances to the
+next track.  `append` does not support the `-l` and `-r` options.
+****
+
+.Stop
+****
+- `append THING`
+
+Suspend the playlist.
+
+Normally, it _should not_ be necessary to invoke this manually.  It is
+generated automatically when the Tasker project receives the `stop` state
+from the player.
+****
+
+.Next
+****
+- `next`
+
+Move on to the next item on the playlist.
+****
+
+.Resume
+****
+- `resume`
+
+Resume a previously-stopped playlist.  Playback starts at the track after
+the one which was playing when the playlist was suspended.
+****
+
+// /////////////////////////////////////////////////////
 == How does it work? ==
 
 ****
@@ -179,7 +230,7 @@ project listens for these broadcasts and forwards them to the `playlist`
 shell script.
 
 When the shell script sees a `completed` state, it fires off
-the next track.  When it sees a `stop` state, it removes the active
+the next track.  When it sees a `stop` state, it suspends the active
 playlist (so that subsequently, when a non-playlist track completes, it
 does not incorrectly fire off the next track on the active playlist).
 ****

@@ -360,12 +360,19 @@ ir_cd ()
    if ! ir_seen "$thing"
    then
       ir_see "$directory" "$thing"
-      (
-         if cd "$directory"
-         then
-            "$@" "$thing"
-         fi
-      )
+      if [ "$(pwd)" = "$directory" ]
+      then
+         # Don't create a new process and change directory if we don't need
+         # to.
+         "$@" "$thing"
+      else
+         (
+            if cd "$directory"
+            then
+               "$@" "$thing"
+            fi
+         )
+      fi
    else
       log "skipping $thing"
    fi
