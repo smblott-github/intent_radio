@@ -637,7 +637,14 @@ public class IntentPlayer extends Service
    {
       log("Completion: " + State.current());
 
-      State.set_state(context, State.STATE_COMPLETE, isNetworkUrl());
+      // We only enter the completed state from a valid playing state.
+      // This interacts with Connectivity and the error state.  When
+      // connectivity is lost, we can get an error callback followed by a
+      // completion callback.  In this case, we do not want to consider the
+      // state to be complete.
+      if ( State.is(State.STATE_PLAY) || State.is(State.STATE_DUCK) )
+         State.set_state(context, State.STATE_COMPLETE, isNetworkUrl());
+
       new Later(300)
       {
          @Override
