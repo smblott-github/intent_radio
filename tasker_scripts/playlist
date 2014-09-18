@@ -2,6 +2,10 @@
 # Version 0.1.2
 
 # ########################################################################
+# Instructions:
+#    See http://intent-radio.smblott.org/playlist.html
+
+# ########################################################################
 # Constraints:
 #    This script has to work with the standard Android shell, and with only
 #    the utilities available on a vanilla Android installation (which
