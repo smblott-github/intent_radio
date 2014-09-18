@@ -9,7 +9,7 @@
 # Constraints:
 #    This script has to work with the standard Android shell, and with only
 #    the utilities available on a vanilla Android installation (which
-#    don't even include head and tail).
+#    doesn't even include head and tail).
 #
 # For URL encoding we use sed, if it's available.  Otherwise, we use a
 # simple shell function to replace the most important non-URL characters.
