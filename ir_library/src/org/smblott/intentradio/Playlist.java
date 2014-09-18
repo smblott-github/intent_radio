@@ -33,17 +33,9 @@ public class Playlist extends AsyncTask<Void, Void, String>
       log("Playlist: then=" + then);
    }
 
-   public void start()
+   public Playlist start()
    {
-      // log("ThreadPoolExecutor cores: ", ""+((ThreadPoolExecutor)AsyncTask.THREAD_POOL_EXECUTOR).getCorePoolSize());  -> 5   on Nexus 4 emulator
-      // log("ThreadPoolExecutor max: ", ""+((ThreadPoolExecutor)AsyncTask.THREAD_POOL_EXECUTOR).getMaximumPoolSize()); -> 128 on Nexus 4 emulator
-      //
-      // Start this on a THREAD_POOL_EXECUTOR.  If it runs as a regular
-      // AsyncTask, then it can interfere with loading of the app's UI.  So,
-      // use regular AsyncTasks for the UI, and THREAD_POOL_EXECUTOR tasks for
-      // the service.
-      //
-      executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+      return (Playlist) executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
    }
 
    protected String doInBackground(Void... args)

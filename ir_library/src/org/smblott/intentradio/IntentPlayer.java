@@ -187,28 +187,19 @@ public class IntentPlayer extends Service
       toast(name);
       log("Play: ", url);
 
-      // /////////////////////////////////////////////////////////////////
-      // Check URL...
-
       if ( ! URLUtil.isValidUrl(url) )
       {
          toast("Invalid URL.");
          return stop();
       }
 
-      // /////////////////////////////////////////////////////////////////
-      // Check connectivity...
-
-      if ( ! Connectivity.isConnected(context) )
+      if ( URLUtil.isNetworkUrl(url) && ! Connectivity.isConnected(context) )
       {
-         int ret = stop();
-         State.set_state(context, State.STATE_DISCONNECTED, isNetworkUrl());
          toast("No internet connection; will not start playback.");
-         return ret;
+         stop(false);
+         State.set_state(context, State.STATE_DISCONNECTED, isNetworkUrl());
+         return done();
       }
-
-      // /////////////////////////////////////////////////////////////////
-      // Audio focus...
 
       int focus = audio_manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
       if ( focus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
@@ -226,60 +217,42 @@ public class IntentPlayer extends Service
          player = new MediaPlayer();
          player.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
          player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-
          player.setOnPreparedListener(this);
          player.setOnBufferingUpdateListener(this);
          player.setOnInfoListener(this);
          player.setOnErrorListener(this);
          player.setOnCompletionListener(this);
       }
-      else
-         log("Re-using existing player.");
 
       WifiLocker.lock(context, app_name_long);
+
       log("Connecting...");
+      playlist_task = new Playlist(this,url).start();
 
-      // All requests (including non-playlists), now go through the Playlist
-      // class.  This simplifies the logic of deciding what is what.
-      //
-      playlist_task = new Playlist(this,url);
-      playlist_task.start();
-
+      // The Playlist object calls play_launch(url), when it's ready.
       return done(State.STATE_BUFFER);
-   }
-
-   public boolean isNetworkUrl()
-   {
-      return ( previous_launch_url != null && URLUtil.isNetworkUrl(previous_launch_url) );
    }
 
    /* ********************************************************************
     * Launch player...
     */
 
-   private static String previous_launch_url = null;
-   private static boolean previous_launch_successful = false;
-
-   public void play_relaunch()
-   {
-      if ( previous_launch_successful && previous_launch_url != null )
-         play_launch(previous_launch_url);
-   }
+   // The launch_url may be different from the original URL.  For example, it
+   // could be the URL extracted from a playlist.
+   private static String launch_url = null;
 
    public int play_launch(String url)
    {
       log("Launching: ", url);
 
-      previous_launch_url = null;
-      previous_launch_successful = false;
-
+      launch_url = null;
       if ( ! URLUtil.isValidUrl(url) )
       {
          toast("Invalid URL.");
          return stop();
       }
 
-      previous_launch_url = url;
+      launch_url = url;
 
       try
       {
@@ -295,6 +268,11 @@ public class IntentPlayer extends Service
       return done(State.STATE_BUFFER);
    }
 
+   public boolean isNetworkUrl()
+   {
+      return ( launch_url != null && URLUtil.isNetworkUrl(launch_url) );
+   }
+
    /* ********************************************************************
     * Stop...
     */
@@ -302,36 +280,21 @@ public class IntentPlayer extends Service
    public int stop()
       { return stop(true); }
 
-   // Parameters:
-   //   text: text to put in notification (if it is not dismissed).
-   //   real_stop: usually true; only false when stop() is called from play();
-   //              that is, when we're about to start playback, and we are only
-   //              stopping to clean up state and move time on.
-   //
-   private int stop(boolean real_stop)
+   private int stop(boolean update_state)
    {
-      log("Stopping real_stop: ", ""+real_stop);
+      log("Stopping");
 
+      Counter.time_passes();
+      launch_url = null;
       audio_manager.abandonAudioFocus(this);
       WifiLocker.unlock();
 
-      // Time moves on...
-      //
-      Counter.time_passes();
-      previous_launch_url = null;
-      previous_launch_successful = false;
-
-      // Stop player...
-      //
       if ( player != null )
       {
-         log("Stopping player...");
+         log("Stopping/releasing player...");
          if ( player.isPlaying() )
             player.stop();
-         log("releasing player...");
-         // If the player is still connecting, then resetting or releasing the
-         // player hangs for quite some time.
-         // 
+         player.reset();
          player.release();
          player = null;
       }
@@ -342,82 +305,15 @@ public class IntentPlayer extends Service
          playlist_task = null;
       }
 
-      if ( ! real_stop )
+      if ( update_state )
+         return done(State.STATE_STOP);
+      else
          return done();
-
-      /*
-      log("Start launch player release task...");
-      // We're still holding resources, including the player itself.
-      // Spin off a task to clean up, soon.
-      //
-      // No need to cancel this task.  The state is now STATE_STOP, all
-      // events affecting the relevance of this thread move time on.
-      // 
-      new Later()
-      {
-         @Override
-         public void later()
-         {
-            if ( player != null )
-            {
-               log("Releasing player.");
-               player.release();
-               player = null;
-            }
-         }
-      }.start();
-      log("Player release task started...");
-      */
-
-      log("Returning...");
-      return done(State.STATE_STOP);
    }
 
    /* ********************************************************************
-    * Pause/restart...
+    * Reduce volume, for a short while, for a notification.
     */
-
-   private int pause()
-      { return pause("Paused."); }
-
-   private int pause(String msg)
-   {
-      log("Pause: ", State.current());
-
-      if ( player == null )
-         return done();
-
-      // if ( ! player.isPlaying() )
-      //    return done();
-
-      if ( State.is(State.STATE_PAUSE) || ! State.is_playing() )
-         return done();
-
-      if ( pause_task != null )
-         pause_task.cancel(true);
-      pause_task = null;
-
-      if ( URLUtil.isNetworkUrl(previous_launch_url) )
-         // We're still holding resources, including a Wifi Wakelock and the player
-         // itself.  Spin off a task to convert this "pause" into a stop, soon, if
-         // necessary.  This will be cacelled if we restart(), or become
-         // irrelevant if another action such as stop() or play() occurs, because
-         // then time will have passed.
-         //
-         pause_task =
-            new Later()
-            {
-               @Override
-               public void later()
-               {
-                  pause_task = null;
-                  stop();
-               }
-            }.start();
-
-      player.pause();
-      return done(State.STATE_PAUSE);
-   }
 
    private int duck(String msg)
    {
@@ -428,6 +324,38 @@ public class IntentPlayer extends Service
 
       player.setVolume(0.1f, 0.1f);
       return done(State.STATE_DUCK);
+   }
+
+   /* ********************************************************************
+    * Pause/restart...
+    */
+
+   private int pause()
+   {
+      log("Pause: ", State.current());
+
+      if ( player == null || State.is(State.STATE_PAUSE) || ! State.is_playing() )
+         return done();
+
+      if ( pause_task != null )
+         pause_task.cancel(true);
+
+      // We're still holding resources, including a possibly a Wifi Wakelock
+      // and the player itself.  Spin off a task to convert this "pause"
+      // into a stop, soon.
+      pause_task =
+         new Later()
+         {
+            @Override
+            public void later()
+            {
+               pause_task = null;
+               stop();
+            }
+         }.start();
+
+      player.pause();
+      return done(State.STATE_PAUSE);
    }
 
    private int restart()
@@ -461,14 +389,15 @@ public class IntentPlayer extends Service
       }
 
       if ( pause_task != null )
-      {
-         pause_task.cancel(true);
-         pause_task = null;
-      }
+         { pause_task.cancel(true); pause_task = null; }
 
       player.start();
       return done(State.STATE_PLAY);
    }
+
+   /* ********************************************************************
+    * Respond to click events from the notification.
+    */
 
    private int click()
    {
@@ -477,7 +406,6 @@ public class IntentPlayer extends Service
       if ( State.is(State.STATE_DISCONNECTED) )
       {
          stop();
-         log("Click: cancel notification (disconnected)");
          Notify.cancel();
          return done();
       }
@@ -488,7 +416,6 @@ public class IntentPlayer extends Service
       if ( State.is_playing() )
       {
          stop();
-         log("Click: cancel notification (playing)");
          Notify.cancel();
          return done();
       }
@@ -530,26 +457,6 @@ public class IntentPlayer extends Service
          log("Starting....");
          player.start();
          State.set_state(context, State.STATE_PLAY, isNetworkUrl());
-
-         // A launch is successful if there is no error within the first few
-         // seconds.  If a launch is successful then later the stream fails,
-         // then the launch will be repeated.  If it fails before it is
-         // considered successful, then it will not be repeated.  This is
-         // intented to prevent thrashing.
-         //
-         // No need to cancel this.  All events affecting the relevance of this
-         // thread move time on.
-         // TODO: Is that really true?
-         // 
-         new Later(10)
-         {
-            @Override
-            public void later()
-            {
-               log("Launch successful.");
-               previous_launch_successful = true;
-            }
-         }.start();
       }
    }
 
@@ -557,6 +464,7 @@ public class IntentPlayer extends Service
    public void onBufferingUpdate(MediaPlayer player, int percent)
    {
       /*
+      // Notifications of buffer state seem to be unreliable.
       if ( 0 <= percent && percent <= 100 )
          log("Buffering: ", ""+percent, "%"); 
          */
@@ -578,53 +486,25 @@ public class IntentPlayer extends Service
       return true;
    }
 
-   @Override
-   public boolean onError(MediaPlayer player, int what, int extra)
+   private void stop_soon()
    {
-      log("Error: ", ""+what);
-
-      // Disabled in favour of logic in ./Connectivity.java
-      //
-      // if ( player != null
-      //       && previous_launch_url != null
-      //       && previous_launch_successful
-      //       && URLUtil.isNetworkUrl(previous_launch_url)
-      //       && Connectivity.isConnected(context) )
-      // {
-      //    player.reset();
-      //    play_relaunch();
-      //    return true;
-      // }
-      //
-      // stop();
-      State.set_state(context,State.STATE_ERROR, isNetworkUrl());
       new Later(300)
       {
          @Override
          public void later()
             { stop(); }
       }.start();
+   }
 
-      /*
-      switch ( what )
-      {
-         case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
-            stop();
-            State.set_state(context,State.STATE_ERROR, isNetworkUrl());
-            break;
-         case MediaPlayer.MEDIA_ERROR_UNKNOWN:
-            stop();
-            State.set_state(context,State.STATE_ERROR, isNetworkUrl());
-            break;
-         default:
-            stop();
-            State.set_state(context,State.STATE_ERROR, isNetworkUrl());
-            break;
-      }
-      */
+   @Override
+   public boolean onError(MediaPlayer player, int what, int extra)
+   {
+      log("Error: ", ""+what);
+
+      State.set_state(context,State.STATE_ERROR, isNetworkUrl());
+      stop_soon();
 
       // Returning true, here, prevents the onCompletionlistener from being called.
-      //
       return true;
    }
 
@@ -637,12 +517,7 @@ public class IntentPlayer extends Service
    {
       log("Completion: " + State.current());
 
-      // We only enter the completed state from a valid playing state.
-      // This interacts with Connectivity and the error state.  When
-      // connectivity is lost, we can get an error callback followed by a
-      // completion callback.  In this case, we do not want to consider the
-      // state to be complete.
-      if ( State.is(State.STATE_PLAY) || State.is(State.STATE_DUCK) )
+      if ( isNetworkUrl() && (State.is(State.STATE_PLAY) || State.is(State.STATE_DUCK)) )
          State.set_state(context, State.STATE_COMPLETE, isNetworkUrl());
 
       new Later(300)
@@ -666,22 +541,23 @@ public class IntentPlayer extends Service
          switch (change)
          {
             case AudioManager.AUDIOFOCUS_GAIN:
-               log("audiofocus_gain");
+               log("Audiofocus_gain");
                restart();
                break;
 
-            case AudioManager.AUDIOFOCUS_LOSS:
-               log("audiofocus_loss");
-               stop();
-               break;
-
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-               log("audiofocus_loss_transient");
-               pause("Audio focus lost, paused...");
+               log("Transient");
+               // pause();
+               // break;
+               // Drop through.
+
+            case AudioManager.AUDIOFOCUS_LOSS:
+               log("Audiofocus_loss");
+               pause();
                break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-               log("audiofocus_loss_transient_can_duck");
+               log("Audiofocus_loss_transient_can_duck");
                duck("Audio focus lost, ducking...");
                break;
          }
