@@ -32,6 +32,14 @@ public class Connectivity extends BroadcastReceiver
       context.registerReceiver(this, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
    }
 
+   static private void init_connectivity(Context context)
+   {
+      if ( connectivity == null )
+         connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+      if ( connectivity != null )
+         previous_type = getType();
+   }
+
    void destroy()
       { context.unregisterReceiver(this); }
 
@@ -65,16 +73,7 @@ public class Connectivity extends BroadcastReceiver
    }
 
    static boolean onWifi()
-      { return getType() == ConnectivityManager.TYPE_WIFI; }
-
-   static private void init_connectivity(Context context)
-   {
-      if ( connectivity == null )
-      {
-         connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-         previous_type = getType();
-      }
-   }
+      { return previous_type == ConnectivityManager.TYPE_WIFI; }
 
    static public boolean isConnected(Context context){
       init_connectivity(context);
