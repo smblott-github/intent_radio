@@ -279,8 +279,6 @@ public class IntentPlayer extends Service
       catch (Exception e)
          { return stop(); }
 
-      // The following is not working.
-      // new Metadata(context,url).start();
       return done(State.STATE_BUFFER);
    }
 
