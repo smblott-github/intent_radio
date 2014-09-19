@@ -282,6 +282,17 @@ public class IntentPlayer extends Service
       return done(State.STATE_BUFFER);
    }
 
+   @Override
+   public void onPrepared(MediaPlayer mp)
+   {
+      if ( mp == player )
+      {
+         log("Starting....");
+         player.start();
+         State.set_state(context, State.STATE_PLAY, isNetworkUrl());
+      }
+   }
+
    public boolean isNetworkUrl()
       { return isNetworkUrl(launch_url); }
 
@@ -465,17 +476,6 @@ public class IntentPlayer extends Service
     */
 
    @Override
-   public void onPrepared(MediaPlayer mp)
-   {
-      if ( mp == player )
-      {
-         log("Starting....");
-         player.start();
-         State.set_state(context, State.STATE_PLAY, isNetworkUrl());
-      }
-   }
-
-   @Override
    public void onBufferingUpdate(MediaPlayer player, int percent)
    {
       /*
@@ -540,13 +540,8 @@ public class IntentPlayer extends Service
       if ( ! isNetworkUrl() && (State.is(State.STATE_PLAY) || State.is(State.STATE_DUCK)) )
          State.set_state(context, State.STATE_COMPLETE, isNetworkUrl());
 
-      // Don't stay completed for long.
-      new Later(300)
-      {
-         @Override
-         public void later()
-            { stop(); }
-      }.start();
+      // Don't stay completed for long. stop(), soon, to free up resources.
+      stop_soon();
    }
 
    /* ********************************************************************
