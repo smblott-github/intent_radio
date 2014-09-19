@@ -564,6 +564,8 @@ public class IntentPlayer extends Service
       }
    }
 
+   // Waring:  onError is called, by start_buffering(), with null arguments.
+   // Do not rely upon these arguments being meaningful.
    @Override
    public boolean onError(MediaPlayer player, int what, int extra)
    {
