@@ -92,26 +92,7 @@ public class Connectivity extends BroadcastReceiver
       Logger.log("Connectivity: " + type + " " + want_network_playing);
 
       if ( type == TYPE_NONE && previous_type != TYPE_NONE && want_network_playing )
-      {  // We've lost connectivity.
-         Logger.log("Connectivity: disconnected");
-         player.stop();
-         then = Counter.now();
-         State.set_state(context, State.STATE_DISCONNECTED, true);
-
-         if ( disable_task != null )
-            disable_task.cancel(true);
-
-         disable_task =
-            new Later(300)
-            {
-               @Override
-               public void later()
-               {
-                  player.stop();
-                  disable_task = null;
-               }
-            }.start();
-      }
+         dropped_connection();
 
       if ( previous_type == TYPE_NONE
             && type != previous_type
@@ -133,6 +114,28 @@ public class Connectivity extends BroadcastReceiver
 
       previous_type = type;
       return;
+   }
+
+   public void dropped_connection()
+   {  // We've lost connectivity.
+      Logger.log("Connectivity: disconnected");
+      player.stop();
+      then = Counter.now();
+      State.set_state(context, State.STATE_DISCONNECTED, true);
+
+      if ( disable_task != null )
+         disable_task.cancel(true);
+
+      disable_task =
+         new Later(300)
+         {
+            @Override
+            public void later()
+            {
+               player.stop();
+               disable_task = null;
+            }
+         }.start();
    }
 
    private void restart()

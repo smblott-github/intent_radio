@@ -1,0 +1,7 @@
+
+Next Release
+------------
+
+- Better (but not yet perfect) handling of drops due to connectivity changes.
+- Fixed minor bugs and/or inconsistencies.
+- Check out the web page for information on how to handle playlists.

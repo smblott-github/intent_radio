@@ -195,16 +195,17 @@ public class IntentPlayer extends Service
 
       if ( isNetworkUrl(url) && ! Connectivity.isConnected(context) )
       {
-         toast("No internet connection; will not start playback.");
-         stop(false);
-         State.set_state(context, State.STATE_DISCONNECTED, isNetworkUrl());
+         toast("No internet connection.");
+         // We'll pretend that we dropped the connection.  That way, when we
+         // get a connection, playback will start.
+         connectivity.dropped_connection();
          return done();
       }
 
       int focus = audio_manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
       if ( focus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
       {
-         toast("Could not obtain audio focus; not playing.");
+         toast("Could not obtain audio focus.");
          return stop();
       }
 
@@ -239,7 +240,8 @@ public class IntentPlayer extends Service
     */
 
    // The launch_url may be different from the original URL.  For example, it
-   // could be the URL extracted from a playlist.
+   // could be the URL extracted from a playlist, whereas the original url is
+   // that of the playlist itself.
    private static String launch_url = null;
 
    public int play_launch(String url)
@@ -410,7 +412,7 @@ public class IntentPlayer extends Service
       int focus = audio_manager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
       if ( focus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED )
       {
-         toast("Intent Radio:\nFailed to (re-)acquire audio focus.");
+         toast("Failed to acquire audio focus.");
          return done();
       }
 
