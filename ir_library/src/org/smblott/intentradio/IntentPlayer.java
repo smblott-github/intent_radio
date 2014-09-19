@@ -65,6 +65,8 @@ public class IntentPlayer extends Service
    private static AsyncTask<Integer,Void,Void> pause_task = null;
 
    private static Connectivity connectivity = null;
+   private static int initial_failure_ttl = 5;
+   private static int failure_ttl = 0;
 
    /* ********************************************************************
     * Create service...
@@ -166,6 +168,7 @@ public class IntentPlayer extends Service
          log("Name: ", name);
          log("URL: ", url);
          Notify.name(name);
+         failure_ttl = initial_failure_ttl;
          return play(url);
       }
 
@@ -193,7 +196,7 @@ public class IntentPlayer extends Service
          return stop();
       }
 
-      if ( isNetworkUrl(url) && ! Connectivity.isConnected(context) )
+      if ( isNetworkUrl(url) && ! connectivity.isConnected(context) )
       {
          toast("No internet connection.");
          // We'll pretend that we dropped the connection.  That way, when we
@@ -232,6 +235,7 @@ public class IntentPlayer extends Service
       playlist_task = new Playlist(this,url).start();
 
       // The Playlist object calls play_launch(url), when it's ready.
+      start_buffering();
       return done(State.STATE_BUFFER);
    }
 
@@ -279,6 +283,7 @@ public class IntentPlayer extends Service
       catch (Exception e)
          { return stop(); }
 
+      start_buffering();
       return done(State.STATE_BUFFER);
    }
 
@@ -289,6 +294,10 @@ public class IntentPlayer extends Service
       {
          log("Starting....");
          player.start();
+         // Invalidate any outstanding stop_soon threads, or the like.
+         Counter.time_passes();
+         // Allow future restarts after failure.
+         failure_ttl = initial_failure_ttl;
          State.set_state(context, State.STATE_PLAY, isNetworkUrl());
       }
    }
@@ -495,20 +504,64 @@ public class IntentPlayer extends Service
             break;
 
          case MediaPlayer.MEDIA_INFO_BUFFERING_END:
+            failure_ttl = initial_failure_ttl;
             State.set_state(context, State.STATE_PLAY, isNetworkUrl());
             break;
       }
       return true;
    }
 
+   private Later start_buffering_task = null;
+
+   private void start_buffering()
+   {
+      if ( start_buffering_task != null )
+         start_buffering_task.cancel(true);
+
+      // We'll give it 90 seconds for the stream to start.  Otherwise, we'll
+      // declare an error.  onError() tries to restart, in some cases.
+      start_buffering_task = (Later)
+         new Later(90)
+         {
+            @Override
+            public void later()
+            {
+               start_buffering_task = null;
+               onError(null,0,0);
+            }
+         }.start();
+   }
+
+   private Later stop_soon_task = null;
+
    private void stop_soon()
    {
-      new Later(300)
+      if ( stop_soon_task != null )
+         stop_soon_task.cancel(true);
+
+      stop_soon_task = (Later)
+         new Later(300)
+         {
+            @Override
+            public void later()
+            {
+               stop_soon_task = null;
+               stop();
+            }
+         }.start();
+   }
+
+   private void try_recover()
+   {
+      stop_soon();
+      if ( isNetworkUrl() && 0 < failure_ttl )
       {
-         @Override
-         public void later()
-            { stop(); }
-      }.start();
+         failure_ttl -= 1;
+         if ( connectivity.isConnected(context) )
+            play();
+         else
+            connectivity.dropped_connection();
+      }
    }
 
    @Override
@@ -517,7 +570,7 @@ public class IntentPlayer extends Service
       log("Error: ", ""+what);
 
       State.set_state(context,State.STATE_ERROR, isNetworkUrl());
-      stop_soon();
+      try_recover(); // This calls stop_soon().
 
       // Returning true, here, prevents the onCompletionlistener from being called.
       return true;
