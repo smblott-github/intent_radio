@@ -252,6 +252,15 @@ with it.  They're the same thing.
 [[notes]]
 == Release Notes ==
 
+.Version 1.9.9:
+****
+- Considerably better (but not yet perfect) handling of drops due to
+  intermittent network connectivity.
+- Now defaults to reconnect on network drops.
+- Fixed minor bugs and/or inconsistencies.
+- Check out the web page for information on how to handle playlists.
+****
+
 .Version 1.9.8:
 ****
 - Add option (disabled by default) to restart playback if the network
