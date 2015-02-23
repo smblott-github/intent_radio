@@ -69,8 +69,8 @@ include ./Makefile.test
 #      make release
 #      make google-release
 # - F-Droid:
-#      - update metadata
-#      - submit PR
+#      - just updating the tag (above) seems to trigger F-Droid to fetch
+#        and build the new version
 # - Google Play Store:
 #      - upload new APK
 #

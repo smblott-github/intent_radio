@@ -23,7 +23,7 @@
        android:title="Restart playback"
        android:summaryOn="If the network connection is lost during playback and then re-established within five minutes, then playback is restarted"
        android:summaryOff="If the network connection is lost during playback, then playback is stopped."
-       android:defaultValue="false"
+       android:defaultValue="true"
        />
 
   </PreferenceCategory>
