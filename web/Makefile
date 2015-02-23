@@ -17,8 +17,8 @@ target += playlist
 build: $(target)
 	@true
 
-srv = smblott.org
-www = public_html/intent_radio/
+srv = smblott.computing.dcu.ie
+www = /home/www/smblott.org/intent_radio/
 
 install:
 	$(MAKE) build
