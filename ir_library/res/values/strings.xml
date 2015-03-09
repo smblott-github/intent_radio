@@ -4,7 +4,8 @@
     <string name="app_name_long">Intent Radio</string>
     <string name="distribution">General</string>
 
-    <string name="default_url">http://www.bbc.co.uk/mediaselector/playlists/hls/radio/nonuk/lo/ak/bbc_radio_fourfm.m3u8</string>
+    <string name="default_url">http://a.files.bbci.co.uk/media/live/manifesto/audio/simulcast/hls/nonuk/sbr_vlow/llnw/bbc_radio_fourfm.m3u8</string>
+    <!-- <string name="default_url">http://www.bbc.co.uk/mediaselector/playlists/hls/radio/nonuk/lo/ak/bbc_radio_fourfm.m3u8</string> -->
     <!-- <string name="default_url">http://www.bbc.co.uk/radio/listen/live/r4_heaacv2.pls</string> -->
     <string name="default_name">BBC Radio 4 (FM)</string>
 
