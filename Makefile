@@ -1,6 +1,6 @@
 
 srv = smblott.org
-www = public_html/intent_radio/
+www = /home/www/smblott.org/intent_radio
 
 versioncode = $(shell sh ./script/version.sh)
 
