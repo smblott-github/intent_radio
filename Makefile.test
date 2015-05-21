@@ -51,3 +51,11 @@ click:
 
 .PHONY: play stop r4 r4aac ufm wnyc newstalk lyric shoutcast file pause restart click
 
+wien:
+	# $(play) -e url 'http://mp3stream2.apasf.apa.at:8000/listen.pls' -e name "Wien"
+	# $(play) -e url '' -e name "Wien"
+	# $(play) -e url 'http://mp3stream3.apasf.apa.at:8000/listen.pls' -e name "Oe 1"
+	# $(play) -e url 'http://mp3stream1.apasf.apa.at:8000/listen.pls' -e name "FM4"
+	# $(play) -e url 'http://amber.streamguys.com:4020/live' -e name "WEAA"
+	$(play) -e url 'http://live.str3am.com:2410/wypr.m3u' -e name "WYPR"
+
