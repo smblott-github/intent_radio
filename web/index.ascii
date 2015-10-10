@@ -256,6 +256,11 @@ Alternatively:
 [[notes]]
 == Release Notes ==
 
+.Version 1.9.11:
+****
+- Add permission to read external storage.  This should allow IR to play content stored in external storage.
+****
+
 .Version 1.9.10:
 ****
 - Just change the default URL (because the BBC have been diddling with
